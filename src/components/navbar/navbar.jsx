@@ -2,6 +2,7 @@
 import {
   Home,
   ContactRound,
+  BadgeDollarSign,
   CreditCardIcon,
   ChartLineIcon,
 } from "lucide-react";
@@ -17,6 +18,9 @@ function IconBuilder({ icon: Icon, ...props }) {
 
 function HomeIcon(props) {
   return <IconBuilder icon={Home} {...props} />;
+}
+function TransactionsIcon(props) {
+  return <IconBuilder icon={BadgeDollarSign} {...props} />;
 }
 function AnaliticIcon(props) {
   return <IconBuilder icon={ChartLineIcon} {...props} />;
@@ -37,16 +41,22 @@ export default function Navbar() {
           router.push("/mainpage");
         }}
       />
-      <AnaliticIcon
+      {/* <TransactionsIcon
         onClick={() => {
-          router.push("/mainpage/analitic");
+          router.push("/mainpage");
         }}
-      />
+      /> */}
       <CardIcon
         onClick={() => {
           router.push("/mainpage/wallet");
         }}
       />
+      <AnaliticIcon
+        onClick={() => {
+          router.push("/mainpage/analitic");
+        }}
+      />
+
       <ProfileIcon
         onClick={() => {
           router.push("/mainpage/profile");

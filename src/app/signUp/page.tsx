@@ -42,7 +42,7 @@ export default function SignupForm() {
   });
   async function onSubmit(values: SignupFormValues) {
     try {
-      const response = await api.post("/mainpage", values);
+      const response = await api.post("/signUp", values);
       console.log(response.data);
       router.push("/mainpage");
     } catch (error: any) {

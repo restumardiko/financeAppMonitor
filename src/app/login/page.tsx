@@ -44,6 +44,8 @@ export default function LoginForm() {
     try {
       const response = await api.post("/login", values);
       console.log(response.data);
+      localStorage.setItem("access_token", response.data.token);
+
       router.push("/mainpage"); // redirect ke home
     } catch (error: any) {
       if (error.response) {
