@@ -33,7 +33,6 @@ const data = [
 export default function Home() {
   const router = useRouter();
   const [name, setName] = useState("");
-  //const [name, setName] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -48,9 +47,10 @@ export default function Home() {
         const res = await api.get("/mainpage");
 
         //setData(res.data);
-        console.log(res.data);
+        //console.log(res.data);
 
         setName(res.data.name);
+
         //if()
       } catch (error) {
         console.error("Error fetching users:", error);

@@ -1,4 +1,5 @@
 "use client";
+import api from "@/lib/api";
 import {
   Card,
   CardAction,
@@ -9,19 +10,40 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import CardAccount from "../../../components/wallet/card";
 
 export default function Wallet() {
+  const fetchData = async () => {
+    try {
+      const res = await api.get("/account");
+
+      setCards(res.data.data);
+
+      //if()
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  const [cards, setCards] = useState([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
-    console.log(data); // Form data when submitted
+  const onSubmit = async (data) => {
+    try {
+      const rest = await api.post("/account", data);
+      fetchData();
+      console.log(rest);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="">
       <h1>Wallet</h1>
@@ -47,8 +69,8 @@ export default function Wallet() {
             {errors.balance && <p>{errors.balance.message}</p>}
           </div>
           <div>
-            <label htmlFor="type">type:</label>
-            <select {...register("type")}>
+            <label htmlFor="account_type">type:</label>
+            <select {...register("account_type")}>
               <option value="cash">cash</option>
               <option value="e-wallet">e-wallet</option>
               <option value="other">other</option>
@@ -59,19 +81,7 @@ export default function Wallet() {
         </form>
       </div>
       <div className="cardList">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Balance</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-            <CardAction>Card Action</CardAction>
-          </CardHeader>
-          <CardContent>
-            <p>Rp.xxxxxxxxxx</p>
-          </CardContent>
-          <CardFooter>
-            <p>6 persen less than last month</p>
-          </CardFooter>
-        </Card>
+        <CardAccount cards={cards} />
       </div>
     </div>
   );
