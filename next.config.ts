@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*", // semua request ke /api/...
+        destination: "http://localhost:2000/:path*", // diterusin ke backend
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

@@ -33,6 +33,8 @@ const data = [
 export default function Home() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [transactions, setTransactions] = useState();
+  const [totalBalance, setTotalBalance] = useState();
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -47,9 +49,11 @@ export default function Home() {
         const res = await api.get("/mainpage");
 
         //setData(res.data);
-        //console.log(res.data);
+        console.log(res.data);
 
         setName(res.data.name);
+        setTransactions(res.data.transactions);
+        setTotalBalance(res.data.total_balance);
 
         //if()
       } catch (error) {
@@ -70,11 +74,9 @@ export default function Home() {
         <Card>
           <CardHeader>
             <CardTitle>Total Balance</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-            <CardAction>Card Action</CardAction>
           </CardHeader>
           <CardContent>
-            <p>Rp.xxxxxxxxxx</p>
+            <h1>Rp.{totalBalance}</h1>
           </CardContent>
           <CardFooter>
             <p>6 persen less than last month</p>
@@ -127,7 +129,19 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="recent_transactions"></div>
+        <div className="recent_transactions gap-2 flex flex-col">
+          {Array.isArray(transactions) && transactions.length > 0 ? (
+            transactions.map((item, index) => (
+              <div className="flex flex-row gap-1 ">
+                <div>{item.type}</div>
+                <div key={index}>{item.amount}</div>
+                <div>{item.transaction_date}</div>
+              </div>
+            ))
+          ) : (
+            <div>No transactions</div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 import api from "@/lib/api";
+import CreateNewTransaction from "../../../components/wallet/CreatNewTransaction";
 import {
   Card,
   CardAction,
@@ -82,6 +83,9 @@ export default function Wallet() {
       </div>
       <div className="cardList">
         <CardAccount cards={cards} />
+      </div>
+      <div className="transactions">
+        <CreateNewTransaction />
       </div>
     </div>
   );
