@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import CardAccount from "../../../components/wallet/card";
+import TransactionsHistory from "../../../components/wallet/transactions_hystory";
 
 export default function Wallet() {
   const fetchData = async () => {
@@ -37,7 +38,6 @@ export default function Wallet() {
     try {
       const rest = await api.post("/account", data);
       fetchData();
-      console.log(rest);
     } catch (error) {
       console.log(error);
     }
@@ -86,6 +86,10 @@ export default function Wallet() {
       </div>
       <div className="transactions">
         <CreateNewTransaction />
+      </div>
+      <div className="recent_transaction">
+        <p>transactions</p>
+        <TransactionsHistory />
       </div>
     </div>
   );

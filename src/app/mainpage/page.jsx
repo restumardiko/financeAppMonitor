@@ -2,6 +2,8 @@
 import api from "@/lib/api";
 //import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+
+import TransactionsCard from "../../components/wallet/transactionsCard";
 import {
   Card,
   CardAction,
@@ -20,7 +22,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import useTransactionStore from "../store/useTransactionsStore";
 
 const data = [
   { name: "Jan", uv: 400 },
@@ -31,13 +34,19 @@ const data = [
 ];
 
 export default function Home() {
+  const { transactions, fetchTransactions } = useTransactionStore();
   const router = useRouter();
   const [name, setName] = useState("");
-  const [transactions, setTransactions] = useState();
+  // const [transactions, setTransactions] = useState();
   const [totalBalance, setTotalBalance] = useState();
+
+  const stableFetch = useCallback(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
+
     if (!token) {
       console.log("token empthy");
       router.push("/login");
@@ -49,10 +58,9 @@ export default function Home() {
         const res = await api.get("/mainpage");
 
         //setData(res.data);
-        console.log(res.data);
 
         setName(res.data.name);
-        setTransactions(res.data.transactions);
+        //setTransactions(res.data.transactions);
         setTotalBalance(res.data.total_balance);
 
         //if()
@@ -61,7 +69,10 @@ export default function Home() {
       }
     };
     fetchData();
-  }, []);
+    if (!transactions || transactions.length === 0) {
+      stableFetch();
+    }
+  }, [stableFetch]);
 
   return (
     <div>
@@ -129,18 +140,8 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="recent_transactions gap-2 flex flex-col">
-          {Array.isArray(transactions) && transactions.length > 0 ? (
-            transactions.map((item, index) => (
-              <div className="flex flex-row gap-1 ">
-                <div>{item.type}</div>
-                <div key={index}>{item.amount}</div>
-                <div>{item.transaction_date}</div>
-              </div>
-            ))
-          ) : (
-            <div>No transactions</div>
-          )}
+        <div className="recent_transactions">
+          <TransactionsCard transactions={transactions} />
         </div>
       </div>
     </div>
