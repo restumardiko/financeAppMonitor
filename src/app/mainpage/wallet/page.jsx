@@ -1,6 +1,6 @@
 "use client";
 import api from "@/lib/api";
-import CreateNewTransaction from "../../../components/wallet/CreatNewTransaction";
+import CreateNewTransaction from "../../../components/wallet/CreateNewTransaction";
 import {
   Card,
   CardAction,
@@ -20,6 +20,7 @@ export default function Wallet() {
   const fetchData = async () => {
     try {
       const res = await api.get("/account");
+      console.log(res);
 
       setCards(res.data.data);
 
@@ -85,7 +86,7 @@ export default function Wallet() {
         <CardAccount cards={cards} />
       </div>
       <div className="transactions">
-        <CreateNewTransaction />
+        <CreateNewTransaction cards={cards} />
       </div>
       <div className="recent_transaction">
         <p>transactions</p>

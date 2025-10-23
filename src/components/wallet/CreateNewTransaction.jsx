@@ -3,7 +3,8 @@ import api from "@/lib/api";
 
 import { useForm } from "react-hook-form";
 
-export default function CreateNewTransaction() {
+export default function CreateNewTransaction({ cards }) {
+  console.log("ini cards inside createTransaction", cards);
   const {
     register,
     watch,
@@ -14,14 +15,16 @@ export default function CreateNewTransaction() {
       transaction_type: "income",
       transaction_date: new Date().toISOString(),
       amount: "",
-      category: "",
+      category_id: "1",
+      account_id: "1",
       note: "",
     },
   });
   const transactionType = watch("transaction_type");
-  console.log("this is transaction type", transactionType);
+  //console.log("this is transaction type", transactionType);
 
   const onSubmit = async (data) => {
+    console.log(data);
     if (transactionType == "income") {
       try {
         const rest = await api.post("/income", data);
@@ -65,24 +68,37 @@ export default function CreateNewTransaction() {
           ></input>
           {errors.amount && <span>{errors.amount.message}</span>}
         </div>
+        <div className="account">
+          <label htmlFor="account_id">Account:</label>
+          <select
+            id="account_id"
+            {...register("account_id", { required: "wajib di isi" })}
+          >
+            <option value="">-- Pilih Akun --</option>
+            {cards.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.account_name}
+              </option>
+            ))}
+          </select>
+          {errors.account_id && <span>Please select account first</span>}
+        </div>
         <div className=" category">
           <label htmlFor="category">category:</label>
-          <select {...register("category")}>
+          <select {...register("category_id")}>
             {transactionType == "income" ? (
               <>
-                <option value="gaji">gaji</option>
-                <option value="bisni">bisnis</option>
-                <option value="lain-lain">lain-lain</option>
+                <option value="1">gaji</option>
+                <option value="2">bisnis</option>
+                <option value="3">lain-lain</option>
               </>
             ) : (
               <>
-                <option value="makanan_minuman "> Makanan & Minuman</option>
-                <option value="transportasi">Transportasi</option>
-                <option value="tagihan_kebutuhan rumah">
-                  Tagihan & Kebutuhan rumah
-                </option>
-                <option value="hiburan_gaya hidup">Hiburan & Gaya hidup</option>
-                <option value="kesehatan">Kesehatan</option>
+                <option value="4"> Makanan & Minuman</option>
+                <option value="5">Transportasi</option>
+                <option value="6">Tagihan & Kebutuhan rumah</option>
+                <option value="7">Hiburan & Gaya hidup</option>
+                <option value="8">Kesehatan</option>
               </>
             )}
           </select>
