@@ -1,3 +1,8 @@
+"use client";
+import useTransactionStore from "../../store/useTransactionsStore";
+
 export default function Analitic() {
-  return <div>Analitic</div>;
+  const { transactions } = useTransactionStore();
+  console.log("data passed", transactions);
+  return <div></div>;
 }

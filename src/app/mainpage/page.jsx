@@ -24,6 +24,7 @@ import {
 } from "recharts";
 import { useEffect, useState, useCallback } from "react";
 import useTransactionStore from "../store/useTransactionsStore";
+import useUserInformation from "../store/useUserInformation";
 
 const data = [
   { name: "Jan", uv: 400 },
@@ -35,12 +36,13 @@ const data = [
 
 export default function Home() {
   const { transactions, fetchTransactions } = useTransactionStore();
+  const { name, total_balance, fetchInformation } = useUserInformation();
   const router = useRouter();
-  const [name, setName] = useState("");
-  // const [transactions, setTransactions] = useState();
-  const [totalBalance, setTotalBalance] = useState();
 
-  const stableFetch = useCallback(() => {
+  const stableInformationFetch = useCallback(() => {
+    fetchInformation();
+  }, [fetchInformation]);
+  const stableTransactionFetch = useCallback(() => {
     fetchTransactions();
   }, [fetchTransactions]);
 
@@ -52,27 +54,9 @@ export default function Home() {
       router.push("/login");
       return;
     }
-
-    const fetchData = async () => {
-      try {
-        const res = await api.get("/mainpage");
-
-        //setData(res.data);
-
-        setName(res.data.name);
-        //setTransactions(res.data.transactions);
-        setTotalBalance(res.data.total_balance);
-
-        //if()
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-    fetchData();
-    if (!transactions || transactions.length === 0) {
-      stableFetch();
-    }
-  }, [stableFetch]);
+    stableInformationFetch();
+    stableTransactionFetch();
+  }, [stableInformationFetch, stableTransactionFetch]);
 
   return (
     <div>
@@ -87,7 +71,7 @@ export default function Home() {
             <CardTitle>Total Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <h1>Rp.{totalBalance}</h1>
+            <h1>Rp.{total_balance}</h1>
           </CardContent>
           <CardFooter>
             <p>6 persen less than last month</p>

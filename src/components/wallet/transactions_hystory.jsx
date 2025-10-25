@@ -4,6 +4,7 @@ import TransactionsCard from "./transactionsCard";
 
 export default function TransactionsHistory() {
   const { transactions, fetchTransactions } = useTransactionStore();
+  console.log("ini di state transactions", transactions);
 
   const stableFetch = useCallback(() => {
     fetchTransactions();

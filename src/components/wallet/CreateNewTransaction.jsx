@@ -2,9 +2,12 @@
 import api from "@/lib/api";
 
 import { useForm } from "react-hook-form";
+import useTransactionStore from "../../app/store/useTransactionsStore";
 
 export default function CreateNewTransaction({ cards }) {
-  console.log("ini cards inside createTransaction", cards);
+  const { addTransaction } = useTransactionStore();
+
+  //console.log("ini cards inside createTransaction", cards);
   const {
     register,
     watch,
@@ -24,11 +27,12 @@ export default function CreateNewTransaction({ cards }) {
   //console.log("this is transaction type", transactionType);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    console.log("this is data", data);
     if (transactionType == "income") {
       try {
         const rest = await api.post("/income", data);
-        console.log("this is data", data);
+        //console.log("this is data", data);
+        addTransaction(data);
         return console.log(rest);
       } catch (err) {
         console.log(err.response?.data || err.message);
@@ -36,7 +40,8 @@ export default function CreateNewTransaction({ cards }) {
     } else {
       try {
         const rest = await api.post("/expense", data);
-        console.log("this is data", data);
+        //console.log("this is data", data);
+        addTransaction(data);
         return console.log(rest);
       } catch (err) {
         console.log(err.response?.data || err.message);
