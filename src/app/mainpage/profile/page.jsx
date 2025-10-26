@@ -12,9 +12,10 @@ import {
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import useUserInformation from "../../store/useUserInformation";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 
 export default function Profile() {
+  const [isShow, setIsShow] = useState(false);
   const router = useRouter();
   const handleLogOut = async () => {
     try {
@@ -44,7 +45,28 @@ export default function Profile() {
         <div className="email">{email}</div>
         <div className="join_date">{created_at}</div>
         <div className="log_out">
-          <button onClick={handleLogOut}>LogOut</button>
+          <button
+            onClick={() => {
+              setIsShow(true);
+            }}
+          >
+            LogOut
+          </button>
+          <div>
+            {isShow && (
+              <div className="pop_out bg-amber-400">
+                <h1>are you sure?</h1>
+                <button
+                  onClick={() => {
+                    setIsShow(false);
+                  }}
+                >
+                  cancel
+                </button>
+                <button onClick={handleLogOut}> Ok</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

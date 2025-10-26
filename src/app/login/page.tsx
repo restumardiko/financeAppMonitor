@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-// import api from "@/lib/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import api from "@/lib/api";
@@ -32,6 +31,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const router = useRouter();
   const [viewstatus, setViewStatus] = useState("password");
+  const [serverError, setServerError] = useState("");
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,18 +44,21 @@ export default function LoginForm() {
   async function onSubmit(values: LoginFormValues) {
     try {
       const response = await api.post("/login", values);
-      console.log(response.data);
       localStorage.setItem("access_token", response.data.token);
-
-      router.push("/mainpage"); // redirect ke home
-    } catch (error: any) {
-      if (error.response) {
-        console.log("Server error:", error.response.data);
+      router.push("/mainpage");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setServerError("Akun tidak ditemukan");
+        form.setFocus("email");
+      } else if (err.response?.status === 401) {
+        form.setError("password", { message: "Password salah" });
+        form.setFocus("password");
       } else {
-        console.log("Error:", error.message);
+        setServerError("Terjadi kesalahan. Coba lagi nanti.");
       }
     }
   }
+
   function handleView() {
     setViewStatus((prev) => (prev === "password" ? "text" : "password"));
   }
@@ -75,6 +79,11 @@ export default function LoginForm() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 w-96"
               >
+                {/* Server Error Display */}
+                {serverError && (
+                  <p className="text-red-500 text-sm">{serverError}</p>
+                )}
+
                 <FormField
                   control={form.control}
                   name="email"
@@ -102,12 +111,15 @@ export default function LoginForm() {
                     </FormItem>
                   )}
                 />
+
                 <button type="button" onClick={handleView}>
                   {viewstatus === "password" ? "Show" : "Hide"}
                 </button>
+
                 <Button type="submit" className="w-full">
                   Log In
                 </Button>
+
                 <div className="mt-4 text-center text-sm">
                   Don&apos;t have an account?{" "}
                   <Link href="/signUp" className="underline underline-offset-4">
