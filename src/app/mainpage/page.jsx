@@ -13,26 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+
 import { useEffect, useState, useCallback } from "react";
 import useTransactionStore from "../store/useTransactionsStore";
 import useUserInformation from "../store/useUserInformation";
-
-const data = [
-  { name: "Jan", uv: 400 },
-  { name: "Feb", uv: 300 },
-  { name: "Mar", uv: 200 },
-  { name: "Apr", uv: 278 },
-  { name: "May", uv: 189 },
-];
+import TrendIncomeExpense from "../../components/statistic/linechart";
+import CategoryChart from "../../components/statistic/piechart";
 
 export default function Home() {
   const { transactions, fetchTransactions } = useTransactionStore();
@@ -112,17 +98,8 @@ export default function Home() {
           </div>
         </div>
         <div className="statistic">
-          <div className="w-full h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <Line type="" dataKey="uv" stroke="#8884d8" strokeWidth={2} />
-                <CartesianGrid stroke="#ccc" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <TrendIncomeExpense />
+          <CategoryChart />
         </div>
         <div className="recent_transactions">
           <TransactionsCard transactions={transactions} />
@@ -131,3 +108,6 @@ export default function Home() {
     </div>
   );
 }
+
+// Line chart	Tren Income vs Expense
+// Pie Chart	Distribusi pengeluaran per kategori
