@@ -16,7 +16,7 @@ export default function CreateNewTransaction({ cards }) {
   } = useForm({
     defaultValues: {
       transaction_type: "income",
-      transaction_date: new Date().toISOString(),
+
       amount: "",
       category_id: "1",
       account_id: "1",

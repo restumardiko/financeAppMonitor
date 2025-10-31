@@ -21,6 +21,6 @@ const useTransactionStore = create((set) => ({
 
   // action tambahan
   addTransaction: (t) =>
-    set((state) => ({ transactions: [...state.transactions, t] })),
+    set((state) => ({ transactions: [t, ...state.transactions] })),
 }));
 export default useTransactionStore;

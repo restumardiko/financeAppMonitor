@@ -23,6 +23,13 @@ import CategoryChart from "../../components/statistic/piechart";
 export default function Home() {
   const { transactions, fetchTransactions } = useTransactionStore();
   const { name, total_balance, fetchInformation } = useUserInformation();
+  const sortedTransactions = [...transactions].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+  const latestFive = sortedTransactions.slice(0, 5);
+  console.log("ini new Date", new Date(transactions[3].created_at));
+  console.log("ini yang belum di sort ya mas", transactions);
+  console.log("ini udah di sort ya mas", sortedTransactions);
   const router = useRouter();
 
   const stableInformationFetch = useCallback(() => {
@@ -40,6 +47,7 @@ export default function Home() {
       router.push("/login");
       return;
     }
+
     stableInformationFetch();
     stableTransactionFetch();
   }, [stableInformationFetch, stableTransactionFetch]);
@@ -102,7 +110,7 @@ export default function Home() {
           <CategoryChart />
         </div>
         <div className="recent_transactions">
-          <TransactionsCard transactions={transactions} />
+          <TransactionsCard transactions={latestFive} />
         </div>
       </div>
     </div>
