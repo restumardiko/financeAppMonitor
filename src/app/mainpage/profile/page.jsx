@@ -27,9 +27,10 @@ export default function Profile() {
       console.log("iini dari client", err.error);
     }
   };
-  const { name, email, total_balance, created_at, fetchInformation } =
-    useUserInformation();
-  console.log(name, email, created_at, total_balance);
+  const { name, email, created_at, fetchInformation } = useUserInformation();
+
+  const registeredAccount = created_at.split("T")[0];
+  console.log(registeredAccount);
   const stableFetch = useCallback(() => {
     fetchInformation();
   }, [fetchInformation]);
@@ -43,7 +44,7 @@ export default function Profile() {
       <div>
         <div className="user_name">{name}</div>
         <div className="email">{email}</div>
-        <div className="join_date">{created_at}</div>
+        <div className="join_date">{registeredAccount}</div>
         <div className="log_out">
           <button
             onClick={() => {

@@ -6,7 +6,7 @@ export default function TransactionsCard({ transactions }) {
           <div key={index} className="flex flex-row gap-1 ">
             <div>{item.type}</div>
             <div>{item.amount}</div>
-            <div>{item.transaction_date}</div>
+            <div>{item.created_at}</div>
           </div>
         ))
       ) : (

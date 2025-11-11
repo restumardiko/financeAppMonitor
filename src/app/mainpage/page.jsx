@@ -15,29 +15,24 @@ import {
 } from "@/components/ui/card";
 
 import { useEffect, useState, useCallback } from "react";
-import useTransactionStore from "../store/useTransactionsStore";
+import useLatestTransactionStore from "../store/useTransactionsStore";
 import useUserInformation from "../store/useUserInformation";
 import TrendIncomeExpense from "../../components/statistic/linechart";
 import CategoryChart from "../../components/statistic/piechart";
 
 export default function Home() {
-  const { transactions, fetchTransactions } = useTransactionStore();
+  const { LatestTransactions, fetchLatestTransactions } =
+    useLatestTransactionStore();
   const { name, total_balance, fetchInformation } = useUserInformation();
-  const sortedTransactions = [...transactions].sort((a, b) => {
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
-  const latestFive = sortedTransactions.slice(0, 5);
-  console.log("ini new Date", new Date(transactions[3].created_at));
-  console.log("ini yang belum di sort ya mas", transactions);
-  console.log("ini udah di sort ya mas", sortedTransactions);
+
   const router = useRouter();
 
   const stableInformationFetch = useCallback(() => {
     fetchInformation();
   }, [fetchInformation]);
-  const stableTransactionFetch = useCallback(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+  const stableLatestTransactionFetch = useCallback(() => {
+    fetchLatestTransactions();
+  }, [fetchLatestTransactions]);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -49,8 +44,8 @@ export default function Home() {
     }
 
     stableInformationFetch();
-    stableTransactionFetch();
-  }, [stableInformationFetch, stableTransactionFetch]);
+    stableLatestTransactionFetch();
+  }, [stableInformationFetch, stableLatestTransactionFetch]);
 
   return (
     <div>
@@ -110,7 +105,7 @@ export default function Home() {
           <CategoryChart />
         </div>
         <div className="recent_transactions">
-          <TransactionsCard transactions={latestFive} />
+          <TransactionsCard transactions={LatestTransactions} />
         </div>
       </div>
     </div>

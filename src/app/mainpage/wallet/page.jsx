@@ -1,5 +1,6 @@
 "use client";
 import api from "@/lib/api";
+import Link from "next/link";
 import CreateNewTransaction from "../../../components/wallet/CreateNewTransaction";
 import {
   Card,
@@ -92,6 +93,9 @@ export default function Wallet() {
         <p>transactions</p>
         <TransactionsHistory />
       </div>
+      <Link href="/transactions">
+        <div className="see_more">See More {">>"}</div>
+      </Link>
     </div>
   );
 }

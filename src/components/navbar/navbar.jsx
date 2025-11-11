@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import {
   Home,
   ContactRound,
@@ -6,7 +7,6 @@ import {
   CreditCardIcon,
   ChartLineIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 function IconBuilder({ icon: Icon, ...props }) {
   return (
@@ -19,9 +19,7 @@ function IconBuilder({ icon: Icon, ...props }) {
 function HomeIcon(props) {
   return <IconBuilder icon={Home} {...props} />;
 }
-function TransactionsIcon(props) {
-  return <IconBuilder icon={BadgeDollarSign} {...props} />;
-}
+
 function AnaliticIcon(props) {
   return <IconBuilder icon={ChartLineIcon} {...props} />;
 }
@@ -33,35 +31,20 @@ function ProfileIcon(props) {
 }
 
 export default function Navbar() {
-  const router = useRouter();
   return (
     <div className="flex flex-row justify-around">
-      <HomeIcon
-        onClick={() => {
-          router.push("/mainpage");
-        }}
-      />
-      {/* <TransactionsIcon
-        onClick={() => {
-          router.push("/mainpage");
-        }}
-      /> */}
-      <CardIcon
-        onClick={() => {
-          router.push("/mainpage/wallet");
-        }}
-      />
-      <AnaliticIcon
-        onClick={() => {
-          router.push("/mainpage/analitic");
-        }}
-      />
-
-      <ProfileIcon
-        onClick={() => {
-          router.push("/mainpage/profile");
-        }}
-      />
+      <Link href="/mainpage">
+        <HomeIcon />
+      </Link>
+      <Link href="/mainpage/wallet">
+        <CardIcon />
+      </Link>
+      <Link href="/mainpage/analitic">
+        <AnaliticIcon />
+      </Link>
+      <Link href="/mainpage/profile">
+        <ProfileIcon />
+      </Link>
     </div>
   );
 }

@@ -1,19 +1,19 @@
 import { create } from "zustand";
 import api from "@/lib/api";
 
-const useTransactionStore = create((set) => ({
-  transactions: [],
+const useLatestTransactionStore = create((set) => ({
+  LatestTransactions: [],
   isLoading: false,
   error: null,
 
   // action: fetch data dari API
-  fetchTransactions: async () => {
+  fetchLatestTransactions: async () => {
     set({ isLoading: true, error: null });
     try {
-      const res = await api.get("/transactions");
+      const res = await api.get("/latestTransactions");
 
       const data = await res.data.data;
-      set({ transactions: data, isLoading: false });
+      set({ LatestTransactions: data, isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }
@@ -21,6 +21,6 @@ const useTransactionStore = create((set) => ({
 
   // action tambahan
   addTransaction: (t) =>
-    set((state) => ({ transactions: [t, ...state.transactions] })),
+    set((state) => ({ LatestTransactions: [t, ...state.LatestTransactions] })),
 }));
-export default useTransactionStore;
+export default useLatestTransactionStore;
