@@ -13,9 +13,14 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import useUserInformation from "../../store/useUserInformation";
 import { useEffect, useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Profile() {
   const [isShow, setIsShow] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { name, email, created_at } =
+    queryClient.getQueryData(["userInformation"]) || {};
   const router = useRouter();
   const handleLogOut = async () => {
     try {
@@ -27,24 +32,17 @@ export default function Profile() {
       console.log("iini dari client", err.error);
     }
   };
-  const { name, email, created_at, fetchInformation } = useUserInformation();
+  //const { name, email, created_at, fetchInformation } = useUserInformation();
 
-  const registeredAccount = created_at.split("T")[0];
-  console.log(registeredAccount);
-  const stableFetch = useCallback(() => {
-    fetchInformation();
-  }, [fetchInformation]);
-
-  useEffect(() => {
-    stableFetch();
-  }, [stableFetch]);
+  //const registeredAccount = created_at.split("T")[0];
+  //console.log(registeredAccount);
 
   return (
     <div>
       <div>
         <div className="user_name">{name}</div>
         <div className="email">{email}</div>
-        <div className="join_date">{registeredAccount}</div>
+        <div className="join_date">{created_at}</div>
         <div className="log_out">
           <button
             onClick={() => {

@@ -14,25 +14,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { useEffect, useState, useCallback } from "react";
-import useLatestTransactionStore from "../store/useTransactionsStore";
-import useUserInformation from "../store/useUserInformation";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+//import useUserInformation from "../store/useUserInformation";
 import TrendIncomeExpense from "../../components/statistic/linechart";
 import CategoryChart from "../../components/statistic/piechart";
+import TransactionsHistory from "../../components/wallet/transactions_hystory";
 
 export default function Home() {
-  const { LatestTransactions, fetchLatestTransactions } =
-    useLatestTransactionStore();
-  const { name, total_balance, fetchInformation } = useUserInformation();
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["userInformation"],
+    queryFn: async () => {
+      const res = await api.get("/userInformation");
+      console.log(res.data);
+
+      return res.data;
+    },
+  });
 
   const router = useRouter();
-
-  const stableInformationFetch = useCallback(() => {
-    fetchInformation();
-  }, [fetchInformation]);
-  const stableLatestTransactionFetch = useCallback(() => {
-    fetchLatestTransactions();
-  }, [fetchLatestTransactions]);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -42,16 +42,13 @@ export default function Home() {
       router.push("/login");
       return;
     }
-
-    stableInformationFetch();
-    stableLatestTransactionFetch();
-  }, [stableInformationFetch, stableLatestTransactionFetch]);
+  }, []);
 
   return (
     <div>
       Home
       <div>
-        <h1>hello {name}.</h1>
+        <h1>hello {isLoading ? <></> : <>{data.name}</>}.</h1>
         <h3>this is your finance report</h3>
       </div>
       <div id="card" className="">
@@ -60,7 +57,7 @@ export default function Home() {
             <CardTitle>Total Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <h1>Rp.{total_balance}</h1>
+            <h1>Rp.{isLoading ? <></> : <>{data.total_balance}</>}</h1>
           </CardContent>
           <CardFooter>
             <p>6 persen less than last month</p>
@@ -105,7 +102,7 @@ export default function Home() {
           <CategoryChart />
         </div>
         <div className="recent_transactions">
-          <TransactionsCard transactions={LatestTransactions} />
+          <TransactionsHistory />
         </div>
       </div>
     </div>

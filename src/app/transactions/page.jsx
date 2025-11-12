@@ -42,7 +42,8 @@ export default function AllTransactionsHistory() {
       {data && Object.keys(data).length > 0 ? (
         Object.keys(data).map((item, index) => (
           <div key={index} className="flex flex-row gap-1 ">
-            {item}
+            <div>{item}</div>
+            <button>{">"}</button>
           </div>
         ))
       ) : (

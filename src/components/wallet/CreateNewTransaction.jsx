@@ -1,13 +1,10 @@
 "use client";
 import api from "@/lib/api";
-
 import { useForm } from "react-hook-form";
-import useTransactionStore from "../../app/store/useTransactionsStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function CreateNewTransaction({ cards }) {
-  const { addTransaction } = useTransactionStore();
-
-  //console.log("ini cards inside createTransaction", cards);
+  const queryClient = useQueryClient();
   const {
     register,
     watch,
@@ -16,63 +13,81 @@ export default function CreateNewTransaction({ cards }) {
   } = useForm({
     defaultValues: {
       transaction_type: "income",
-
       amount: "",
       category_id: "1",
       account_id: "1",
       note: "",
     },
   });
-  const transactionType = watch("transaction_type");
-  //console.log("this is transaction type", transactionType);
 
-  const onSubmit = async (data) => {
-    console.log("this is data", data);
-    if (transactionType == "income") {
-      try {
-        const rest = await api.post("/income", data);
-        //console.log("this is data", data);
-        addTransaction(data);
-        return console.log(rest);
-      } catch (err) {
-        console.log(err.response?.data || err.message);
-      }
-    } else {
-      try {
-        const rest = await api.post("/expense", data);
-        //console.log("this is data", data);
-        addTransaction(data);
-        return console.log(rest);
-      } catch (err) {
-        console.log(err.response?.data || err.message);
-      }
-    }
+  const transactionType = watch("transaction_type");
+  console.log(transactionType);
+
+  // Fungsi POST ke server
+  const postTransaction = async ({ data, type }) => {
+    const endpoint = type === "income" ? "/income" : "/expense";
+    const res = await api.post(endpoint, data);
+    console.log(res.data.data);
+    return res.data.data;
+  };
+
+  const addTransaction = useMutation({
+    mutationFn: postTransaction,
+    onSuccess: (newTransaction) => {
+      // update cache
+      queryClient.setQueryData(["transactions"], (old = []) => [
+        newTransaction,
+        ...old,
+      ]);
+
+      //refetch server
+      //queryClient.invalidateQueries(["transactions"]);
+    },
+    onError: (err) => {
+      console.log(err.response?.data || err.message);
+      // rollback kalau gagal
+      queryClient.setQueryData(["transactions"], context.prevData);
+    },
+    // onSettled: () => {
+    //   //  refetch untuk sync ulang server
+    //   queryClient.invalidateQueries(["transactions"]);
+    // },
+  });
+
+  // Submit form
+  const onSubmit = (data) => {
+    addTransaction.mutate({ data, type: transactionType });
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className=" type">
-          <label htmlFor="transaction_type">type:</label>
+        {/* type */}
+        <div className="type">
+          <label htmlFor="transaction_type">Type:</label>
           <select {...register("transaction_type")}>
             <option value="income">income</option>
             <option value="expense">expense</option>
           </select>
         </div>
+
+        {/* amount */}
         <div className="amount">
-          <label htmlFor="amount">amount:</label>
+          <label htmlFor="amount">Amount:</label>
           <input
             id="amount"
             {...register("amount", {
               required: "Nominal wajib diisi",
               pattern: {
-                value: /^\d+(\.\d{1,2})?$/, // hanya angka + max 2 angka desimal
+                value: /^\d+(\.\d{1,2})?$/,
                 message: "Hanya boleh angka atau desimal 2 digit",
               },
             })}
-          ></input>
+          />
           {errors.amount && <span>{errors.amount.message}</span>}
         </div>
+
+        {/* account */}
         <div className="account">
           <label htmlFor="account_id">Account:</label>
           <select
@@ -88,35 +103,42 @@ export default function CreateNewTransaction({ cards }) {
           </select>
           {errors.account_id && <span>Please select account first</span>}
         </div>
-        <div className=" category">
-          <label htmlFor="category">category:</label>
+
+        {/* category */}
+        <div className="category">
+          <label htmlFor="category">Category:</label>
           <select {...register("category_id")}>
-            {transactionType == "income" ? (
+            {transactionType === "income" ? (
               <>
-                <option value="1">gaji</option>
-                <option value="2">bisnis</option>
-                <option value="3">lain-lain</option>
+                <option value="1">Gaji</option>
+                <option value="2">Bisnis</option>
+                <option value="3">Lain-lain</option>
               </>
             ) : (
               <>
-                <option value="4"> Makanan & Minuman</option>
+                <option value="4">Makanan & Minuman</option>
                 <option value="5">Transportasi</option>
-                <option value="6">Tagihan & Kebutuhan rumah</option>
-                <option value="7">Hiburan & Gaya hidup</option>
+                <option value="6">Tagihan & Rumah</option>
+                <option value="7">Hiburan</option>
                 <option value="8">Kesehatan</option>
               </>
             )}
           </select>
         </div>
+
+        {/* note */}
         <div className="note">
-          <label htmlFor="note">note</label>
+          <label htmlFor="note">Note:</label>
           <input
             type="text"
             {...register("note", { required: "wajib di isi" })}
           />
           {errors.note && <span>This field is required</span>}
         </div>
-        <button type="submit">submit</button>
+
+        <button type="submit" disabled={addTransaction.isPending}>
+          {addTransaction.isPending ? "Saving..." : "Submit"}
+        </button>
       </form>
     </div>
   );
