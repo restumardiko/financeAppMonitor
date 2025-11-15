@@ -16,37 +16,53 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import CardAccount from "../../../components/wallet/card";
 import TransactionsHistory from "../../../components/wallet/transactions_hystory";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 export default function Wallet() {
-  const fetchData = async () => {
-    try {
+  const queryClient = useQueryClient();
+  const { data, isLoading, isFetching, error, isError } = useQuery({
+    queryKey: ["account"],
+    queryFn: async () => {
       const res = await api.get("/account");
-      console.log(res);
+      console.log("ini data dari account", res.data.data);
 
-      setCards(res.data.data);
-
-      //if()
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-  const [cards, setCards] = useState([]);
+      return res.data.data;
+    },
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = async (data) => {
-    try {
-      const rest = await api.post("/account", data);
-      fetchData();
-    } catch (error) {
-      console.log(error);
-    }
+
+  // Fungsi POST ke server
+  const postAccount = async (data) => {
+    const res = await api.post("/account", data);
+    console.log(data);
+    return res.data.data;
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
+
+  const addAccount = useMutation({
+    mutationFn: postAccount,
+    onSuccess: (newAccount) => {
+      // update cache
+      console.log("ini new Account yang di return dari useMutate", newAccount);
+      queryClient.setQueryData(["account"], (old = []) => [newAccount, ...old]);
+
+      //refetch server
+      //queryClient.invalidateQueries(["account"]);
+    },
+    onError: (err) => {
+      console.log(err.response?.data || err.message);
+      // rollback kalau gagal
+      queryClient.setQueryData(["account"], context.prevData);
+    },
+  });
+
+  const onSubmit = async (data) => {
+    addAccount.mutate(data);
+  };
+
   return (
     <div className="">
       <h1>Wallet</h1>
@@ -84,16 +100,23 @@ export default function Wallet() {
         </form>
       </div>
       <div className="cardList">
-        <CardAccount cards={cards} />
+        {isLoading ? (
+          <>loading....</>
+        ) : (
+          <div>
+            <CardAccount cards={data} />
+            <div className="transactions">
+              <CreateNewTransaction cards={data} />
+            </div>
+          </div>
+        )}
       </div>
-      <div className="transactions">
-        <CreateNewTransaction cards={cards} />
-      </div>
+
       <div className="recent_transaction">
         <p>transactions</p>
         <TransactionsHistory />
       </div>
-      <Link href="/transactions">
+      <Link href="../mainpage/transactions">
         <div className="see_more">See More {">>"}</div>
       </Link>
     </div>

@@ -35,7 +35,7 @@ export default function CreateNewTransaction({ cards }) {
     mutationFn: postTransaction,
     onSuccess: (newTransaction) => {
       // update cache
-      queryClient.setQueryData(["transactions"], (old = []) => [
+      queryClient.setQueryData(["latestTransactions"], (old = []) => [
         newTransaction,
         ...old,
       ]);
@@ -46,7 +46,7 @@ export default function CreateNewTransaction({ cards }) {
     onError: (err) => {
       console.log(err.response?.data || err.message);
       // rollback kalau gagal
-      queryClient.setQueryData(["transactions"], context.prevData);
+      queryClient.setQueryData(["latestTtransactions"], context.prevData);
     },
     // onSettled: () => {
     //   //  refetch untuk sync ulang server

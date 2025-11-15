@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
-import useUserInformation from "../../store/useUserInformation";
+//import useUserInformation from "../../store/useUserInformation";
 import { useEffect, useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 

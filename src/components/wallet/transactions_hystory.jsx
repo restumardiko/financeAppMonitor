@@ -7,7 +7,7 @@ export default function TransactionsHistory() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["transactions"],
+    queryKey: ["latestTransactions"],
     queryFn: async () => {
       const res = await api.get("/latestTransactions");
       return res.data.data;
@@ -15,7 +15,7 @@ export default function TransactionsHistory() {
     staleTime: 1000 * 60 * 5, // data dianggap fresh 5 menit
     initialData: () => {
       // ambil data cache kalau ada
-      return queryClient.getQueryData(["transactions"]);
+      return queryClient.getQueryData(["latestTransactions"]);
     },
   });
 
