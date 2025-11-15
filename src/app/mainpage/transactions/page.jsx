@@ -7,12 +7,19 @@ import { useState } from "react";
 export default function AllTransactionsHistory() {
   const [openDays, setOpenDays] = useState({});
   // contoh: { "2025-11-12": true }
+  const [openMonths, setOpenMonths] = useState({});
 
-  const toggleDay = (monthKey, day) => {
-    const key = `${monthKey}-${day}`;
+  const toggleDay = (dayKey) => {
     setOpenDays((prev) => ({
       ...prev,
-      [key]: !prev[key],
+      [dayKey]: !prev[dayKey],
+    }));
+  };
+
+  const toggleMonth = (monthKey) => {
+    setOpenMonths((prev) => ({
+      ...prev,
+      [monthKey]: !prev[monthKey],
     }));
   };
 
@@ -49,60 +56,72 @@ export default function AllTransactionsHistory() {
   }
 
   return (
-    <div className="all_transactions gap-2 flex flex-col">
-      <div>transactions --&gt;&gt;</div>
+    <div className="all_transactions gap-4 flex flex-col">
+      <h2 className="font-bold text-lg">Transactions</h2>
 
       {data && Object.keys(data).length > 0 ? (
-        Object.entries(data).map(([monthKey, daysObj]) => (
-          <div key={monthKey} className="flex flex-col gap-1">
-            {/* ===== MONTH ===== */}
-            <div className="font-bold text-lg">{monthKey}</div>
+        Object.entries(data).map(([monthKey, daysObj]) => {
+          const monthOpen = openMonths[monthKey];
 
-            {/* ===== DAYS ===== */}
-            <div className="pl-4 flex flex-col gap-1">
-              {Object.entries(daysObj).map(([day, transactions]) => {
-                const toggleKey = `${monthKey}-${day}`;
-                const isOpen = openDays[toggleKey] || false;
+          return (
+            <div key={monthKey} className="border p-2 rounded-lg">
+              {/* MONTH HEADER */}
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => toggleMonth(monthKey)}
+              >
+                <div className="font-bold text-xl">{monthKey}</div>
+                <button className="text-lg">{monthOpen ? "▲" : "▼"}</button>
+              </div>
 
-                return (
-                  <div key={day} className="flex flex-col gap-1">
-                    {/* DAY HEADER */}
-                    <div className="flex flex-row items-center gap-2">
-                      <div className="w-10 font-semibold">{day}</div>
+              {/* DAYS LIST */}
+              {monthOpen && (
+                <div className="pl-4 mt-2 flex flex-col gap-1">
+                  {Object.entries(daysObj).map(([day, transactions]) => {
+                    const dayOpen = openDays[`${monthKey}-${day}`];
 
-                      <button
-                        onClick={() => toggleDay(monthKey, day)}
-                        className="text-blue-500"
-                      >
-                        {transactions.length} transaksi {isOpen ? "▾" : "▸"}
-                      </button>
-                    </div>
-
-                    {/* TRANSACTIONS LIST (COLLAPSIBLE) */}
-                    {isOpen && (
-                      <div className="pl-8 flex flex-col gap-1">
-                        {transactions.map((t, i) => (
-                          <div
-                            key={i}
-                            className="p-2 rounded border flex flex-col bg-gray-50"
-                          >
-                            <div className="font-semibold">
-                              {t.category_name} — Rp{t.amount}
-                            </div>
-                            <div className="text-sm opacity-70">{t.note}</div>
-                            <div className="text-xs opacity-50">
-                              {t.account_name}
-                            </div>
+                    return (
+                      <div key={day} className="border-b pb-2">
+                        {/* DAY HEADER */}
+                        <div
+                          className="flex justify-between items-center cursor-pointer"
+                          onClick={() => toggleDay(`${monthKey}-${day}`)}
+                        >
+                          <div className="font-semibold">{day}</div>
+                          <div className="flex items-center gap-3">
+                            <span>{transactions.length} transaksi</span>
+                            <button>{dayOpen ? "▲" : "▼"}</button>
                           </div>
-                        ))}
+                        </div>
+
+                        {/* LIST TRANSACTIONS */}
+                        {dayOpen && (
+                          <div className="pl-4 mt-2 flex flex-col gap-2">
+                            {transactions.map((trx, i) => (
+                              <div
+                                key={i}
+                                className="p-2 rounded bg-gray-100 flex flex-col"
+                              >
+                                <div className="font-bold">
+                                  {trx.category_name}
+                                </div>
+                                <div>Amount: {trx.amount}</div>
+                                <div>Note: {trx.note}</div>
+                                <div className="text-sm text-gray-500">
+                                  {trx.created_at}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <div>No transactions</div>
       )}
