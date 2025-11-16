@@ -1,20 +1,47 @@
 "use client";
 
+import api from "@/lib/api";
+
 import TrendIncomeExpense from "../../../components/statistic/linechart";
 import CategoryChart from "../../../components/statistic/piechart";
 import TotalBalanceEachTime from "../../../components/statistic/simpleAreaChart";
-import useTransactionStore from "../../store/useTransactionsStore";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 
 export default function Analitic() {
-  const { transactions } = useTransactionStore();
-  console.log("data passed", transactions);
+  const queryClient = useQueryClient();
+  const userInformation = queryClient.getQueryData(["userInformation"]);
+
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["analictic"],
+    queryFn: async () => {
+      const res = await api.get("/transactions");
+
+      return res.data.data;
+    },
+  });
+  const totalIncome = data
+    .filter((t) => t.type === "Income")
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const totalExpense = data
+    .filter((t) => t.type === "Expense")
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+
+  if (isLoading) return <p>Loading…</p>;
+
   return (
     <div>
       <div className=" summary">
-        <div>total income:</div>
-        <div>total expense</div>
+        <div>total income:{totalIncome}</div>
+        <div>total expense:{totalExpense}</div>
         <div className="balance">
-          <div>total balance:</div>
+          <div>
+            {!userInformation ? (
+              <>loading...</>
+            ) : (
+              <div> total balance:{userInformation.total_balance}</div>
+            )}
+          </div>
         </div>
       </div>
 
