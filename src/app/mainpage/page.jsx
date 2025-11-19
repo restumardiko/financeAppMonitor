@@ -17,8 +17,8 @@ import {
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 //import useUserInformation from "../store/useUserInformation";
-import TrendIncomeExpense from "../../components/statistic/linechart";
-import CategoryChart from "../../components/statistic/piechart";
+//import TrendIncomeExpense from "../../components/chart/linechart";
+//import CategoryChart from "../../components/chart/piechart";
 import TransactionsHistory from "../../components/wallet/transactions_hystory";
 
 export default function Home() {
@@ -97,10 +97,10 @@ export default function Home() {
             </Card>
           </div>
         </div>
-        <div className="statistic">
+        {/* <div className="statistic">
           <TrendIncomeExpense />
           <CategoryChart />
-        </div>
+        </div> */}
         <div className="recent_transactions">
           <TransactionsHistory />
         </div>

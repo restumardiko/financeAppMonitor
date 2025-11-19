@@ -2,9 +2,9 @@
 
 import api from "@/lib/api";
 
-import TrendIncomeExpense from "../../../components/statistic/linechart";
-import CategoryChart from "../../../components/statistic/piechart";
-import TotalBalanceEachTime from "../../../components/statistic/simpleAreaChart";
+import TrendIncomeExpense from "../../../components/analitic/TrendIncomeExpense";
+import CategoryChart from "../../../components/analitic/CategoryChart";
+import TotalBalanceEachTime from "../../../components/analitic/TotalBalanceEachTime";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 
 export default function Analitic() {
@@ -46,10 +46,7 @@ export default function Analitic() {
       </div>
 
       <div className="category_charts">
-        <div>
-          account <br /> sort by time <br /> income/expense
-        </div>
-        <CategoryChart />
+        <CategoryChart dataChart={data} />
       </div>
 
       <div className="trend bg-gray-50">
@@ -58,15 +55,15 @@ export default function Analitic() {
           income <br />
           expense
         </div>
-        <TrendIncomeExpense />
+        <TrendIncomeExpense dataChart={data} />
       </div>
-      <div className="total_balance_chart w-full h-80">
+      <div className="total_balance_chart w-full h-60">
         <div>
           sort all <br />
           ovo <br />
           dana
         </div>
-        <TotalBalanceEachTime />
+        <TotalBalanceEachTime dataChart={data} />
       </div>
       <div className="each_category_each_time"></div>
     </div>
