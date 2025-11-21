@@ -11,23 +11,31 @@ export default function Analitic() {
   const queryClient = useQueryClient();
   const userInformation = queryClient.getQueryData(["userInformation"]);
 
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["analictic"],
+  const { data: account, isLoading: isAccountLoading } = useQuery({
+    queryKey: ["account"],
+    queryFn: async () => {
+      const res = await api.get("/account");
+      return res.data.data;
+    },
+  });
+
+  const { data: transaction = [], isLoading: isTransactionLoading } = useQuery({
+    queryKey: ["analytic"],
     queryFn: async () => {
       const res = await api.get("/transactions");
 
       return res.data.data;
     },
   });
-  const totalIncome = data
+  const totalIncome = transaction
     .filter((t) => t.type === "Income")
     .reduce((sum, t) => sum + Number(t.amount), 0);
 
-  const totalExpense = data
+  const totalExpense = transaction
     .filter((t) => t.type === "Expense")
     .reduce((sum, t) => sum + Number(t.amount), 0);
 
-  if (isLoading) return <p>Loading…</p>;
+  if (isTransactionLoading) return <p>Loading…</p>;
 
   return (
     <div>
@@ -46,24 +54,26 @@ export default function Analitic() {
       </div>
 
       <div className="category_charts">
-        <CategoryChart dataChart={data} />
+        <CategoryChart
+          dataChart={transaction}
+          account={account}
+          loading={isAccountLoading}
+        />
       </div>
 
-      <div className="trend bg-gray-50">
-        <div>
-          sort income/expense <br />
-          income <br />
-          expense
-        </div>
-        <TrendIncomeExpense dataChart={data} />
+      <div className="trend mt-36">
+        <TrendIncomeExpense
+          dataChart={transaction}
+          account={account}
+          loading={isAccountLoading}
+        />
       </div>
       <div className="total_balance_chart w-full h-60">
-        <div>
-          sort all <br />
-          ovo <br />
-          dana
-        </div>
-        <TotalBalanceEachTime dataChart={data} />
+        <TotalBalanceEachTime
+          dataChart={transaction}
+          account={account}
+          loading={isAccountLoading}
+        />
       </div>
       <div className="each_category_each_time"></div>
     </div>

@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+
 import {
   AreaChart,
   Area,
@@ -55,9 +58,40 @@ const data = [
 ];
 
 // #endregion
-export default function TotalBalanceEachTime() {
+export default function TotalBalanceEachTime({
+  dataChart,
+  account,
+  isAccountLoading,
+}) {
+  const [sort, setSort] = useState("");
+
+  //FUNCTION HANDLE CHANGE
+
+  function handleFilterChange(value) {
+    setSort(value);
+    console.log(value);
+  }
+  const filteredData = dataChart.filter((item) => {
+    return item.account_name === sort;
+  });
+
+  console.log("ini nilai filtered data", filteredData);
   return (
     <div style={{ width: "100%", height: "100%" }}>
+      <div className="mt-40">
+        {isAccountLoading ? (
+          <>loading....</>
+        ) : (
+          <select onChange={(e) => handleFilterChange(e.target.value)}>
+            <option value="All">All Account</option>
+            {account.map((item, index) => (
+              <option key={index} value={item.account_name}>
+                {item.account_name}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
       <ResponsiveContainer>
         <AreaChart
           responsive

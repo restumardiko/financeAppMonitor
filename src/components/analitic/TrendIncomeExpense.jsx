@@ -1,3 +1,7 @@
+"use client";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -56,9 +60,47 @@ const data = [
 ];
 // #endregion
 
-export default function TrendIncomeExpense() {
+export default function TrendIncomeExpense({
+  dataChart,
+  account,
+  isAccountLoading,
+}) {
+  const [sort, setSort] = useState("");
+
+  //console.log("this is account on trendIncome", account);
+
+  //FUNCTION HANDLE CHANGE
+
+  function handleFilterChange(value) {
+    setSort(value);
+    console.log(value);
+  }
+
+  //FUNCTION SORT
+
+  // FILTER DATA
+
+  const filteredData = dataChart.filter((item) => {
+    return item.account_name === sort;
+  });
+
+  console.log("ini nilai filtered data", filteredData);
   return (
     <div className="w-full h-80">
+      <div>
+        {isAccountLoading ? (
+          <>loading....</>
+        ) : (
+          <select onChange={(e) => handleFilterChange(e.target.value)}>
+            <option value="All">All Account</option>
+            {account.map((item, index) => (
+              <option key={index} value={item.account_name}>
+                {item.account_name}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

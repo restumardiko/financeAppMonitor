@@ -12,19 +12,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { useQuery } from "@tanstack/react-query";
-
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
-export default function CategoryChart({ dataChart }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["account"],
-    queryFn: async () => {
-      const res = await api.get("/account");
-      return res.data.data;
-    },
-  });
-
+export default function CategoryChart({
+  dataChart,
+  account,
+  isAccountLoading,
+}) {
   // ambil tiap bulan
   function getUniqueMonths(transactions) {
     const months = transactions.map((t) => {
@@ -112,14 +106,14 @@ export default function CategoryChart({ dataChart }) {
         </div>
 
         <div>
-          {isLoading ? (
+          {isAccountLoading ? (
             <>loading....</>
           ) : (
             <select
               onChange={(e) => handleFilterChange("account", e.target.value)}
             >
               <option value="All">All Account</option>
-              {data.map((item, index) => (
+              {account.map((item, index) => (
                 <option key={index} value={item.account_name}>
                   {item.account_name}
                 </option>
