@@ -1,6 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   LineChart,
@@ -16,56 +15,85 @@ import {
 // #region Sample data
 const data = [
   {
-    name: "Page A",
+    name: "January",
     income: 4000,
     expense: 2400,
     amt: 2400,
   },
   {
-    name: "Page B",
+    name: "Feb",
     income: 3000,
     expense: 1398,
     amt: 2210,
   },
   {
-    name: "Page C",
+    name: "March",
     income: 2000,
     expense: 9800,
     amt: 2290,
   },
   {
-    name: "Page D",
+    name: "April",
     income: 2780,
     expense: 3908,
     amt: 2000,
   },
   {
-    name: "Page E",
+    name: "May",
     income: 1890,
     expense: 4800,
     amt: 2181,
   },
   {
-    name: "Page F",
+    name: "Jun",
     income: 2390,
     expense: 3800,
     amt: 2500,
   },
   {
-    name: "Page G",
+    name: "Jul",
+    income: 3490,
+    expense: 4300,
+    amt: 2100,
+  },
+  {
+    name: "Aug",
+    income: 3490,
+    expense: 4300,
+    amt: 2100,
+  },
+  {
+    name: "Sep",
+    income: 3490,
+    expense: 4300,
+    amt: 2100,
+  },
+  {
+    name: "Oct",
+    income: 3490,
+    expense: 4300,
+    amt: 2100,
+  },
+  {
+    name: "Nov",
+    income: 3490,
+    expense: 4300,
+    amt: 2100,
+  },
+  {
+    name: "Dec",
     income: 3490,
     expense: 4300,
     amt: 2100,
   },
 ];
-// #endregion
 
 export default function TrendIncomeExpense({
   dataChart,
   account,
   isAccountLoading,
 }) {
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("All");
 
   //console.log("this is account on trendIncome", account);
 
@@ -75,14 +103,51 @@ export default function TrendIncomeExpense({
     setSort(value);
     console.log(value);
   }
+  //initial data
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const base = months.map((month) => ({ name: month, income: 0, expense: 0 }));
+  console.log("ini base", base);
 
   //FUNCTION SORT
 
   // FILTER DATA
 
   const filteredData = dataChart.filter((item) => {
+    if (sort === "All") {
+      return dataChart;
+    }
     return item.account_name === sort;
   });
+
+  //
+  for (const t of filteredData) {
+    const dt = new Date(t.created_at);
+    const monthName = dt.toLocaleString("en-US", { month: "long" });
+
+    console.log("ini monthname", monthName);
+    console.log("ini amount", t.amount);
+
+    const row = base.find((b) => b.name === monthName);
+    console.log("ini row", row);
+
+    if (row) {
+      if (t.type === "Income") row.income += Number(t.amount);
+      if (t.type === "Expense") row.expense += Number(t.amount);
+    }
+  }
 
   console.log("ini nilai filtered data", filteredData);
   return (
@@ -103,7 +168,7 @@ export default function TrendIncomeExpense({
       </div>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data}
+          data={base}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
