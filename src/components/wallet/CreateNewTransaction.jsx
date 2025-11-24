@@ -24,10 +24,9 @@ export default function CreateNewTransaction({ cards }) {
   console.log(transactionType);
 
   // Fungsi POST ke server
-  const postTransaction = async ({ data, type }) => {
-    const endpoint = type === "income" ? "/income" : "/expense";
-    const res = await api.post(endpoint, data);
-    console.log(res.data.data);
+  const postTransaction = async (data) => {
+    const res = await api.post("/addTransaction", data);
+    console.log("ini respon ya", res.data);
     return res.data.data;
   };
 
@@ -41,7 +40,7 @@ export default function CreateNewTransaction({ cards }) {
       ]);
 
       //refetch server
-      //queryClient.invalidateQueries(["transactions"]);
+      queryClient.invalidateQueries(["account"]);
     },
     onError: (err) => {
       console.log(err.response?.data || err.message);
@@ -56,7 +55,7 @@ export default function CreateNewTransaction({ cards }) {
 
   // Submit form
   const onSubmit = (data) => {
-    addTransaction.mutate({ data, type: transactionType });
+    addTransaction.mutate(data);
   };
 
   return (
@@ -96,7 +95,7 @@ export default function CreateNewTransaction({ cards }) {
           >
             <option value="">-- Pilih Akun --</option>
             {cards.map((item) => (
-              <option key={item.id} value={item.id}>
+              <option key={item.account_id} value={item.account_id}>
                 {item.account_name}
               </option>
             ))}

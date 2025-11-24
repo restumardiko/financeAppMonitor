@@ -14,7 +14,7 @@ export default function Analitic() {
   const { data: account, isLoading: isAccountLoading } = useQuery({
     queryKey: ["account"],
     queryFn: async () => {
-      const res = await api.get("/account");
+      const res = await api.get("/showAccount");
       return res.data.data;
     },
   });

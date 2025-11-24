@@ -23,7 +23,7 @@ export default function Wallet() {
   const { data, isLoading, isFetching, error, isError } = useQuery({
     queryKey: ["account"],
     queryFn: async () => {
-      const res = await api.get("/account");
+      const res = await api.get("/showAccount");
       console.log("ini data dari account", res.data.data);
 
       return res.data.data;
@@ -37,8 +37,8 @@ export default function Wallet() {
 
   // Fungsi POST ke server
   const postAccount = async (data) => {
-    const res = await api.post("/account", data);
-    console.log(data);
+    const res = await api.post("/addAccount", data);
+    console.log("ini yang mau tak post ke server", data);
     return res.data.data;
   };
 
@@ -77,7 +77,7 @@ export default function Wallet() {
             <label htmlFor="balance">Balance:</label>
             <input
               id="balance"
-              {...register("balance", {
+              {...register("initial_balance", {
                 required: "Nominal wajib diisi",
                 pattern: {
                   value: /^\d+(\.\d{1,2})?$/, // hanya angka + max 2 angka desimal
@@ -101,7 +101,11 @@ export default function Wallet() {
       </div>
       <div className="cardList">
         {isLoading ? (
-          <>loading....</>
+          <>Loading...</>
+        ) : isError ? (
+          <>Error loading data</>
+        ) : !data || data.length === 0 ? (
+          <>Please make account first</>
         ) : (
           <div>
             <CardAccount cards={data} />

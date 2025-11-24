@@ -10,22 +10,19 @@ import {
 } from "@/components/ui/card";
 
 export default function CardAccount({ cards }) {
-  console.log(cards);
-  if (!cards || cards.length === 0) {
-    return <div>kosong. Please bikin kartu dulu</div>;
-  }
+  console.log("inimas", cards);
 
   // const name = data.account_name;
   // const balance = data.balance;
   return (
     <div className="single-card">
       {cards.map((item) => (
-        <Card key={item.id}>
+        <Card key={item.account_id}>
           <CardHeader>
             <CardTitle>{item.account_name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Balance: {item.balance}</p>
+            <p>Balance: {item.initial_balance}</p>
           </CardContent>
         </Card>
       ))}
