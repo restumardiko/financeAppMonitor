@@ -22,7 +22,7 @@ export default function CardAccount({ cards }) {
             <CardTitle>{item.account_name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Balance: {item.initial_balance}</p>
+            <p>Balance: {item.total_balance || item.initial_balance}</p>
           </CardContent>
         </Card>
       ))}

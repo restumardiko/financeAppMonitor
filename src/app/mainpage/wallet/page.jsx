@@ -45,9 +45,14 @@ export default function Wallet() {
   const addAccount = useMutation({
     mutationFn: postAccount,
     onSuccess: (newAccount) => {
+      const normalized = {
+        account_id: newAccount.id,
+        account_name: newAccount.account_name,
+        total_balance: newAccount.initial_balance,
+      };
       // update cache
       console.log("ini new Account yang di return dari useMutate", newAccount);
-      queryClient.setQueryData(["account"], (old = []) => [newAccount, ...old]);
+      queryClient.setQueryData(["account"], (old = []) => [normalized, ...old]);
 
       //refetch server
       //queryClient.invalidateQueries(["account"]);
@@ -77,7 +82,7 @@ export default function Wallet() {
             <label htmlFor="balance">Balance:</label>
             <input
               id="balance"
-              {...register("initial_balance", {
+              {...register("total_balance", {
                 required: "Nominal wajib diisi",
                 pattern: {
                   value: /^\d+(\.\d{1,2})?$/, // hanya angka + max 2 angka desimal
@@ -92,6 +97,8 @@ export default function Wallet() {
             <select {...register("account_type")}>
               <option value="cash">cash</option>
               <option value="e-wallet">e-wallet</option>
+              <option value="e-wallet">Bank</option>
+
               <option value="other">other</option>
             </select>
           </div>
