@@ -72,11 +72,12 @@ export default function Analitic() {
           loading={isAccountLoading}
         />
       </div>
-      <div className="total_balance_chart w-full h-60">
+      <div className="total_balance_chart w-full h-60 mb-40 ml-10">
         <TotalBalanceEachTime
           dataChart={transaction}
           account={account}
           loading={isAccountLoading}
+          initialBalance={userInformation.initial_balance}
         />
       </div>
       <div className="each_category_each_time"></div>

@@ -1,6 +1,5 @@
-"use client";
-import { useState } from "react";
-
+// "use client";
+import { useState, useMemo } from "react";
 import {
   AreaChart,
   Area,
@@ -11,68 +10,126 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// #region Sample data
-
-// #endregion
-const data = [
-  { nama: "dkdk", uv: 200 },
-  { name: "asu", uv: 300 },
-];
-
 export default function TotalBalanceEachTime({
   dataChart,
   account,
   isAccountLoading,
+  initialBalance,
 }) {
-  // ambil tiap tahun
-  function getUniqueYears(transactions) {
-    const months = transactions.map((t) => {
-      const d = new Date(t.created_at);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      return `${y}`;
-    });
+  console.log("ini inisial balance", initialBalance);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-    return [...new Set(months)];
+  //  Ambil tahun unik dari transaksi
+  function getUniqueYears(transactions) {
+    const years = transactions.map((t) => new Date(t.created_at).getFullYear());
+    return [...new Set(years)];
   }
 
-  const uniqueMonths = getUniqueYears(dataChart ?? []);
+  const uniqueYear = getUniqueYears(dataChart ?? []);
 
   const [sort, setSort] = useState({
     account: "All",
     time: uniqueYear[0],
   });
 
-  //FUNCTION HANDLE CHANGE
-
   function handleFilterChange(key, value) {
     setSort((prev) => ({ ...prev, [key]: value }));
   }
 
-  // FILTER DATA
+  //  FILTER TRANSAKSI SESUAI ACCOUNT & TAHUN
+  const filteredData = useMemo(() => {
+    if (!dataChart?.length) return [];
 
-  const filteredData = dataChart.filter((item) => {
-    const matchAccount =
-      sort.account === "All" ? true : item.account_name === sort.account;
+    return dataChart.filter((item) => {
+      const matchAccount =
+        sort.account === "All" ? true : item.account_name === sort.account;
 
-    const matchTime = item.created_at.startsWith(sort.time);
+      const matchTime = item.created_at.startsWith(String(sort.time));
 
-    return matchAccount && matchTime;
-  });
+      return matchAccount && matchTime;
+    });
+  }, [dataChart, sort]);
 
-  console.log("ini nilai filtered data", filteredData);
+  //  INITIAL BALANCE (All / Single Account)
+  function getInitialBalanceEachAccount() {
+    if (!initialBalance?.length) return 0;
+
+    if (sort.account === "All") {
+      return initialBalance.reduce(
+        (total, item) => total + Number(item.initial_balance),
+        0
+      );
+    }
+
+    const selectedAccount = initialBalance.find(
+      (item) => item.account_name === sort.account
+    );
+
+    return selectedAccount ? Number(selectedAccount.initial_balance) : 0;
+  }
+
+  //  RUNNING BALANCE PER BULAN (JAN–DES)
+  function getMonthlyRunningBalance(transactions, initialBalance, months) {
+    const grouped = transactions.reduce((acc, trx) => {
+      const d = new Date(trx.created_at);
+      const monthIndex = d.getMonth(); // 0 - 11
+
+      if (!acc[monthIndex]) acc[monthIndex] = 0;
+
+      const amount = Number(trx.amount);
+      acc[monthIndex] += trx.type === "Income" ? amount : -amount;
+
+      return acc;
+    }, {});
+
+    let running = initialBalance;
+
+    return months.map((month, i) => {
+      if (grouped[i]) running += grouped[i];
+
+      return {
+        name: month,
+        balance: running,
+      };
+    });
+  }
+
+  //  DATA FINAL UNTUK CHART
+  const chartData = useMemo(() => {
+    const initial = getInitialBalanceEachAccount();
+    return getMonthlyRunningBalance(filteredData, initial, months);
+  }, [filteredData, initialBalance, sort]);
+
+  console.log("ini chart final data", chartData);
+
   return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <div className="mt-20">
+    <div className="w-full h-full mt-20 ">
+      {/* FILTER TAHUN */}
+      <div className="mt-6">
         <select onChange={(e) => handleFilterChange("time", e.target.value)}>
-          {uniqueMonths.map((item, index) => (
+          {uniqueYear.map((item, index) => (
             <option key={index} value={item}>
               {item}
             </option>
           ))}
         </select>
       </div>
-      <div className="">
+
+      {/* FILTER ACCOUNT */}
+      <div className="mt-4">
         {isAccountLoading ? (
           <>loading....</>
         ) : (
@@ -88,24 +145,27 @@ export default function TotalBalanceEachTime({
           </select>
         )}
       </div>
-      <ResponsiveContainer>
-        <AreaChart
-          responsive
-          // data={data}
-          margin={{
-            top: 20,
-            right: 0,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis width="auto" />
-          <Tooltip />
-          <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-        </AreaChart>
-      </ResponsiveContainer>
+
+      {/* CHART */}
+      <div className="w-full h-[350px] mt-8 ">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={chartData}
+            margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" />
+            <YAxis width="auto" />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="balance"
+              stroke="#8884d8"
+              fill="lime"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

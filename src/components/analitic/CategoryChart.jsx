@@ -1,7 +1,6 @@
 "useClient";
 
 import { useState } from "react";
-import api from "@/lib/api";
 
 import {
   PieChart,
@@ -92,8 +91,8 @@ export default function CategoryChart({
 
   const endData = endDataMaker(filteredData);
 
-  console.log("filteredData:", filteredData);
-  console.log("endData:", endData);
+  //console.log("filteredData:", filteredData);
+  //console.log("endData:", endData);
 
   return (
     <div className="w-full h-80">

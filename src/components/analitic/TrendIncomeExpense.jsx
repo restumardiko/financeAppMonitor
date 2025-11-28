@@ -55,7 +55,7 @@ export default function TrendIncomeExpense({
     "December",
   ];
   const base = months.map((month) => ({ name: month, income: 0, expense: 0 }));
-  console.log("ini base", base);
+  //console.log("ini base", base);
 
   const filteredData = dataChart.filter((item) => {
     const matchAccount =
@@ -78,7 +78,7 @@ export default function TrendIncomeExpense({
     }
   }
 
-  console.log("ini nilai filtered data", filteredData);
+  //console.log("ini nilai filtered data", filteredData);
   return (
     <div className="w-full h-80">
       <div className="">
@@ -112,7 +112,7 @@ export default function TrendIncomeExpense({
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" />
           <YAxis />
           <Tooltip />
           <Legend />
