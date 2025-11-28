@@ -55,7 +55,7 @@ export default function Wallet() {
       queryClient.setQueryData(["account"], (old = []) => [normalized, ...old]);
 
       //refetch server
-      //queryClient.invalidateQueries(["account"]);
+      queryClient.invalidateQueries(["userInformation"]);
     },
     onError: (err) => {
       console.log(err.response?.data || err.message);

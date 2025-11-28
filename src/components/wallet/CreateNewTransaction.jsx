@@ -12,10 +12,10 @@ export default function CreateNewTransaction({ cards }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      transaction_type: "income",
+      transaction_type: "",
       amount: "",
-      category_id: "1",
-      account_id: "1",
+      category_id: "",
+      account_id: "",
       note: "",
     },
   });
@@ -26,7 +26,7 @@ export default function CreateNewTransaction({ cards }) {
   // Fungsi POST ke server
   const postTransaction = async (data) => {
     const res = await api.post("/addTransaction", data);
-    console.log("ini respon ya", res.data);
+    console.log("ini respon dari useMutation ya", res.data.data);
     return res.data.data;
   };
 
@@ -41,6 +41,7 @@ export default function CreateNewTransaction({ cards }) {
 
       //refetch server
       queryClient.invalidateQueries(["account"]);
+      queryClient.invalidateQueries(["userInformation"]);
     },
     onError: (err) => {
       console.log(err.response?.data || err.message);
@@ -93,7 +94,6 @@ export default function CreateNewTransaction({ cards }) {
             id="account_id"
             {...register("account_id", { required: "wajib di isi" })}
           >
-            <option value="">-- Pilih Akun --</option>
             {cards.map((item) => (
               <option key={item.account_id} value={item.account_id}>
                 {item.account_name}

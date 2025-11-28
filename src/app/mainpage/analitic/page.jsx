@@ -6,6 +6,9 @@ import TrendIncomeExpense from "../../../components/analitic/TrendIncomeExpense"
 import CategoryChart from "../../../components/analitic/CategoryChart";
 import TotalBalanceEachTime from "../../../components/analitic/TotalBalanceEachTime";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
+import generateDummyTransactions from "../../../components/analitic/data dummy";
+
+const transaction = generateDummyTransactions();
 
 export default function Analitic() {
   const queryClient = useQueryClient();
@@ -19,14 +22,15 @@ export default function Analitic() {
     },
   });
 
-  const { data: transaction = [], isLoading: isTransactionLoading } = useQuery({
-    queryKey: ["analytic"],
-    queryFn: async () => {
-      const res = await api.get("/transactions");
+  const { data: transactionsss = [], isLoading: isTransactionLoading } =
+    useQuery({
+      queryKey: ["analytic"],
+      queryFn: async () => {
+        const res = await api.get("/transactions");
 
-      return res.data.data;
-    },
-  });
+        return res.data.data;
+      },
+    });
   const totalIncome = transaction
     .filter((t) => t.type === "Income")
     .reduce((sum, t) => sum + Number(t.amount), 0);
