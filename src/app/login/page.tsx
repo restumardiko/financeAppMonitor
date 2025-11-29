@@ -64,71 +64,90 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+    <div className="flex min-h-svh w-full items-center justify-center  p-6 md:p-10">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-2xl">Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email and password to continue
           </CardDescription>
         </CardHeader>
+
         <CardContent>
-          <div className="w-full max-w-sm">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 w-96"
-              >
-                {/* Server Error Display */}
-                {serverError && (
-                  <p className="text-red-500 text-sm">{serverError}</p>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              {/* Server Error */}
+              {serverError && (
+                <p className="text-sm text-red-500 text-center">
+                  {serverError}
+                </p>
+              )}
+
+              {/* Email */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="your@email.com"
+                        type="email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="your@email.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={viewstatus}
+                          {...field}
+                          className="pr-16"
+                          placeholder="••••••••"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleView}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500 hover:text-zinc-900"
+                        >
+                          {viewstatus === "password" ? "Show" : "Hide"}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type={viewstatus} {...field} className="pr-20" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {/* Submit */}
+              <Button type="submit" className="w-full">
+                Log In
+              </Button>
 
-                <button type="button" onClick={handleView}>
-                  {viewstatus === "password" ? "Show" : "Hide"}
-                </button>
-
-                <Button type="submit" className="w-full">
-                  Log In
-                </Button>
-
-                <div className="mt-4 text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/signUp" className="underline underline-offset-4">
-                    Sign Up
-                  </Link>
-                </div>
-              </form>
-            </Form>
-          </div>
+              {/* Footer */}
+              <div className="text-center text-sm text-zinc-500">
+                Don&apos;t have an account?{" "}
+                <Link
+                  href="/signUp"
+                  className="font-medium text-amber-500 hover:underline"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

@@ -69,53 +69,85 @@ export default function Wallet() {
   };
 
   return (
-    <div className="">
-      <h1>Wallet</h1>
+    <div className="space-y-10">
+      {/* Header */}
+      <h1 className="text-2xl font-bold">Wallet</h1>
+
+      {/* Add Account Form */}
       <div className="add_account_form">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <label htmlFor="name">Name:</label>
-            <input id="name" {...register("name", { required: true })} />
-            {errors.name && <span>This field is required</span>}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name */}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
+              {...register("name", { required: true })}
+              className="border p-2 rounded"
+            />
+            {errors.name && (
+              <span className="text-sm text-red-500">
+                This field is required
+              </span>
+            )}
           </div>
-          <div>
-            <label htmlFor="balance">Balance:</label>
+
+          {/* Balance */}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="balance">Balance</label>
             <input
               id="balance"
+              className="border p-2 rounded"
               {...register("total_balance", {
                 required: "Nominal wajib diisi",
                 pattern: {
-                  value: /^\d+(\.\d{1,2})?$/, // hanya angka + max 2 angka desimal
+                  value: /^\d+(\.\d{1,2})?$/, // angka + max 2 desimal
                   message: "Hanya boleh angka atau desimal 2 digit",
                 },
               })}
-            ></input>
-            {errors.balance && <p>{errors.balance.message}</p>}
+            />
+            {errors.total_balance && (
+              <p className="text-sm text-red-500">
+                {errors.total_balance.message}
+              </p>
+            )}
           </div>
-          <div>
-            <label htmlFor="account_type">type:</label>
-            <select {...register("account_type")}>
-              <option value="cash">cash</option>
-              <option value="e-wallet">e-wallet</option>
-              <option value="e-wallet">Bank</option>
 
-              <option value="other">other</option>
+          {/* Account Type */}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="account_type">Type</label>
+            <select
+              id="account_type"
+              {...register("account_type")}
+              className="border p-2 rounded"
+            >
+              <option value="cash">Cash</option>
+              <option value="e-wallet">E-Wallet</option>
+              <option value="bank">Bank</option>
+              <option value="other">Other</option>
             </select>
           </div>
 
-          <button type="submit">Submit</button>
+          <button
+            type="submit"
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
         </form>
       </div>
+
+      {/* Card List */}
       <div className="cardList">
         {isLoading ? (
-          <>Loading...</>
+          <p>Loading...</p>
         ) : isError ? (
-          <>Error loading data</>
+          <p>Error loading data</p>
         ) : !data || data.length === 0 ? (
-          <>Please make account first</>
+          <p>Please make account first</p>
         ) : (
-          <div>
+          <div className="space-y-6">
             <CardAccount cards={data} />
+
             <div className="transactions">
               <CreateNewTransaction cards={data} />
             </div>
@@ -123,12 +155,17 @@ export default function Wallet() {
         )}
       </div>
 
-      <div className="recent_transaction">
-        <p>transactions</p>
+      {/* Recent Transactions */}
+      <div className="recent_transaction space-y-2">
+        <p className="font-semibold">Transactions</p>
         <TransactionsHistory />
       </div>
+
+      {/* See More */}
       <Link href="../mainpage/transactions">
-        <div className="see_more">See More {">>"}</div>
+        <div className="see_more text-blue-600 underline cursor-pointer">
+          See More &gt;&gt;
+        </div>
       </Link>
     </div>
   );

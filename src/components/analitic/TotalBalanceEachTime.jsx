@@ -116,25 +116,28 @@ export default function TotalBalanceEachTime({
   console.log("ini chart final data", chartData);
 
   return (
-    <div className="w-full h-full mt-20 ">
-      {/* FILTER TAHUN */}
-      <div className="mt-6">
-        <select onChange={(e) => handleFilterChange("time", e.target.value)}>
+    <div className="w-full h-full mt-20 space-y-8">
+      {/* FILTER SECTION */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* FILTER TAHUN */}
+        <select
+          onChange={(e) => handleFilterChange("time", e.target.value)}
+          className="rounded-md border px-3 py-2 text-sm"
+        >
           {uniqueYear.map((item, index) => (
             <option key={index} value={item}>
               {item}
             </option>
           ))}
         </select>
-      </div>
 
-      {/* FILTER ACCOUNT */}
-      <div className="mt-4">
+        {/* FILTER ACCOUNT */}
         {isAccountLoading ? (
-          <>loading....</>
+          <p className="text-sm text-zinc-500">Loading account...</p>
         ) : (
           <select
             onChange={(e) => handleFilterChange("account", e.target.value)}
+            className="rounded-md border px-3 py-2 text-sm"
           >
             <option value="All">All Account</option>
             {account.map((item, index) => (
@@ -146,22 +149,29 @@ export default function TotalBalanceEachTime({
         )}
       </div>
 
-      {/* CHART */}
-      <div className="w-full h-[350px] mt-8 ">
+      {/* CHART SECTION */}
+      <div className="w-full h-[350px] rounded-xl border  shadow-sm">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
-            margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
+            margin={{ top: 20, right: 12, left: 0, bottom: 12 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" />
-            <YAxis width="auto" />
+            <XAxis
+              dataKey="name"
+              interval={0}
+              angle={-30}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis />
             <Tooltip />
+
             <Area
               type="monotone"
               dataKey="balance"
-              stroke="#8884d8"
-              fill="lime"
+              stroke="#6366f1"
+              fill="#a5b4fc"
             />
           </AreaChart>
         </ResponsiveContainer>

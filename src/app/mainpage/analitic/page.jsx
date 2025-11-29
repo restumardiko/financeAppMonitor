@@ -12,7 +12,16 @@ const transaction = generateDummyTransactions();
 
 export default function Analitic() {
   const queryClient = useQueryClient();
-  const userInformation = queryClient.getQueryData(["userInformation"]);
+  //const userInformation = queryClient.getQueryData(["userInformation"]);
+  const { data: userInfo, isLoading: isUserLoading } = useQuery({
+    queryKey: ["userInformation"],
+    queryFn: async () => {
+      const res = await api.get("/userInformation");
+      console.log(res.data);
+
+      return res.data;
+    },
+  });
 
   const { data: account, isLoading: isAccountLoading } = useQuery({
     queryKey: ["account"],
@@ -42,21 +51,22 @@ export default function Analitic() {
   if (isTransactionLoading) return <p>Loading…</p>;
 
   return (
-    <div>
-      <div className=" summary">
-        <div>total income:{totalIncome}</div>
-        <div>total expense:{totalExpense}</div>
+    <div className="space-y-20">
+      {/* Summary */}
+      <div className="summary space-y-2">
+        <div>Total Income: Rp. {totalIncome}</div>
+        <div>Total Expense:Rp. {totalExpense}</div>
+
         <div className="balance">
-          <div>
-            {!userInformation ? (
-              <>loading...</>
-            ) : (
-              <div> total balance:{userInformation.total_balance}</div>
-            )}
-          </div>
+          {isUserLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <div>Total Balance: Rp. {userInfo.total_balance}</div>
+          )}
         </div>
       </div>
 
+      {/* Category Chart */}
       <div className="category_charts">
         <CategoryChart
           dataChart={transaction}
@@ -65,6 +75,7 @@ export default function Analitic() {
         />
       </div>
 
+      {/* Trend Chart */}
       <div className="trend mt-36">
         <TrendIncomeExpense
           dataChart={transaction}
@@ -72,14 +83,19 @@ export default function Analitic() {
           loading={isAccountLoading}
         />
       </div>
+
+      {/* Total Balance Over Time */}
       <div className="total_balance_chart w-full h-60 mb-40 ml-10">
         <TotalBalanceEachTime
           dataChart={transaction}
           account={account}
           loading={isAccountLoading}
-          initialBalance={userInformation.initial_balance}
+          initialBalance={userInfo.initial_balance}
+          isUserLoading={isUserLoading}
         />
       </div>
+
+      {/* Each Category Each Time (Placeholder) */}
       <div className="each_category_each_time"></div>
     </div>
   );

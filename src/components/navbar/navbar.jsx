@@ -32,19 +32,40 @@ function ProfileIcon(props) {
 
 export default function Navbar() {
   return (
-    <div className="flex flex-row justify-around">
-      <Link href="/mainpage">
-        <HomeIcon />
-      </Link>
-      <Link href="/mainpage/wallet">
-        <CardIcon />
-      </Link>
-      <Link href="/mainpage/analitic">
-        <AnaliticIcon />
-      </Link>
-      <Link href="/mainpage/profile">
-        <ProfileIcon />
-      </Link>
+    <div className="fixed bottom-0 left-0 z-50 w-full border-t border-zinc-200 bg-white">
+      <div className="flex justify-around items-center py-3">
+        <Link
+          href="/mainpage"
+          className="flex flex-col items-center gap-1 text-xs text-zinc-600 hover:text-black"
+        >
+          <HomeIcon />
+          <span>Home</span>
+        </Link>
+
+        <Link
+          href="/mainpage/wallet"
+          className="flex flex-col items-center gap-1 text-xs text-zinc-600 hover:text-black"
+        >
+          <CardIcon />
+          <span>Wallet</span>
+        </Link>
+
+        <Link
+          href="/mainpage/analitic"
+          className="flex flex-col items-center gap-1 text-xs text-zinc-600 hover:text-black"
+        >
+          <AnaliticIcon />
+          <span>Analytic</span>
+        </Link>
+
+        <Link
+          href="/mainpage/profile"
+          className="flex flex-col items-center gap-1 text-xs text-zinc-600 hover:text-black"
+        >
+          <ProfileIcon />
+          <span>Profile</span>
+        </Link>
+      </div>
     </div>
   );
 }

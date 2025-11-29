@@ -80,22 +80,28 @@ export default function TrendIncomeExpense({
 
   //console.log("ini nilai filtered data", filteredData);
   return (
-    <div className="w-full h-80">
-      <div className="">
-        <select onChange={(e) => handleFilterChange("time", e.target.value)}>
+    <div className="w-full h-80 space-y-6">
+      {/* FILTER SECTION */}
+      <div className="flex items-center gap-4">
+        {/* FILTER YEAR */}
+        <select
+          onChange={(e) => handleFilterChange("time", e.target.value)}
+          className="rounded-md border px-3 py-2 text-sm"
+        >
           {uniqueYear.map((item, index) => (
             <option key={index} value={item}>
               {item}
             </option>
           ))}
         </select>
-      </div>
-      <div>
+
+        {/* FILTER ACCOUNT */}
         {isAccountLoading ? (
-          <>loading....</>
+          <p className="text-sm text-zinc-500">Loading account...</p>
         ) : (
           <select
             onChange={(e) => handleFilterChange("account", e.target.value)}
+            className="rounded-md border px-3 py-2 text-sm"
           >
             <option value="All">All Account</option>
             {account.map((item, index) => (
@@ -106,25 +112,36 @@ export default function TrendIncomeExpense({
           </select>
         )}
       </div>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={base}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="income"
-            stroke="lime"
-            activeDot={{ r: 8 }}
-          />
-          <Line type="monotone" dataKey="expense" stroke="red" />
-        </LineChart>
-      </ResponsiveContainer>
+
+      {/* CHART SECTION */}
+      <div className="w-full h-[260px] rounded-xl border p-4 shadow-sm">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={base}
+            margin={{ top: 10, right: 20, left: 10, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="name"
+              interval={0}
+              angle={-30}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+
+            <Line
+              type="monotone"
+              dataKey="income"
+              stroke="lime"
+              activeDot={{ r: 8 }}
+            />
+            <Line type="monotone" dataKey="expense" stroke="red" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

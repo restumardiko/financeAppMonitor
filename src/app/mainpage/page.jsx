@@ -45,65 +45,92 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      Home
+    <div className="space-y-8">
+      {/* Header */}
       <div>
-        <h1>hello {isLoading ? <></> : <>{data.name}</>}.</h1>
-        <h3>this is your finance report</h3>
+        <h1 className="text-2xl font-bold">
+          Hello {isLoading ? "..." : data.name}.
+        </h1>
+        <h3 className="text-muted-foreground">This is your finance report</h3>
       </div>
-      <div id="card" className="">
+
+      {/* Total Balance */}
+      <div id="card">
         <Card>
           <CardHeader>
             <CardTitle>Total Balance</CardTitle>
           </CardHeader>
+
           <CardContent>
-            <h1>Rp.{isLoading ? <></> : <>{data.total_balance}</>}</h1>
+            <h1 className="text-2xl font-semibold">
+              Rp. {isLoading ? "..." : data.total_balance}
+            </h1>
           </CardContent>
+
           <CardFooter>
-            <p>6 persen less than last month</p>
+            <p className="text-sm text-muted-foreground">
+              6 persen less than last month
+            </p>
           </CardFooter>
         </Card>
       </div>
-      <div>
-        <div className="monthly flex flex-row">
-          <div className="monthlyExpense">
-            <Card>
-              <CardHeader>
-                <CardTitle>monthly expense</CardTitle>
-                <CardDescription>Card Description</CardDescription>
-                <CardAction>Card Action</CardAction>
-              </CardHeader>
-              <CardContent>
-                <p>Rp.xxxxxxxxxx</p>
-              </CardContent>
-              <CardFooter>
-                <p> 6 persen higher than last month</p>
-              </CardFooter>
-            </Card>
-          </div>
-          <div className="monthlyIncome">
-            <Card>
-              <CardHeader>
-                <CardTitle>monthly income</CardTitle>
-                <CardDescription>Card Description</CardDescription>
-                <CardAction>Card Action</CardAction>
-              </CardHeader>
-              <CardContent>
-                <p>Rp.xxxxxxxxxx</p>
-              </CardContent>
-              <CardFooter>
-                <p> 6 persen higher than last month</p>
-              </CardFooter>
-            </Card>
-          </div>
+
+      {/* Monthly Cards */}
+      <div className="monthly flex flex-col md:flex-row gap-4">
+        {/* Monthly Expense */}
+        <div className="monthlyExpense w-full">
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly Expense</CardTitle>
+              <CardDescription>Card Description</CardDescription>
+              <CardAction>Card Action</CardAction>
+            </CardHeader>
+
+            <CardContent>
+              <p>Rp.xxxxxxxxxx</p>
+            </CardContent>
+
+            <CardFooter>
+              <p className="text-sm text-muted-foreground">
+                6 persen higher than last month
+              </p>
+            </CardFooter>
+          </Card>
         </div>
-        {/* <div className="statistic">
-          <TrendIncomeExpense />
-          <CategoryChart />
-        </div> */}
-        <div className="recent_transactions">
-          <TransactionsHistory />
+
+        {/* Monthly Income */}
+        <div className="monthlyIncome w-full">
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly Income</CardTitle>
+              <CardDescription>Card Description</CardDescription>
+              <CardAction>Card Action</CardAction>
+            </CardHeader>
+
+            <CardContent>
+              <p>Rp.xxxxxxxxxx</p>
+            </CardContent>
+
+            <CardFooter>
+              <p className="text-sm text-muted-foreground">
+                6 persen higher than last month
+              </p>
+            </CardFooter>
+          </Card>
         </div>
+      </div>
+
+      {/* Statistik (sementara dimatiin) */}
+      {/*
+  <div className="statistic">
+    <TrendIncomeExpense />
+    <CategoryChart />
+  </div>
+  */}
+
+      {/* Recent Transactions */}
+      <div className="recent_transactions">
+        <TransactionsHistory />
       </div>
     </div>
   );

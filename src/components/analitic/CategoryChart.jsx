@@ -95,54 +95,59 @@ export default function CategoryChart({
   //console.log("endData:", endData);
 
   return (
-    <div className="w-full h-80">
-      <div className="sort_button">
-        <div>
-          <select onChange={(e) => handleFilterChange("type", e.target.value)}>
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-          </select>
-        </div>
+    <div className="w-full h-80 space-y-6">
+      {/* Filter Section */}
+      <div className="sort_button flex flex-wrap gap-4">
+        {/* Type Filter */}
+        <select
+          onChange={(e) => handleFilterChange("type", e.target.value)}
+          className="rounded-md border px-3 py-2"
+        >
+          <option value="Income">Income</option>
+          <option value="Expense">Expense</option>
+        </select>
 
-        <div>
-          {isAccountLoading ? (
-            <>loading....</>
-          ) : (
-            <select
-              onChange={(e) => handleFilterChange("account", e.target.value)}
-            >
-              <option value="All">All Account</option>
-              {account.map((item, index) => (
-                <option key={index} value={item.account_name}>
-                  {item.account_name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        <div>
-          <select onChange={(e) => handleFilterChange("time", e.target.value)}>
-            <option value="All">All Time</option>
-            {uniqueMonths.map((item, index) => (
-              <option key={index} value={item}>
-                {item}
+        {/* Account Filter */}
+        {isAccountLoading ? (
+          <p className="text-sm text-zinc-500">Loading account...</p>
+        ) : (
+          <select
+            onChange={(e) => handleFilterChange("account", e.target.value)}
+            className="rounded-md border px-3 py-2"
+          >
+            <option value="All">All Account</option>
+            {account.map((item, index) => (
+              <option key={index} value={item.account_name}>
+                {item.account_name}
               </option>
             ))}
           </select>
-        </div>
+        )}
+
+        {/* Time Filter */}
+        <select
+          onChange={(e) => handleFilterChange("time", e.target.value)}
+          className="rounded-md border px-3 py-2"
+        >
+          <option value="All">All Time</option>
+          {uniqueMonths.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <ResponsiveContainer>
+      {/* Chart Section */}
+      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={endData}
             cx="50%"
             cy="50%"
-            labelLine={false}
             outerRadius={120}
-            fill="#8884d8"
             dataKey="value"
+            labelLine={false}
             label={({ name, percent }) =>
               `${name} ${(percent * 100).toFixed(0)}%`
             }
@@ -151,6 +156,7 @@ export default function CategoryChart({
               <Cell key={index} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
+
           <Tooltip />
           <Legend />
         </PieChart>
