@@ -132,7 +132,10 @@ export default function LoginForm() {
               />
 
               {/* Submit */}
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 "
+              >
                 Log In
               </Button>
 

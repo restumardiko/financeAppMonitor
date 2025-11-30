@@ -11,7 +11,7 @@ import generateDummyTransactions from "../../../components/analitic/data dummy";
 const transaction = generateDummyTransactions();
 
 export default function Analitic() {
-  const queryClient = useQueryClient();
+  //const queryClient = useQueryClient();
   //const userInformation = queryClient.getQueryData(["userInformation"]);
   const { data: userInfo, isLoading: isUserLoading } = useQuery({
     queryKey: ["userInformation"],
@@ -65,34 +65,31 @@ export default function Analitic() {
           )}
         </div>
       </div>
-
-      {/* Category Chart */}
-      <div className="category_charts">
-        <CategoryChart
-          dataChart={transaction}
-          account={account}
-          loading={isAccountLoading}
-        />
-      </div>
-
-      {/* Trend Chart */}
-      <div className="trend mt-36">
-        <TrendIncomeExpense
-          dataChart={transaction}
-          account={account}
-          loading={isAccountLoading}
-        />
-      </div>
-
-      {/* Total Balance Over Time */}
-      <div className="total_balance_chart w-full h-60 mb-40 ml-10">
-        <TotalBalanceEachTime
-          dataChart={transaction}
-          account={account}
-          loading={isAccountLoading}
-          initialBalance={userInfo.initial_balance}
-          isUserLoading={isUserLoading}
-        />
+      <div className="chart">
+        {isAccountLoading ? (
+          <p>Loading</p>
+        ) : (
+          <div>
+            {" "}
+            {/* Category Chart */}
+            <div className="category_charts">
+              <CategoryChart dataChart={transaction} account={account} />
+            </div>
+            {/* Trend Chart */}
+            <div className="trend mt-36">
+              <TrendIncomeExpense dataChart={transaction} account={account} />
+            </div>
+            {/* Total Balance Over Time */}
+            <div className="total_balance_chart w-full h-60 mb-40 ml-10">
+              <TotalBalanceEachTime
+                dataChart={transaction}
+                account={account}
+                initialBalance={userInfo.initial_balance}
+                isUserLoading={isUserLoading}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Each Category Each Time (Placeholder) */}

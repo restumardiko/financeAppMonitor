@@ -96,21 +96,18 @@ export default function TrendIncomeExpense({
         </select>
 
         {/* FILTER ACCOUNT */}
-        {isAccountLoading ? (
-          <p className="text-sm text-zinc-500">Loading account...</p>
-        ) : (
-          <select
-            onChange={(e) => handleFilterChange("account", e.target.value)}
-            className="rounded-md border px-3 py-2 text-sm"
-          >
-            <option value="All">All Account</option>
-            {account.map((item, index) => (
-              <option key={index} value={item.account_name}>
-                {item.account_name}
-              </option>
-            ))}
-          </select>
-        )}
+
+        <select
+          onChange={(e) => handleFilterChange("account", e.target.value)}
+          className="rounded-md border px-3 py-2 text-sm"
+        >
+          <option value="All">All Account</option>
+          {account.map((item, index) => (
+            <option key={index} value={item.account_name}>
+              {item.account_name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* CHART SECTION */}

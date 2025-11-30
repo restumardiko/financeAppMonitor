@@ -9,7 +9,7 @@ export default function Home() {
         {/* Logo */}
         <div className="w-full h-48 flex items-center justify-center rounded-2xl shadow-lg bg-white">
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="Logo DompetKu"
             width={280}
             height={180}

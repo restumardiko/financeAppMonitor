@@ -54,7 +54,7 @@ export default function Profile() {
       <div className="mt-5 sm:mt-6 flex justify-center">
         <button
           onClick={() => setIsShow(true)}
-          className="w-full sm:w-auto rounded-xl bg-red-500 px-5 py-2 text-xs sm:text-sm font-medium text-white hover:bg-red-600 transition"
+          className="w-full sm:w-auto rounded-xl bg-emerald-600 px-5 py-2 text-xs sm:text-sm font-medium text-white hover:bg-emerald-700 transition"
         >
           Log Out
         </button>
@@ -82,7 +82,7 @@ export default function Profile() {
 
               <button
                 onClick={handleLogOut}
-                className="w-full rounded-xl bg-red-500 py-2 text-xs sm:text-sm font-medium text-white hover:bg-red-600 transition"
+                className="w-full rounded-xl bg-emerald-600 py-2 text-xs sm:text-sm font-medium text-white hover:bg-emerald-700 transition"
               >
                 Yes, Log Out
               </button>

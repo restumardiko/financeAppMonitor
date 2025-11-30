@@ -13,11 +13,7 @@ import {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
-export default function CategoryChart({
-  dataChart,
-  account,
-  isAccountLoading,
-}) {
+export default function CategoryChart({ dataChart, account }) {
   // ambil tiap bulan
   function getUniqueMonths(transactions) {
     const months = transactions.map((t) => {
@@ -108,21 +104,18 @@ export default function CategoryChart({
         </select>
 
         {/* Account Filter */}
-        {isAccountLoading ? (
-          <p className="text-sm text-zinc-500">Loading account...</p>
-        ) : (
-          <select
-            onChange={(e) => handleFilterChange("account", e.target.value)}
-            className="rounded-md border px-3 py-2"
-          >
-            <option value="All">All Account</option>
-            {account.map((item, index) => (
-              <option key={index} value={item.account_name}>
-                {item.account_name}
-              </option>
-            ))}
-          </select>
-        )}
+
+        <select
+          onChange={(e) => handleFilterChange("account", e.target.value)}
+          className="rounded-md border px-3 py-2"
+        >
+          <option value="All">All Account</option>
+          {account.map((item, index) => (
+            <option key={index} value={item.account_name}>
+              {item.account_name}
+            </option>
+          ))}
+        </select>
 
         {/* Time Filter */}
         <select
