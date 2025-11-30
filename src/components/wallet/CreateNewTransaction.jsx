@@ -21,9 +21,21 @@ export default function CreateNewTransaction({ cards }) {
       note: "",
     },
   });
+  // change border on form either it income or expense
 
   const transactionType = watch("transaction_type");
-  console.log(transactionType);
+  let ringClass = "focus:ring-amber-400";
+  let bgClass = "bg-emerald-700 hover:bg-emerald-800";
+
+  if (transactionType === "income") {
+    ringClass = "focus:ring-emerald-700";
+    bgClass = "bg-emerald-700 hover:bg-emerald-800";
+  } else if (transactionType === "expense") {
+    ringClass = "focus:ring-red-500";
+    bgClass = "bg-red-500 hover:bg-red-800";
+  }
+
+  console.log("ini transactions type", transactionType);
 
   // Fungsi POST ke server
   const postTransaction = async (data) => {
@@ -76,7 +88,7 @@ export default function CreateNewTransaction({ cards }) {
             <label className="text-sm font-medium">Type</label>
             <select
               {...register("transaction_type")}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
               <option value="income">Income</option>
               <option value="expense">Expense</option>
@@ -94,7 +106,7 @@ export default function CreateNewTransaction({ cards }) {
                   message: "Hanya boleh angka atau desimal 2 digit",
                 },
               })}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
               placeholder="10000"
             />
             {errors.amount && (
@@ -107,7 +119,7 @@ export default function CreateNewTransaction({ cards }) {
             <label className="text-sm font-medium">Account</label>
             <select
               {...register("account_id", { required: true })}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
               {cards.map((item) => (
                 <option key={item.account_id} value={item.account_id}>
@@ -127,7 +139,7 @@ export default function CreateNewTransaction({ cards }) {
             <label className="text-sm font-medium">Category</label>
             <select
               {...register("category_id")}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
               {transactionType === "income" ? (
                 <>
@@ -153,7 +165,7 @@ export default function CreateNewTransaction({ cards }) {
             <input
               type="text"
               {...register("note", { required: "Wajib diisi" })}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
               placeholder="Contoh: makan siang"
             />
             {errors.note && (
@@ -165,7 +177,7 @@ export default function CreateNewTransaction({ cards }) {
           <button
             type="submit"
             disabled={addTransaction.isPending}
-            className="w-full rounded-xl bg-amber-500 py-2 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50"
+            className={`w-full rounded-xl ${bgClass} py-2 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50`}
           >
             {addTransaction.isPending ? "Saving..." : "Submit"}
           </button>

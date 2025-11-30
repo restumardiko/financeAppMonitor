@@ -58,7 +58,7 @@ export default function AllTransactionsHistory() {
 
   return (
     <div className="all_transactions gap-4 flex flex-col">
-      <h2 className="font-bold text-lg">Transactions</h2>
+      <h2 className="font-bold text-lg text-emerald-700">Transactions</h2>
 
       {data && Object.keys(data).length > 0 ? (
         Object.entries(data).map(([monthKey, daysObj]) => {
@@ -98,21 +98,6 @@ export default function AllTransactionsHistory() {
                         {/* LIST TRANSACTIONS */}
                         {dayOpen && (
                           <div className="pl-4 mt-2 flex flex-col gap-2">
-                            {/* {transactions.map((trx, i) => (
-                              <div
-                                key={i}
-                                className="p-2 rounded bg-gray-100 flex flex-col"
-                              >
-                                <div className="font-bold">
-                                  {trx.category_name}
-                                </div>
-                                <div>Amount: {trx.amount}</div>
-                                <div>Note: {trx.note}</div>
-                                <div className="text-sm text-gray-500">
-                                  {trx.created_at}
-                                </div>
-                              </div>
-                            ))} */}
                             <TransactionsCard transactions={transactions} />
                           </div>
                         )}

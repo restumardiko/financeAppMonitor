@@ -74,7 +74,7 @@ export default function Wallet() {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <h1 className="text-2xl font-bold">Wallet</h1>
+      <h1 className="text-2xl text-emerald-600 font-bold">Wallet</h1>
       <button
         onClick={() => setShowForm(!showForm)}
         className="bg-emerald-600 text-white px-4 py-2 rounded"
@@ -168,7 +168,7 @@ export default function Wallet() {
 
       {/* Recent Transactions */}
       <div className="recent_transaction space-y-2">
-        <p className="font-semibold">Transactions</p>
+        <p className="font-semibold text-emerald-700 ">Transactions</p>
         <TransactionsHistory />
       </div>
 
