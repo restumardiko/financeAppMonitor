@@ -3,6 +3,7 @@ import api from "@/lib/api";
 
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import TransactionsCard from "../../../components/wallet/transactionsCard";
 
 export default function AllTransactionsHistory() {
   const [openDays, setOpenDays] = useState({});
@@ -97,7 +98,7 @@ export default function AllTransactionsHistory() {
                         {/* LIST TRANSACTIONS */}
                         {dayOpen && (
                           <div className="pl-4 mt-2 flex flex-col gap-2">
-                            {transactions.map((trx, i) => (
+                            {/* {transactions.map((trx, i) => (
                               <div
                                 key={i}
                                 className="p-2 rounded bg-gray-100 flex flex-col"
@@ -111,7 +112,8 @@ export default function AllTransactionsHistory() {
                                   {trx.created_at}
                                 </div>
                               </div>
-                            ))}
+                            ))} */}
+                            <TransactionsCard transactions={transactions} />
                           </div>
                         )}
                       </div>

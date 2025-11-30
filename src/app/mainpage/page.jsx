@@ -2,6 +2,7 @@
 import api from "@/lib/api";
 //import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 import TransactionsCard from "../../components/wallet/transactionsCard";
 import {
@@ -31,6 +32,62 @@ export default function Home() {
       return res.data;
     },
   });
+
+  const { data: transactions = [], isLoading: isTransactionLoading } = useQuery(
+    {
+      queryKey: ["analytic"],
+      queryFn: async () => {
+        const res = await api.get("/transactions");
+
+        return res.data.data;
+      },
+    }
+  );
+  console.log("ini transactions di mainpage", transactions);
+
+  //monthly income
+  const monthlyIncome = useMemo(() => {
+    if (!transactions.length) return 0;
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    const incomeThisMonth = transactions
+      .filter(
+        (t) =>
+          t.type === "Income" &&
+          new Date(t.created_at).getMonth() + 1 === currentMonth &&
+          new Date(t.created_at).getFullYear() === currentYear
+      )
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    return incomeThisMonth;
+  }, [transactions]);
+
+  //monthly expense
+  const monthlyExpense = useMemo(() => {
+    if (!transactions.length) return 0;
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    const expenseThisMonth = transactions
+      .filter(
+        (t) =>
+          t.type === "Expense" &&
+          new Date(t.created_at).getMonth() + 1 === currentMonth &&
+          new Date(t.created_at).getFullYear() === currentYear
+      )
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    return expenseThisMonth;
+  }, [transactions]);
+  //monthly balance
+  const monthlyBalance = useMemo(() => {
+    return monthlyIncome - monthlyExpense;
+  }, [monthlyIncome, monthlyExpense]);
 
   const router = useRouter();
 
@@ -69,7 +126,7 @@ export default function Home() {
 
           <CardFooter>
             <p className="text-sm text-muted-foreground">
-              6 persen less than last month
+              from {isLoading ? "..." : data.initial_balance.length} accounts
             </p>
           </CardFooter>
         </Card>
@@ -82,12 +139,10 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle>Monthly Expense</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-              <CardAction>Card Action</CardAction>
             </CardHeader>
 
             <CardContent>
-              <p>Rp.xxxxxxxxxx</p>
+              <p>Rp.{isTransactionLoading ? "..." : monthlyExpense}</p>
             </CardContent>
 
             <CardFooter>
@@ -103,12 +158,28 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle>Monthly Income</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-              <CardAction>Card Action</CardAction>
             </CardHeader>
 
             <CardContent>
-              <p>Rp.xxxxxxxxxx</p>
+              <p>Rp.{isTransactionLoading ? "..." : monthlyIncome}</p>
+            </CardContent>
+
+            <CardFooter>
+              <p className="text-sm text-muted-foreground">
+                6 persen higher than last month
+              </p>
+            </CardFooter>
+          </Card>
+        </div>
+        {/* Monthly balance*/}
+        <div className="monthlyBalance w-full">
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly balance</CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <p>Rp.{isTransactionLoading ? "..." : monthlyBalance}</p>
             </CardContent>
 
             <CardFooter>
@@ -120,7 +191,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Statistik (sementara dimatiin) */}
       {/*
   <div className="statistic">
     <TrendIncomeExpense />
@@ -130,6 +200,7 @@ export default function Home() {
 
       {/* Recent Transactions */}
       <div className="recent_transactions">
+        <div>Latest Transactions</div>
         <TransactionsHistory />
       </div>
     </div>
