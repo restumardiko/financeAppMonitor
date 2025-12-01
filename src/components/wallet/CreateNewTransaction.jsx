@@ -2,15 +2,21 @@
 import api from "@/lib/api";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CreateNewTransaction({ cards }) {
   const [showForm, setShowForm] = useState(false);
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "", // "success" | "error"
+    message: "",
+  });
   const queryClient = useQueryClient();
   const {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -43,35 +49,85 @@ export default function CreateNewTransaction({ cards }) {
     console.log("ini respon dari useMutation ya", res.data.data);
     return res.data.data;
   };
-
   const addTransaction = useMutation({
     mutationFn: postTransaction,
+
     onSuccess: (newTransaction) => {
-      // update cache
       queryClient.setQueryData(["latestTransactions"], (old = []) => [
         newTransaction,
         ...old,
       ]);
 
-      //refetch server
       queryClient.invalidateQueries(["account"]);
       queryClient.invalidateQueries(["userInformation"]);
+      reset();
+
+      //  POP OUT SUCCES
+      setPopup({
+        show: true,
+        type: "success",
+        message: "Transaction successfully added ✔",
+      });
+
+      setTimeout(() => {
+        setPopup({ show: false, type: "", message: "" });
+        setShowForm(false);
+      }, 2500);
     },
-    onError: (err) => {
-      console.log(err.response?.data || err.message);
-      // rollback kalau gagal
-      queryClient.setQueryData(["latestTtransactions"], context.prevData);
+
+    onError: () => {
+      //  POP OUT GAGAL
+      setPopup({
+        show: true,
+        type: "error",
+        message: "Failed to add transaction ❌",
+      });
+
+      setTimeout(() => {
+        setPopup({ show: false, type: "", message: "" });
+      }, 2500);
     },
-    // onSettled: () => {
-    //   //  refetch untuk sync ulang server
-    //   queryClient.invalidateQueries(["transactions"]);
-    // },
   });
+
+  // const addTransaction = useMutation({
+  //   mutationFn: postTransaction,
+  //   onSuccess: (newTransaction) => {
+  //     // update cache
+  //     queryClient.setQueryData(["latestTransactions"], (old = []) => [
+  //       newTransaction,
+  //       ...old,
+  //     ]);
+
+  //     //refetch server
+  //     queryClient.invalidateQueries(["account"]);
+  //     queryClient.invalidateQueries(["userInformation"]);
+  //   },
+  //   onError: (err) => {
+  //     console.log(err.response?.data || err.message);
+  //     // rollback kalau gagal
+  //     queryClient.setQueryData(["latestTtransactions"], context.prevData);
+  //   },
+  //   // onSettled: () => {
+  //   //   //  refetch untuk sync ulang server
+  //   //   queryClient.invalidateQueries(["transactions"]);
+  //   // },
+  // });
 
   // Submit form
   const onSubmit = (data) => {
     addTransaction.mutate(data);
   };
+  useEffect(() => {
+    if (!transactionType) return;
+
+    reset({
+      transaction_type: transactionType,
+      amount: "",
+      category_id: "",
+      account_id: "",
+      note: "",
+    });
+  }, [transactionType, reset]);
 
   return (
     <div className="w-full max-w-md mx-auto rounded-2xl bg-white p-6 shadow-lg">
@@ -87,12 +143,17 @@ export default function CreateNewTransaction({ cards }) {
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium">Type</label>
             <select
-              {...register("transaction_type")}
+              {...register("transaction_type", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
               <option value="income">Income</option>
               <option value="expense">Expense</option>
             </select>
+            {errors.transaction_type && (
+              <p className="text-xs text-red-500">
+                What type of your transaction bro ?
+              </p>
+            )}
           </div>
 
           {/* AMOUNT */}
@@ -102,8 +163,8 @@ export default function CreateNewTransaction({ cards }) {
               {...register("amount", {
                 required: "Nominal wajib diisi",
                 pattern: {
-                  value: /^\d+(\.\d{1,2})$/,
-                  message: "Hanya boleh angka atau desimal 2 digit",
+                  value: /^\d+$/,
+                  message: "Hanya boleh angka, tanpa titik maupun desimal yak",
                 },
               })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
@@ -138,7 +199,7 @@ export default function CreateNewTransaction({ cards }) {
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium">Category</label>
             <select
-              {...register("category_id")}
+              {...register("category_id", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
               {transactionType === "income" ? (
@@ -157,6 +218,11 @@ export default function CreateNewTransaction({ cards }) {
                 </>
               )}
             </select>
+            {errors.category_id && (
+              <p className="text-xs text-red-500">
+                Please select category first
+              </p>
+            )}
           </div>
 
           {/* NOTE */}
@@ -182,6 +248,28 @@ export default function CreateNewTransaction({ cards }) {
             {addTransaction.isPending ? "Saving..." : "Submit"}
           </button>
         </form>
+      )}
+      {popup.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div
+            className={`w-[90%] max-w-sm rounded-2xl p-6 text-center shadow-xl text-white
+        ${popup.type === "success" ? "bg-amber-700" : "bg-red-600"}
+      `}
+          >
+            <h2 className="mb-2 text-lg font-bold">
+              {popup.type === "success" ? "Success " : "Error ❌"}
+            </h2>
+
+            <p className="text-sm">{popup.message}</p>
+
+            <button
+              onClick={() => setPopup({ show: false, type: "", message: "" })}
+              className="mt-4 rounded-lg bg-white/20 px-5 py-2 text-sm hover:bg-white/30 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

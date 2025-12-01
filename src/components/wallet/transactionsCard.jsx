@@ -23,7 +23,7 @@ export default function TransactionsCard({ transactions }) {
                     item.type === "Income" ? "text-green-600" : "text-red-500"
                   }`}
                 >
-                  {item.type.toUpperCase()}
+                  {item.type}
                 </span>
                 <span className="text-sm text-zinc-500">
                   {new Date(item.created_at).toLocaleDateString("id-ID", {
@@ -52,11 +52,11 @@ export default function TransactionsCard({ transactions }) {
             {openIndex === index && (
               <div className="rounded-lg bg-zinc-50 p-3 text-sm text-zinc-700 border">
                 <p>
-                  <span className="font-semibold">Category:</span>{" "}
+                  <span className="font-semibold">Category:</span>
                   {item.category_name}
                 </p>
                 <p>
-                  <span className="font-semibold">Note:</span>{" "}
+                  <span className="font-semibold">Note:</span>
                   {item.note || "-"}
                 </p>
               </div>
