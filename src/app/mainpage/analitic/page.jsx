@@ -52,6 +52,7 @@ export default function Analitic() {
 
   return (
     <div className="space-y-20">
+      <h1 className="text-2xl text-emerald-600 font-bold">Analitic</h1>
       {/* Summary */}
       <div className="summary space-y-2">
         <div>Total Income: Rp. {totalIncome}</div>

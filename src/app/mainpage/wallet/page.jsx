@@ -21,6 +21,11 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 export default function Wallet() {
   //state buat add account nanti wajib bikin component baru buat form jangan disini
   const [showForm, setShowForm] = useState(false);
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "", // "success" | "error"
+    message: "",
+  });
 
   const queryClient = useQueryClient();
   const { data, isLoading, isFetching, error, isError } = useQuery({
@@ -35,6 +40,7 @@ export default function Wallet() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -59,6 +65,18 @@ export default function Wallet() {
 
       //refetch server
       queryClient.invalidateQueries(["userInformation"]);
+      reset();
+      //  POP OUT SUCCES
+      setPopup({
+        show: true,
+        type: "success",
+        message: "Account successfully added ✔",
+      });
+
+      setTimeout(() => {
+        setPopup({ show: false, type: "", message: "" });
+        setShowForm(false);
+      }, 5000);
     },
     onError: (err) => {
       console.log(err.response?.data || err.message);
@@ -77,7 +95,7 @@ export default function Wallet() {
       <h1 className="text-2xl text-emerald-600 font-bold">Wallet</h1>
       <button
         onClick={() => setShowForm(!showForm)}
-        className="bg-emerald-600 text-white px-4 py-2 rounded"
+        className="bg-emerald-600 text-white w-40 py-2 rounded"
       >
         {showForm ? "Close Form" : "Add account +"}
       </button>
@@ -139,11 +157,35 @@ export default function Wallet() {
 
             <button
               type="submit"
-              className="bg-amber-500 text-white px-4 py-2 rounded"
+              className="bg-emerald-700 text-white px-4 py-2 w-full rounded-xl text-sm font-semibold  hover:bg-emerald-800 transition disabled:opacity-50"
             >
               Submit
             </button>
           </form>
+          {popup.show && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+              <div
+                className={`w-[90%] max-w-sm rounded-2xl p-6 text-center shadow-xl text-white
+        ${popup.type === "success" ? "bg-emerald-600" : "bg-red-600"}
+      `}
+              >
+                <h2 className="mb-2 text-lg font-bold">
+                  {popup.type === "success" ? "Success " : "Error ❌"}
+                </h2>
+
+                <p className="text-sm">{popup.message}</p>
+
+                <button
+                  onClick={() =>
+                    setPopup({ show: false, type: "", message: "" })
+                  }
+                  className="mt-4 rounded-lg bg-white/20 px-5 py-2 text-sm hover:bg-white/30 transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -159,22 +201,20 @@ export default function Wallet() {
           <div className="space-y-6">
             <CardAccount cards={data} />
 
-            <div className="transactions">
-              <CreateNewTransaction cards={data} />
-            </div>
+            <CreateNewTransaction cards={data} />
           </div>
         )}
       </div>
 
       {/* Recent Transactions */}
       <div className="recent_transaction space-y-2">
-        <p className="font-semibold text-emerald-700 ">Transactions</p>
+        <p className="font-semibold text-amber-600 ">Transactions</p>
         <TransactionsHistory />
       </div>
 
       {/* See More */}
       <Link href="../mainpage/transactions">
-        <div className="see_more text-blue-600 underline cursor-pointer">
+        <div className="see_more text-emerald-800 underline cursor-pointer">
           See More &gt;&gt;
         </div>
       </Link>

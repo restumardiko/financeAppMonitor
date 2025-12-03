@@ -3,6 +3,8 @@ import api from "@/lib/api";
 //import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { Coins } from "lucide-react";
+import { CircleDollarSignIcon } from "lucide-react";
 
 import TransactionsCard from "../../components/wallet/transactionsCard";
 import {
@@ -105,8 +107,8 @@ export default function Home() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">
-          Hello {isLoading ? "..." : data.name}.
+        <h1 className="text-2xl font-bold text-emerald-800">
+          Hello!😉 <br /> {isLoading ? "..." : data.name}.
         </h1>
         <h3 className="text-muted-foreground">This is your finance report</h3>
       </div>
@@ -115,10 +117,10 @@ export default function Home() {
       <div id="card">
         <Card>
           <CardHeader>
-            <CardTitle>Total Balance</CardTitle>
+            <CardTitle className="text-emerald-700 ">Total Balance</CardTitle>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="flex flex-row">
             <h1 className="text-2xl font-semibold">
               Rp. {isLoading ? "..." : data.total_balance}
             </h1>
@@ -138,7 +140,7 @@ export default function Home() {
         <div className="monthlyExpense w-full">
           <Card>
             <CardHeader>
-              <CardTitle>Monthly Expense</CardTitle>
+              <CardTitle className="text-red-600">Monthly Expense</CardTitle>
             </CardHeader>
 
             <CardContent>
@@ -157,7 +159,7 @@ export default function Home() {
         <div className="monthlyIncome w-full">
           <Card>
             <CardHeader>
-              <CardTitle>Monthly Income</CardTitle>
+              <CardTitle className="text-emerald-700">Monthly Income</CardTitle>
             </CardHeader>
 
             <CardContent>
@@ -173,9 +175,9 @@ export default function Home() {
         </div>
         {/* Monthly balance*/}
         <div className="monthlyBalance w-full">
-          <Card>
+          <Card className="">
             <CardHeader>
-              <CardTitle>Monthly balance</CardTitle>
+              <CardTitle className="text-amber-500">Monthly balance</CardTitle>
             </CardHeader>
 
             <CardContent>
@@ -200,7 +202,7 @@ export default function Home() {
 
       {/* Recent Transactions */}
       <div className="recent_transactions">
-        <div>Latest Transactions</div>
+        <div className="text-emerald-700 m-2 ">Latest Transaction</div>
         <TransactionsHistory />
       </div>
     </div>

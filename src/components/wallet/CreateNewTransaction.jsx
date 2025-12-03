@@ -3,6 +3,7 @@ import api from "@/lib/api";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { CornerRightUp, CornerRightDown } from "lucide-react";
 
 export default function CreateNewTransaction({ cards }) {
   const [showForm, setShowForm] = useState(false);
@@ -85,33 +86,9 @@ export default function CreateNewTransaction({ cards }) {
 
       setTimeout(() => {
         setPopup({ show: false, type: "", message: "" });
-      }, 2500);
+      }, 5000);
     },
   });
-
-  // const addTransaction = useMutation({
-  //   mutationFn: postTransaction,
-  //   onSuccess: (newTransaction) => {
-  //     // update cache
-  //     queryClient.setQueryData(["latestTransactions"], (old = []) => [
-  //       newTransaction,
-  //       ...old,
-  //     ]);
-
-  //     //refetch server
-  //     queryClient.invalidateQueries(["account"]);
-  //     queryClient.invalidateQueries(["userInformation"]);
-  //   },
-  //   onError: (err) => {
-  //     console.log(err.response?.data || err.message);
-  //     // rollback kalau gagal
-  //     queryClient.setQueryData(["latestTtransactions"], context.prevData);
-  //   },
-  //   // onSettled: () => {
-  //   //   //  refetch untuk sync ulang server
-  //   //   queryClient.invalidateQueries(["transactions"]);
-  //   // },
-  // });
 
   // Submit form
   const onSubmit = (data) => {
@@ -130,18 +107,18 @@ export default function CreateNewTransaction({ cards }) {
   }, [transactionType, reset]);
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl bg-white p-6 shadow-lg">
+    <div className="w-full  bg-white  space-y-10">
       <button
         onClick={() => setShowForm(!showForm)}
-        className="bg-emerald-600 text-white px-4 py-2 rounded"
+        className="bg-emerald-600 text-white  py-2 rounded w-40"
       >
-        {showForm ? "Close Form" : "Add Transaction +"}
+        {showForm ? "Close" : "Add Transaction +"}
       </button>
       {showForm && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* TYPE */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Type</label>
+            <label className="">Type</label>
             <select
               {...register("transaction_type", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
@@ -158,7 +135,7 @@ export default function CreateNewTransaction({ cards }) {
 
           {/* AMOUNT */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Amount</label>
+            <label className="">Amount</label>
             <input
               {...register("amount", {
                 required: "Nominal wajib diisi",
@@ -177,7 +154,7 @@ export default function CreateNewTransaction({ cards }) {
 
           {/* ACCOUNT */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Account</label>
+            <label className="">Account</label>
             <select
               {...register("account_id", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
@@ -197,7 +174,7 @@ export default function CreateNewTransaction({ cards }) {
 
           {/* CATEGORY */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Category</label>
+            <label className="">Category</label>
             <select
               {...register("category_id", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
@@ -227,7 +204,7 @@ export default function CreateNewTransaction({ cards }) {
 
           {/* NOTE */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Note</label>
+            <label className="">Note</label>
             <input
               type="text"
               {...register("note", { required: "Wajib diisi" })}
@@ -253,7 +230,7 @@ export default function CreateNewTransaction({ cards }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div
             className={`w-[90%] max-w-sm rounded-2xl p-6 text-center shadow-xl text-white
-        ${popup.type === "success" ? "bg-amber-700" : "bg-red-600"}
+        ${popup.type === "success" ? "bg-emerald-600" : "bg-red-600"}
       `}
           >
             <h2 className="mb-2 text-lg font-bold">

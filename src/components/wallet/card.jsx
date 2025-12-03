@@ -22,7 +22,7 @@ export default function CardAccount({ cards }) {
           className="rounded-2xl shadow-md hover:shadow-lg transition"
         >
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-semibold">
+            <CardTitle className="text-xl text-emerald-700 font-semibold">
               {item.account_name}
             </CardTitle>
           </CardHeader>
@@ -30,7 +30,7 @@ export default function CardAccount({ cards }) {
           <CardContent className="flex flex-col gap-2">
             <p className="text-sm text-muted-foreground">Total Balance</p>
 
-            <p className="text-xl font-bold text-green-600">
+            <p className="text-xl font-bold text-amber-600">
               Rp{" "}
               {Number(
                 item.total_balance || item.initial_balance

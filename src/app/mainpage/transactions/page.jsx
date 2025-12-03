@@ -1,5 +1,6 @@
 "use client";
 import api from "@/lib/api";
+import { CornerRightUp, CornerRightDown } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -68,11 +69,15 @@ export default function AllTransactionsHistory() {
             <div key={monthKey} className="border p-2 rounded-lg">
               {/* MONTH HEADER */}
               <div
-                className="flex justify-between items-center cursor-pointer"
+                className="flex gap-2 items-center cursor-pointer"
                 onClick={() => toggleMonth(monthKey)}
               >
-                <div className="font-bold text-xl">{monthKey}</div>
-                <button className="text-lg">{monthOpen ? "▲" : "▼"}</button>
+                <div className="font-bold text-xl text-amber-500">
+                  {monthKey}
+                </div>
+                <button className="text-lg text-emerald-700">
+                  {monthOpen ? <CornerRightUp /> : <CornerRightDown />}
+                </button>
               </div>
 
               {/* DAYS LIST */}
@@ -85,13 +90,23 @@ export default function AllTransactionsHistory() {
                       <div key={day} className="border-b pb-2">
                         {/* DAY HEADER */}
                         <div
-                          className="flex justify-between items-center cursor-pointer"
+                          className="flex justify-between items-center cursor-pointer "
                           onClick={() => toggleDay(`${monthKey}-${day}`)}
                         >
-                          <div className="font-semibold">{day}</div>
+                          <div className="font-semibold text-amber-600">
+                            {day}
+                          </div>
                           <div className="flex items-center gap-3">
-                            <span>{transactions.length} transaksi</span>
-                            <button>{dayOpen ? "▲" : "▼"}</button>
+                            <span className="text-emerald-800">
+                              {transactions.length} transaksi
+                            </span>
+                            <button className="text-emerald-800">
+                              {dayOpen ? (
+                                <CornerRightUp />
+                              ) : (
+                                <CornerRightDown />
+                              )}
+                            </button>
                           </div>
                         </div>
 
