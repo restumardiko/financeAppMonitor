@@ -15,23 +15,39 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 export default function CategoryChart({ dataChart, account }) {
   // ambil tiap bulan
-  function getUniqueMonths(transactions) {
+  function getUniqueYears(transactions) {
     const months = transactions.map((t) => {
       const d = new Date(t.created_at);
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
-      return `${y}-${m}`;
+      return `${y}`;
     });
 
     return [...new Set(months)];
   }
 
-  const uniqueMonths = getUniqueMonths(dataChart ?? []);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const uniqueYears = getUniqueYears(dataChart ?? []);
 
   const [sort, setSort] = useState({
     type: "Income",
     account: "All",
-    time: "All",
+    year: "All",
+    month: "All",
   });
 
   function handleFilterChange(key, value) {
@@ -39,18 +55,25 @@ export default function CategoryChart({ dataChart, account }) {
   }
 
   // FILTER DATA
-
   const filteredData = dataChart.filter((item) => {
+    const date = new Date(item.created_at);
+    const itemYear = date.getFullYear().toString();
+    const itemMonth = months[date.getMonth()];
+
     const matchType = item.type === sort.type;
 
     const matchAccount =
       sort.account === "All" ? true : item.account_name === sort.account;
 
-    const matchTime =
-      sort.time === "All" ? true : item.created_at.startsWith(sort.time);
+    const matchYear = sort.year === "All" ? true : itemYear === sort.year;
 
-    return matchType && matchAccount && matchTime;
+    const matchMonth = sort.month === "All" ? true : itemMonth === sort.month;
+
+    return matchType && matchAccount && matchYear && matchMonth;
   });
+
+  console.log("ini filtered data", filteredData);
+  console.log("ini dataChart", dataChart);
 
   // END DATA MAKER
 
@@ -117,13 +140,25 @@ export default function CategoryChart({ dataChart, account }) {
           ))}
         </select>
 
-        {/* Time Filter */}
+        {/* Year Filter */}
         <select
-          onChange={(e) => handleFilterChange("time", e.target.value)}
+          onChange={(e) => handleFilterChange("year", e.target.value)}
           className="rounded-md border px-3 py-2"
         >
-          <option value="All">All Time</option>
-          {uniqueMonths.map((item, index) => (
+          <option value="All">All Year</option>
+          {uniqueYears.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+        {/* month Filter */}
+        <select
+          onChange={(e) => handleFilterChange("month", e.target.value)}
+          className="rounded-md border px-3 py-2"
+        >
+          <option value="All">All Month</option>
+          {months.map((item, index) => (
             <option key={index} value={item}>
               {item}
             </option>

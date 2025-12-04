@@ -54,15 +54,22 @@ export default function Analitic() {
     <div className="space-y-20">
       <h1 className="text-2xl text-emerald-600 font-bold">Analitic</h1>
       {/* Summary */}
-      <div className="summary space-y-2">
-        <div>Total Income: Rp. {totalIncome}</div>
-        <div>Total Expense:Rp. {totalExpense}</div>
+      <div className="summary space-y-2 text-emerald-700">
+        <div className="flex flex-row gap-1">
+          Total Income: Rp. <div className="text-amber-600">{totalIncome}</div>
+        </div>
+        <div className="flex flex-row gap-1">
+          Total Expense:Rp. <div className="text-amber-600">{totalExpense}</div>
+        </div>
 
-        <div className="balance">
+        <div className="balance text-emerald-600 ">
           {isUserLoading ? (
             <p>Loading...</p>
           ) : (
-            <div>Total Balance: Rp. {userInfo.total_balance}</div>
+            <div className="flex flex-row gap-1">
+              Total Balance: Rp.
+              <div className="text-amber-600">{userInfo.total_balance}</div>
+            </div>
           )}
         </div>
       </div>
