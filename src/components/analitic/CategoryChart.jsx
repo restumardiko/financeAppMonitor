@@ -1,4 +1,4 @@
-"useClient";
+"use client";
 
 import { useState } from "react";
 
@@ -11,7 +11,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+const COLORS = [
+  "#00C49F",
+  "#FFBB28",
+  "#2DD4BF",
+  "#0088FE",
+  "#FF8042",
+  "#A28CF6",
+  "#FF5C8A",
+  "#F97316",
+];
 
 export default function CategoryChart({ dataChart, account }) {
   // ambil tiap bulan
@@ -96,7 +105,7 @@ export default function CategoryChart({ dataChart, account }) {
       "Transportasi",
       "Tagihan & Kebutuhan Rumah",
       "Hiburan & Gaya Hidup",
-      "kesehatan",
+      "Kesehatan",
     ];
 
     return expenseCategories.map((cat) => {
@@ -114,13 +123,16 @@ export default function CategoryChart({ dataChart, account }) {
   //console.log("endData:", endData);
 
   return (
-    <div className="w-full h-80 space-y-6">
+    <div className="w-full h-auto ">
+      <h1 className="text-emerald-600 text-xl text-center mb-4">
+        Categories Percentage
+      </h1>
       {/* Filter Section */}
-      <div className="sort_button flex flex-wrap gap-4">
+      <div className="sort_button flex flex-wrap gap-1">
         {/* Type Filter */}
         <select
           onChange={(e) => handleFilterChange("type", e.target.value)}
-          className="rounded-md border px-3 py-2"
+          className="rounded-md border px-3 py-2 text-emerald-600"
         >
           <option value="Income">Income</option>
           <option value="Expense">Expense</option>
@@ -130,7 +142,7 @@ export default function CategoryChart({ dataChart, account }) {
 
         <select
           onChange={(e) => handleFilterChange("account", e.target.value)}
-          className="rounded-md border px-3 py-2"
+          className="rounded-md border px-3 py-2 text-emerald-600"
         >
           <option value="All">All Account</option>
           {account.map((item, index) => (
@@ -143,7 +155,7 @@ export default function CategoryChart({ dataChart, account }) {
         {/* Year Filter */}
         <select
           onChange={(e) => handleFilterChange("year", e.target.value)}
-          className="rounded-md border px-3 py-2"
+          className="rounded-md border px-3 py-2 text-emerald-600"
         >
           <option value="All">All Year</option>
           {uniqueYears.map((item, index) => (
@@ -155,7 +167,7 @@ export default function CategoryChart({ dataChart, account }) {
         {/* month Filter */}
         <select
           onChange={(e) => handleFilterChange("month", e.target.value)}
-          className="rounded-md border px-3 py-2"
+          className="rounded-md border px-3 py-2 text-emerald-600"
         >
           <option value="All">All Month</option>
           {months.map((item, index) => (
@@ -167,28 +179,43 @@ export default function CategoryChart({ dataChart, account }) {
       </div>
 
       {/* Chart Section */}
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={endData}
-            cx="50%"
-            cy="50%"
-            outerRadius={120}
-            dataKey="value"
-            labelLine={false}
-            label={({ name, percent }) =>
-              `${name} ${(percent * 100).toFixed(0)}%`
-            }
-          >
-            {endData.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
+      <div className="w-full h-96">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={endData}
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              innerRadius={66}
+              dataKey="value"
+              labelLine
+              label={({ percent }) =>
+                percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ""
+              }
+            >
+              {endData.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(value)
+              }
+              contentStyle={{
+                maxWidth: 220,
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+              }}
+            />
 
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

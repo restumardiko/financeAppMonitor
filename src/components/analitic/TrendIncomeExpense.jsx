@@ -80,9 +80,12 @@ export default function TrendIncomeExpense({
 
   //console.log("ini nilai filtered data", filteredData);
   return (
-    <div className="w-full h-80 space-y-6">
+    <div className="w-full ">
+      <h1 className="text-emerald-700 text-xl mb-4 text-center">
+        Trending Income Expense
+      </h1>
       {/* FILTER SECTION */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 text-emerald-600 ">
         {/* FILTER YEAR */}
         <select
           onChange={(e) => handleFilterChange("time", e.target.value)}
@@ -111,7 +114,7 @@ export default function TrendIncomeExpense({
       </div>
 
       {/* CHART SECTION */}
-      <div className="w-full h-[260px] rounded-xl border p-4 shadow-sm">
+      <div className="w-full h-80   ">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={base}

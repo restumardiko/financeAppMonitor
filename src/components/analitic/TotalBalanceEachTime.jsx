@@ -1,5 +1,6 @@
 // "use client";
 import { useState, useMemo } from "react";
+import {} from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -116,9 +117,12 @@ export default function TotalBalanceEachTime({
   console.log("ini chart final data", chartData);
 
   return (
-    <div className="w-full h-full mt-20 space-y-8">
+    <div className="w-full h-full">
+      <h1 className="text-xl text-center text-emerald-700 mb-4">
+        Total Balance
+      </h1>
       {/* FILTER SECTION */}
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-2">
         {/* FILTER TAHUN */}
         <select
           onChange={(e) => handleFilterChange("time", e.target.value)}

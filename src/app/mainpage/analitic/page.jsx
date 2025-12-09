@@ -52,9 +52,9 @@ export default function Analitic() {
 
   return (
     <div className="space-y-20">
-      <h1 className="text-2xl text-emerald-600 font-bold">Analitic</h1>
+      <h1 className="text-2xl text-emerald-600 mb-4 font-bold">Analitic</h1>
       {/* Summary */}
-      <div className="summary space-y-2 text-emerald-700">
+      <div className="summary space-y-2 mb-10 text-emerald-700">
         <div className="flex flex-row gap-1">
           Total Income: Rp. <div className="text-amber-600">{totalIncome}</div>
         </div>
@@ -77,18 +77,18 @@ export default function Analitic() {
         {isAccountLoading ? (
           <p>Loading</p>
         ) : (
-          <div>
+          <div className=" flex flex-col gap-10">
             {" "}
             {/* Category Chart */}
             <div className="category_charts">
               <CategoryChart dataChart={transaction} account={account} />
             </div>
             {/* Trend Chart */}
-            <div className="trend mt-36">
+            <div className="trend">
               <TrendIncomeExpense dataChart={transaction} account={account} />
             </div>
             {/* Total Balance Over Time */}
-            <div className="total_balance_chart w-full h-60 mb-40 ml-10">
+            <div className="total_balance_chart ">
               <TotalBalanceEachTime
                 dataChart={transaction}
                 account={account}
@@ -99,9 +99,6 @@ export default function Analitic() {
           </div>
         )}
       </div>
-
-      {/* Each Category Each Time (Placeholder) */}
-      <div className="each_category_each_time"></div>
     </div>
   );
 }
