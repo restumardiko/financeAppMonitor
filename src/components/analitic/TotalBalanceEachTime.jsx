@@ -118,11 +118,11 @@ export default function TotalBalanceEachTime({
 
   return (
     <div className="w-full h-full">
-      <h1 className="text-xl text-center text-emerald-700 mb-4">
+      <h1 className="text-emerald-500 text-xl mb-4 text-center font-bold">
         Total Balance
       </h1>
       {/* FILTER SECTION */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 text-emerald-600 my-2">
         {/* FILTER TAHUN */}
         <select
           onChange={(e) => handleFilterChange("time", e.target.value)}
@@ -151,22 +151,37 @@ export default function TotalBalanceEachTime({
       </div>
 
       {/* CHART SECTION */}
-      <div className="w-full h-[350px] rounded-xl border  shadow-sm">
+      <div className="w-full h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
-            margin={{ top: 20, right: 12, left: 0, bottom: 12 }}
+            margin={{ top: 20, right: 12, left: 20, bottom: 12 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="name"
               interval={0}
-              angle={-30}
+              angle={-45}
               textAnchor="end"
               height={60}
             />
-            <YAxis />
-            <Tooltip />
+            <YAxis
+              tickFormatter={(value) =>
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  notation: "compact",
+                }).format(value)
+              }
+            />
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(value)
+              }
+            />
 
             <Area
               type="monotone"

@@ -7,6 +7,7 @@ import CategoryChart from "../../../components/analitic/CategoryChart";
 import TotalBalanceEachTime from "../../../components/analitic/TotalBalanceEachTime";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import generateDummyTransactions from "../../../components/analitic/data dummy";
+import { formatIDR } from "../../../lib/idrCurrency";
 
 const transaction = generateDummyTransactions();
 
@@ -56,10 +57,12 @@ export default function Analitic() {
       {/* Summary */}
       <div className="summary space-y-2 mb-10 text-emerald-700">
         <div className="flex flex-row gap-1">
-          Total Income: Rp. <div className="text-amber-600">{totalIncome}</div>
+          Total Income:
+          <div className="text-amber-600">{formatIDR.format(totalIncome)}</div>
         </div>
         <div className="flex flex-row gap-1">
-          Total Expense:Rp. <div className="text-amber-600">{totalExpense}</div>
+          Total Expense:
+          <div className="text-amber-600">{formatIDR.format(totalExpense)}</div>
         </div>
 
         <div className="balance text-emerald-600 ">
@@ -67,8 +70,10 @@ export default function Analitic() {
             <p>Loading...</p>
           ) : (
             <div className="flex flex-row gap-1">
-              Total Balance: Rp.
-              <div className="text-amber-600">{userInfo.total_balance}</div>
+              Total Balance:
+              <div className="text-amber-600">
+                {formatIDR.format(userInfo.total_balance)}
+              </div>
             </div>
           )}
         </div>

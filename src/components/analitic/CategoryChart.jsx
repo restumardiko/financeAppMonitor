@@ -124,7 +124,7 @@ export default function CategoryChart({ dataChart, account }) {
 
   return (
     <div className="w-full h-auto ">
-      <h1 className="text-emerald-600 text-xl text-center mb-4">
+      <h1 className="text-emerald-500 text-xl mb-4 text-center font-bold">
         Categories Percentage
       </h1>
       {/* Filter Section */}

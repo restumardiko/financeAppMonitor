@@ -81,7 +81,7 @@ export default function TrendIncomeExpense({
   //console.log("ini nilai filtered data", filteredData);
   return (
     <div className="w-full ">
-      <h1 className="text-emerald-700 text-xl mb-4 text-center">
+      <h1 className="text-emerald-500 text-xl mb-4 text-center font-bold">
         Trending Income Expense
       </h1>
       {/* FILTER SECTION */}
@@ -118,18 +118,34 @@ export default function TrendIncomeExpense({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={base}
-            margin={{ top: 10, right: 20, left: 10, bottom: 20 }}
+            margin={{ top: 10, right: 20, left: 15, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="name"
               interval={0}
-              angle={-30}
+              angle={-45}
               textAnchor="end"
               height={60}
             />
-            <YAxis />
-            <Tooltip />
+            <YAxis
+              tickFormatter={(value) =>
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  notation: "compact",
+                }).format(value)
+              }
+            />
+
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(value)
+              }
+            />
             <Legend />
 
             <Line
