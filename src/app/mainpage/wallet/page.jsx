@@ -109,12 +109,18 @@ export default function Wallet() {
               <label htmlFor="name">Name</label>
               <input
                 id="name"
-                {...register("name", { required: true })}
+                {...register("name", {
+                  required: "this field is required",
+                  maxLength: {
+                    value: 18,
+                    message: "too much bro",
+                  },
+                })}
                 className="border p-2 rounded"
               />
               {errors.name && (
                 <span className="text-sm text-red-500">
-                  This field is required
+                  {errors.name.message}
                 </span>
               )}
             </div>
