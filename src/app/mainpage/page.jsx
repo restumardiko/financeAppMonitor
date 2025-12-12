@@ -21,7 +21,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 //import useUserInformation from "../store/useUserInformation";
 //import TrendIncomeExpense from "../../components/chart/linechart";
-//import CategoryChart from "../../components/chart/piechart";
+import { formatIDR } from "../../lib/idrCurrency";
+
 import TransactionsHistory from "../../components/wallet/transactions_hystory";
 
 export default function Home() {
@@ -122,7 +123,7 @@ export default function Home() {
 
           <CardContent className="flex flex-row">
             <h1 className="text-2xl font-semibold">
-              Rp. {isLoading ? "..." : data.total_balance}
+              {isLoading ? "..." : formatIDR.format(data.total_balance)}
             </h1>
           </CardContent>
 
@@ -144,7 +145,11 @@ export default function Home() {
             </CardHeader>
 
             <CardContent>
-              <p>Rp.{isTransactionLoading ? "..." : monthlyExpense}</p>
+              <p>
+                {isTransactionLoading
+                  ? "..."
+                  : formatIDR.format(monthlyExpense)}
+              </p>
             </CardContent>
 
             <CardFooter>
@@ -163,7 +168,9 @@ export default function Home() {
             </CardHeader>
 
             <CardContent>
-              <p>Rp.{isTransactionLoading ? "..." : monthlyIncome}</p>
+              <p>
+                {isTransactionLoading ? "..." : formatIDR.format(monthlyIncome)}
+              </p>
             </CardContent>
 
             <CardFooter>
@@ -181,7 +188,11 @@ export default function Home() {
             </CardHeader>
 
             <CardContent>
-              <p>Rp.{isTransactionLoading ? "..." : monthlyBalance}</p>
+              <p>
+                {isTransactionLoading
+                  ? "..."
+                  : formatIDR.format(monthlyBalance)}
+              </p>
             </CardContent>
 
             <CardFooter>

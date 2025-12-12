@@ -199,7 +199,9 @@ export default function Wallet() {
           <p>Please make account first</p>
         ) : (
           <div className="space-y-6">
-            <CardAccount cards={data} />
+            <div className="">
+              <CardAccount cards={data} />
+            </div>
 
             <CreateNewTransaction cards={data} />
           </div>

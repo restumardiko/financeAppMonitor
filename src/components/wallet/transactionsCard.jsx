@@ -50,14 +50,21 @@ export default function TransactionsCard({ transactions }) {
             </div>
 
             {openIndex === index && (
-              <div className="rounded-lg bg-zinc-50 p-3 text-sm text-zinc-700 border">
+              <div className="rounded-lg bg-zinc-50 p-3 text-sm text-amber-500 border">
                 <p>
-                  <span className="font-semibold">Category:</span>
-                  {item.category_name}
+                  <span className="font-semibold">Category: </span>
+                  <span className="text-gray-600">{item.category_name}</span>
                 </p>
                 <p>
-                  <span className="font-semibold">Note:</span>
-                  {item.note || "-"}
+                  <span className="font-semibold">Note: </span>
+                  <span className="text-gray-600"> {item.note || "-"}</span>
+                </p>
+                <p>
+                  <span className="font-semibold">Account: </span>
+                  <span className="text-gray-600">
+                    {" "}
+                    {item.account_name || "-"}
+                  </span>
                 </p>
               </div>
             )}
