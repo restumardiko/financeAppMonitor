@@ -160,6 +160,44 @@ export default function Home() {
   }, [prevMonthlyIncome, prevMonthlyExpense]);
   console.log("ini prev monthly balance ", prevMonthlyBalance);
 
+  ///PERCENTAGE SESSION
+  const incomeChange = useMemo(() => {
+    if (prevMonthlyIncome === 0) return null;
+
+    const diff = monthlyIncome - prevMonthlyIncome;
+    const percent = (diff / prevMonthlyIncome) * 100;
+
+    return percent;
+  }, [monthlyIncome, prevMonthlyIncome]);
+  //EXPENSE DIFF
+  const expenseChange = useMemo(() => {
+    if (prevMonthlyExpense === 0) return null;
+
+    const diff = monthlyExpense - prevMonthlyExpense;
+    const percent = (diff / prevMonthlyExpense) * 100;
+
+    return percent;
+  }, [monthlyIncome, prevMonthlyIncome]);
+  //BALANCE DIFF
+  const balanceChange = useMemo(() => {
+    if (prevMonthlyBalance === 0) return null;
+
+    const diff = monthlyBalance - prevMonthlyBalance;
+    const percent = (diff / prevMonthlyBalance) * 100;
+
+    return percent;
+  }, [monthlyBalance, prevMonthlyBalance]);
+  // text generate
+  const renderChangeText = (percent) => {
+    if (percent === null) return "No data from last month";
+
+    const abs = Math.abs(percent).toFixed(1);
+
+    if (percent > 0) return `${abs}% higher than last month`;
+    if (percent < 0) return `${abs}% lower than last month`;
+
+    return "Same as last month";
+  };
   const router = useRouter();
 
   useEffect(() => {
@@ -222,7 +260,8 @@ export default function Home() {
 
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                6 persen higher than last month
+                {" "}
+                {renderChangeText(expenseChange)}
               </p>
             </CardFooter>
           </Card>
@@ -243,7 +282,7 @@ export default function Home() {
 
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                6 persen higher than last month
+                {renderChangeText(incomeChange)}
               </p>
             </CardFooter>
           </Card>
@@ -265,7 +304,7 @@ export default function Home() {
 
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                6 persen higher than last month
+                {renderChangeText(balanceChange)}
               </p>
             </CardFooter>
           </Card>
