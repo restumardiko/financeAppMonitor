@@ -31,14 +31,14 @@ export default function CardAccount({ cards }) {
                 : "bg-gray-50 scale-100 z-0"
             }
 
-            ${index === 0 ? "mt-0 ml-0" : "md:-ml-40 -mt-20 md:-mt-0"}
+            ${index === 0 ? "mt-0 ml-0" : "md:-ml-40 -mt-24 md:-mt-0"}
           `}
         >
           <CardHeader className="min-h-8">
             <CardTitle
               className={
                 item.account_name.length >= 10
-                  ? "text-lg text-emerald-700 font-semibold"
+                  ? "text-xl md:text-lg text-emerald-700 font-semibold"
                   : "text-xl text-emerald-700 font-semibold"
               }
             >

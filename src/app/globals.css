@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
-* {
+/* * {
   outline: 1px solid lime;
-}
+} */
 
 @theme inline {
   --color-background: var(--background);

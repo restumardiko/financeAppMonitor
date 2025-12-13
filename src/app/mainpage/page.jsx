@@ -92,6 +92,74 @@ export default function Home() {
     return monthlyIncome - monthlyExpense;
   }, [monthlyIncome, monthlyExpense]);
 
+  // ---MONTHLY PREVIOUS---
+  //PREVIOUS MONTHLY INCOME
+  const prevMonthlyIncome = useMemo(() => {
+    if (!transactions.length) return 0;
+
+    const now = new Date();
+
+    let targetMonth = now.getMonth() - 1;
+    let targetYear = now.getFullYear();
+
+    // Handle January → December of previous year
+    if (targetMonth < 0) {
+      targetMonth = 11;
+      targetYear -= 1;
+    }
+
+    const expenseLastMonth = transactions
+      .filter((t) => {
+        const date = new Date(t.created_at);
+
+        return (
+          t.type === "Income" &&
+          date.getMonth() === targetMonth &&
+          date.getFullYear() === targetYear
+        );
+      })
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    return expenseLastMonth;
+  }, [transactions]);
+  console.log("ini prev monthly income", prevMonthlyIncome);
+
+  //PREVIUS MONTHLY EXPENSE
+  const prevMonthlyExpense = useMemo(() => {
+    if (!transactions.length) return 0;
+
+    const now = new Date();
+
+    let targetMonth = now.getMonth() - 1; // previous month
+    let targetYear = now.getFullYear();
+
+    // Handle January → December of previous year
+    if (targetMonth < 0) {
+      targetMonth = 11;
+      targetYear -= 1;
+    }
+
+    const expenseLastMonth = transactions
+      .filter((t) => {
+        const date = new Date(t.created_at);
+
+        return (
+          t.type === "Expense" &&
+          date.getMonth() === targetMonth &&
+          date.getFullYear() === targetYear
+        );
+      })
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    return expenseLastMonth;
+  }, [transactions]);
+  console.log("ini previous monthly expense", prevMonthlyExpense);
+  // PREV MONTHLY BALANCE
+  const prevMonthlyBalance = useMemo(() => {
+    return prevMonthlyIncome - prevMonthlyExpense;
+  }, [prevMonthlyIncome, prevMonthlyExpense]);
+  console.log("ini prev monthly balance ", prevMonthlyBalance);
+
   const router = useRouter();
 
   useEffect(() => {
