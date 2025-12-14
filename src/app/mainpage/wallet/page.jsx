@@ -80,6 +80,16 @@ export default function Wallet() {
     },
     onError: (err) => {
       console.log(err.response?.data || err.message);
+      //pop out gagal
+      setPopup({
+        show: true,
+        type: "error",
+        message: "Failed to add account ❌",
+      });
+
+      setTimeout(() => {
+        setPopup({ show: false, type: "", message: "" });
+      }, 5000);
       // rollback kalau gagal
       queryClient.setQueryData(["account"], context.prevData);
     },
