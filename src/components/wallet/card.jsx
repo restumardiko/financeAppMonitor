@@ -110,8 +110,10 @@ export default function CardAccount({ cards }) {
             <CardContent className="flex flex-col ">
               <div className=" flex flex-row justify-between">
                 <p className="text-sm text-muted-foreground">Total Balance</p>
-                <div onClick={() => handleTrash(item.account_id)}>
-                  <Trash2 />
+                <div>
+                  {item.is_deletable && (
+                    <Trash2 onClick={() => handleTrash(item.account_id)} />
+                  )}
                 </div>
               </div>
               <p className="text-xl font-bold text-amber-600">

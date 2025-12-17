@@ -32,7 +32,7 @@ export default function Wallet() {
     queryKey: ["account"],
     queryFn: async () => {
       const res = await api.get("/showAccount");
-      console.log("ini data dari account", res.data.data);
+      console.log("ini data dari account", res);
 
       return res.data.data;
     },
@@ -66,6 +66,7 @@ export default function Wallet() {
       //refetch server
       queryClient.invalidateQueries(["userInformation"]);
       reset();
+
       //  POP OUT SUCCES
       setPopup({
         show: true,
