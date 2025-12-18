@@ -1,6 +1,6 @@
 "use client";
-import { Trash2Icon } from "lucide-react";
-import { use, useState } from "react";
+import { Trash2Icon, LockKeyholeIcon } from "lucide-react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import api from "@/lib/api";
@@ -34,7 +34,7 @@ export default function TransactionsCard({ transactions }) {
       console.log("delete transaction success bro");
       queryClient.invalidateQueries(["account"]);
       queryClient.invalidateQueries(["userInformation"]);
-      queryClient.invalidateQueries(["transaction"]);
+
       queryClient.invalidateQueries(["latestTransactions"]);
 
       //  POP OUT SUCCES
@@ -45,6 +45,7 @@ export default function TransactionsCard({ transactions }) {
         message: "transaction successfully deleted",
       });
       setTimeout(() => {
+        queryClient.invalidateQueries(["transaction"]);
         setPopup({ show: false, type: "", message: "" });
       }, 5000);
     },
@@ -70,6 +71,21 @@ export default function TransactionsCard({ transactions }) {
   const onDeleteTransactionHandle = (id) => {
     deleteTransaction.mutate(id);
   };
+
+  //time
+  const now = new Date();
+  const startOfDay = new Date(
+    now.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) +
+      "T00:00:00+07:00"
+  );
+  const nextDay = new Date(startOfDay);
+  nextDay.setDate(nextDay.getDate() + 1);
+
+  // console.log("ini now", now);
+  // console.log("ini startofday", startOfDay);
+  // console.log("ini nextDay", nextDay);
+  // console.log("ini  type of nextDay", typeof nextDay);
+  // console.log("ini  type of created at", typeof transactions[0].created_at);
 
   return (
     <div>
@@ -136,9 +152,15 @@ export default function TransactionsCard({ transactions }) {
                     </p>
                   </div>
                   <div className="trash_button my-auto">
-                    <Trash2Icon
-                      onClick={() => onDeleteTransactionHandle(item.id)}
-                    />
+                    {new Date(item.created_at) >= startOfDay &&
+                    new Date(item.created_at) < nextDay ? (
+                      <Trash2Icon
+                        className="text-black"
+                        onClick={() => onDeleteTransactionHandle(item.id)}
+                      />
+                    ) : (
+                      <LockKeyholeIcon />
+                    )}
                   </div>
                 </div>
               )}
