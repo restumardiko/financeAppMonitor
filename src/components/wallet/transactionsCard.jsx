@@ -1,7 +1,12 @@
 "use client";
-import { Trash2Icon, LockKeyholeIcon } from "lucide-react";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowBigDown,
+  ArrowBigUp,
+  LockKeyholeIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { useState } from "react";
 
 import api from "@/lib/api";
 
@@ -98,13 +103,13 @@ export default function TransactionsCard({ transactions }) {
               className="flex flex-col gap-2 rounded-xl border bg-white p-4 shadow-sm cursor-pointer transition-all"
             >
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
+                <div className="flex flex-row gap-2">
                   <span
                     className={`text-xs font-semibold ${
                       item.type === "Income" ? "text-green-600" : "text-red-500"
                     }`}
                   >
-                    {item.type}
+                    {item.type === "Income" ? <ArrowBigDown /> : <ArrowBigUp />}
                   </span>
                   <span className="text-sm text-zinc-500">
                     {new Date(item.created_at).toLocaleDateString("id-ID", {
@@ -133,6 +138,10 @@ export default function TransactionsCard({ transactions }) {
               {openIndex === index && (
                 <div className="rounded-lg bg-zinc-50 p-3 text-sm text-amber-500 border flex flex-row justify-between">
                   <div className="info_text">
+                    <p>
+                      <span className="font-semibold">Type: </span>
+                      <span className="text-gray-600">{item.type}</span>
+                    </p>
                     <p>
                       <span className="font-semibold">Category: </span>
                       <span className="text-gray-600">

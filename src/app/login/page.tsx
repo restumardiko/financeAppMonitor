@@ -1,22 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import api from "@/lib/api";
-import { loginSchema } from "../../../schema";
-import { useRouter } from "next/navigation";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,7 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import api from "@/lib/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { loginSchema } from "../../../schema";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -40,17 +41,27 @@ export default function LoginForm() {
       password: "",
     },
   });
-
   async function onSubmit(values: LoginFormValues) {
     try {
-      const response = await api.post("/login", values);
-      localStorage.setItem("access_token", response.data.token);
+      const response = await api.post("/logIn", values);
+
+      const token = response.data?.token;
+      if (!token) throw new Error("Invalid response");
+
+      localStorage.setItem("access_token", token);
       router.push("/mainpage");
-    } catch (err: any) {
-      if (err.response?.status === 404) {
+    } catch (err) {
+      if (!axios.isAxiosError(err)) {
+        setServerError("Terjadi kesalahan tak terduga");
+        return;
+      }
+
+      const status = err.response?.status;
+
+      if (status === 404) {
         setServerError("Akun tidak ditemukan");
         form.setFocus("email");
-      } else if (err.response?.status === 401) {
+      } else if (status === 401) {
         form.setError("password", { message: "Password salah" });
         form.setFocus("password");
       } else {

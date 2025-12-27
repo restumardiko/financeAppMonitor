@@ -214,8 +214,12 @@ export default function Home() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-emerald-800">
-          Hello!😉 <br /> {isLoading ? "..." : data.name}.
+        <h1 className=" font-bold flex flex-col font-serif">
+          <span className="text-3xl text-emerald-600">أَهْلًا بِكُم</span>
+
+          <span className="text-xl text-amber-500">
+            {isLoading ? "..." : data.name}
+          </span>
         </h1>
         <h3 className="text-muted-foreground">This is your finance report</h3>
       </div>

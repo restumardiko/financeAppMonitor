@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
+const isMock = process.env.NEXT_PUBLIC_API_MODE === "mock";
 const nextConfig = {
   async rewrites() {
+    console.log("API MODE:", isMock);
+    if (isMock) return [];
     return [
       {
         source: "/api/:path*", // semua request ke /api/...
