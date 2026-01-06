@@ -1,9 +1,8 @@
 "use client";
 import api from "@/lib/api";
-import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { CornerRightUp, CornerRightDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function CreateNewTransaction({ cards }) {
   const [showForm, setShowForm] = useState(false);
@@ -92,6 +91,7 @@ export default function CreateNewTransaction({ cards }) {
 
   // Submit form
   const onSubmit = (data) => {
+    console.log("ini data dari useform yang tak kirim ke server", data);
     addTransaction.mutate(data);
   };
   useEffect(() => {

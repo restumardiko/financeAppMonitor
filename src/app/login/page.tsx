@@ -52,6 +52,7 @@ export default function LoginForm() {
       router.push("/mainpage");
     } catch (err) {
       if (!axios.isAxiosError(err)) {
+        console.log(err);
         setServerError("Terjadi kesalahan tak terduga");
         return;
       }

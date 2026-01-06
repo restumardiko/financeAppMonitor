@@ -1,11 +1,21 @@
-import { FAKE_TOKEN } from "../utils/token";
+import { HttpResponse } from "msw";
 
-export function requireAuth(req, res, ctx) {
-  const auth = req.headers.get("authorization");
+export const ACCESS_TOKEN = "fake-access-token";
 
-  if (auth !== `Bearer ${FAKE_TOKEN}`) {
-    return res(ctx.status(401));
+export function requireAuth(request) {
+  const auth = request.headers.get("authorization");
+
+  if (!auth) {
+    return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  return null;
+  if (auth !== `Bearer ${ACCESS_TOKEN}`) {
+    return HttpResponse.json({ message: "Invalid token" }, { status: 403 });
+  }
+
+  return { userId: "u-1" };
+}
+
+export function generateRefreshToken() {
+  return crypto.randomUUID() + crypto.randomUUID();
 }

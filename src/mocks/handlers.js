@@ -1,21 +1,11 @@
-import { http } from "msw";
+import { accountHandlers } from "./handlers/account.handlers";
+import { authHandlers } from "./handlers/auth.handlers";
+import { transactionHandlers } from "./handlers/transaction.handler";
+import { userHandlers } from "./handlers/user.handler";
 
 export const handlers = [
-  http.post("/api/logIn", async (req, res, ctx) => {
-    console.log("MSW LOGIN HIT");
-
-    const { email, password } = await req.json();
-
-    if (email !== "demo@mail.com" || password !== "user1234") {
-      return res(ctx.status(401));
-    }
-
-    return res(
-      ctx.status(200),
-      ctx.json({
-        token: FAKE_TOKEN,
-        user: { id: 1, email },
-      })
-    );
-  }),
+  ...authHandlers,
+  ...userHandlers,
+  ...accountHandlers,
+  ...transactionHandlers,
 ];

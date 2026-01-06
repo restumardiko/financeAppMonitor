@@ -106,10 +106,16 @@ export default function TransactionsCard({ transactions }) {
                 <div className="flex flex-row gap-2">
                   <span
                     className={`text-xs font-semibold ${
-                      item.type === "Income" ? "text-green-600" : "text-red-500"
+                      item.type === "Income" || item.type === "income"
+                        ? "text-green-600"
+                        : "text-red-500"
                     }`}
                   >
-                    {item.type === "Income" ? <ArrowBigDown /> : <ArrowBigUp />}
+                    {item.type === "Income" || item.type === "income" ? (
+                      <ArrowBigDown />
+                    ) : (
+                      <ArrowBigUp />
+                    )}
                   </span>
                   <span className="text-sm text-zinc-500">
                     {new Date(item.created_at).toLocaleDateString("id-ID", {
@@ -128,7 +134,9 @@ export default function TransactionsCard({ transactions }) {
                 {/* AMOUNT */}
                 <div
                   className={`text-sm font-bold ${
-                    item.type === "Income" ? "text-green-600" : "text-red-500"
+                    item.type === "Income" || item.type === "income"
+                      ? "text-green-600"
+                      : "text-red-500"
                   }`}
                 >
                   Rp {Number(item.amount).toLocaleString("id-ID")}
