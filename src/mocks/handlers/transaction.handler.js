@@ -14,21 +14,18 @@ export const transactionHandlers = [
     const accountName = accounts.find(
       (acc) => acc.account_id === body.account_id
     );
-    console.log("ini account ", accounts);
+
     const categoryName = categories.find(
       (cat) => cat.id === body.category_id
     ).category_name;
-    console.log("ini acount target ", accountName);
-    console.log("ini category target ", categoryName);
-    console.log("ini dari mock ya bro", body);
 
     const trx = {
       id: crypto.randomUUID(),
-      amount: body.amount,
+      amount: Number(body.amount),
       note: body.note,
       created_at: new Date().toISOString(),
       category_name: categoryName,
-      account_name: accountName,
+      account_name: accountName.account_name,
       type: body.transaction_type,
     };
 

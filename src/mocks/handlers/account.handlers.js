@@ -20,10 +20,10 @@ export const accountHandlers = [
 
     const account = {
       account_name: body.name,
-      account_id: Math.floor(Math.random() * 100),
+      account_id: crypto.randomUUID(),
       id: db.users[0].id,
       type: body.account_type,
-      initial_balance: body.total_balance,
+      initial_balance: Number(body.total_balance),
     };
 
     db.accounts.push(account);
@@ -49,7 +49,7 @@ export const accountHandlers = [
     });
   }),
 
-  http.delete("/api/accounts", async ({ request }) => {
+  http.delete("/api/deleteAccounts", async ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
 

@@ -1,14 +1,14 @@
 // "use client";
-import { useState, useMemo } from "react";
 import {} from "lucide-react";
+import { useMemo, useState } from "react";
 import {
-  AreaChart,
   Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 
 export default function TotalBalanceEachTime({
@@ -40,9 +40,10 @@ export default function TotalBalanceEachTime({
   }
 
   const uniqueYear = getUniqueYears(dataChart ?? []);
+  console.log("uniqueYear", typeof uniqueYear[0]);
 
   const [sort, setSort] = useState({
-    account: "All",
+    account: "",
     time: uniqueYear[0],
   });
 
@@ -50,30 +51,47 @@ export default function TotalBalanceEachTime({
     setSort((prev) => ({ ...prev, [key]: value }));
   }
 
+  const anjing = new Date(dataChart[0].created_at).getFullYear();
+
+  //filter selected account previous years transactions
+  const arrBeyondArrTarget = [];
+  dataChart.map((i) => {
+    if (new Date(i.created_at).getFullYear() >= sort.time) {
+      return;
+    } else if (i.account_name !== sort.account) {
+      return;
+    }
+    console.log("kita disini", i);
+    arrBeyondArrTarget.push(i);
+  });
+  console.log("ini arrBeyondArrTarget", arrBeyondArrTarget);
+  // distant prevYearTransaction
+  const prevYearBalance = arrBeyondArrTarget.reduce((acc, trx) => {
+    const amount = Number(trx.amount);
+    acc += trx.type === "Income" ? amount : -amount;
+
+    return acc;
+  }, 0);
+
+  console.log("ini prev year balance", prevYearBalance);
+
   //  FILTER TRANSAKSI SESUAI ACCOUNT & TAHUN
   const filteredData = useMemo(() => {
     if (!dataChart?.length) return [];
 
     return dataChart.filter((item) => {
-      const matchAccount =
-        sort.account === "All" ? true : item.account_name === sort.account;
+      const matchAccount = item.account_name === sort.account;
 
       const matchTime = item.created_at.startsWith(String(sort.time));
 
       return matchAccount && matchTime;
     });
   }, [dataChart, sort]);
+  console.log("ini filtered data", filteredData);
 
   //  INITIAL BALANCE (All / Single Account)
   function getInitialBalanceEachAccount() {
     if (!initialBalance?.length) return 0;
-
-    if (sort.account === "All") {
-      return initialBalance.reduce(
-        (total, item) => total + Number(item.initial_balance),
-        0
-      );
-    }
 
     const selectedAccount = initialBalance.find(
       (item) => item.account_name === sort.account
@@ -83,8 +101,12 @@ export default function TotalBalanceEachTime({
   }
 
   //  RUNNING BALANCE PER BULAN (JAN–DES)
-  function getMonthlyRunningBalance(transactions, initialBalance, months) {
-    const grouped = transactions.reduce((acc, trx) => {
+  function getMonthlyRunningBalance(
+    sortedTransactions,
+    initialBalance,
+    months
+  ) {
+    const grouped = sortedTransactions.reduce((acc, trx) => {
       const d = new Date(trx.created_at);
       const monthIndex = d.getMonth(); // 0 - 11
 
@@ -96,7 +118,7 @@ export default function TotalBalanceEachTime({
       return acc;
     }, {});
 
-    let running = initialBalance;
+    let running = initialBalance + prevYearBalance;
 
     return months.map((month, i) => {
       if (grouped[i]) running += grouped[i];
@@ -141,7 +163,7 @@ export default function TotalBalanceEachTime({
           onChange={(e) => handleFilterChange("account", e.target.value)}
           className="rounded-md border px-3 py-2 text-sm"
         >
-          <option value="All">All Account</option>
+          <option value="">Select Account</option>
           {account.map((item, index) => (
             <option key={index} value={item.account_name}>
               {item.account_name}

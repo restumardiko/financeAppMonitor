@@ -123,8 +123,8 @@ export default function CreateNewTransaction({ cards }) {
               {...register("transaction_type", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
+              <option value="Income">Income</option>
+              <option value="Expense">Expense</option>
             </select>
             {errors.transaction_type && (
               <p className="text-xs text-red-500">
@@ -179,7 +179,7 @@ export default function CreateNewTransaction({ cards }) {
               {...register("category_id", { required: true })}
               className={`rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 ${ringClass}`}
             >
-              {transactionType === "income" ? (
+              {transactionType === "Income" ? (
                 <>
                   <option value="1">Gaji</option>
                   <option value="2">Bisnis</option>

@@ -3,22 +3,17 @@ import api from "@/lib/api";
 //import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { Coins } from "lucide-react";
-import { CircleDollarSignIcon } from "lucide-react";
 
-import TransactionsCard from "../../components/wallet/transactionsCard";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 //import useUserInformation from "../store/useUserInformation";
 //import TrendIncomeExpense from "../../components/chart/linechart";
 import { formatIDR } from "../../lib/idrCurrency";
