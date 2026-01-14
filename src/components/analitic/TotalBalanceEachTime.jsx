@@ -51,8 +51,6 @@ export default function TotalBalanceEachTime({
     setSort((prev) => ({ ...prev, [key]: value }));
   }
 
-  const anjing = new Date(dataChart[0].created_at).getFullYear();
-
   //filter selected account previous years transactions
   const arrBeyondArrTarget = [];
   dataChart.map((i) => {

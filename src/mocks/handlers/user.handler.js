@@ -23,7 +23,7 @@ export const userHandlers = [
     }, 0);
 
     const totalIncome = transactions.reduce((total, tx) => {
-      if (tx.type === "income") {
+      if (tx.type === "Income") {
         return total + tx.amount;
       }
       return total;
@@ -31,7 +31,7 @@ export const userHandlers = [
 
     //total expesense
     const totalExpense = transactions.reduce((total, tx) => {
-      if (tx.type === "expense") {
+      if (tx.type === "Expense") {
         return total + tx.amount;
       }
       return total;

@@ -23,7 +23,6 @@ export default function TransactionsCard({ transactions }) {
   };
   //fungsi delete ke server
   const deleteFunction = async (id) => {
-    console.log("ini id ya bro", id);
     const res = await api.delete(`/deleteTransaction/${id}`);
     console.log(
       "ini respon  dari useMutation buat delete transaction",

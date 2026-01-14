@@ -56,26 +56,29 @@ export const transactionHandlers = [
     });
   }),
 
-  http.delete("/api/transactions/:transaction_id", ({ params, request }) => {
-    const auth = requireAuth(request);
-    if (auth instanceof HttpResponse) return auth;
+  http.delete(
+    "/api/deleteTransaction/:transaction_id",
+    ({ params, request }) => {
+      const auth = requireAuth(request);
+      if (auth instanceof HttpResponse) return auth;
 
-    const index = db.transactions.findIndex(
-      (t) => t.id === params.transaction_id
-    );
-
-    if (index === -1) {
-      return HttpResponse.json(
-        { message: "Transaction not found" },
-        { status: 404 }
+      const index = db.transactions.findIndex(
+        (t) => t.id === params.transaction_id
       );
+
+      if (index === -1) {
+        return HttpResponse.json(
+          { message: "Transaction not found" },
+          { status: 404 }
+        );
+      }
+
+      const removed = db.transactions.splice(index, 1)[0];
+
+      return HttpResponse.json({
+        message: "delete transaction succesfully",
+        data: removed,
+      });
     }
-
-    const removed = db.transactions.splice(index, 1)[0];
-
-    return HttpResponse.json({
-      message: "delete transaction succesfully",
-      data: removed,
-    });
-  }),
+  ),
 ];

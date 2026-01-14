@@ -33,10 +33,10 @@ export default function CreateNewTransaction({ cards }) {
   let ringClass = "focus:ring-amber-400";
   let bgClass = "bg-emerald-700 hover:bg-emerald-800";
 
-  if (transactionType === "income") {
+  if (transactionType === "Income") {
     ringClass = "focus:ring-emerald-700";
     bgClass = "bg-emerald-700 hover:bg-emerald-800";
-  } else if (transactionType === "expense") {
+  } else if (transactionType === "Expense") {
     ringClass = "focus:ring-red-500";
     bgClass = "bg-red-500 hover:bg-red-800";
   }
