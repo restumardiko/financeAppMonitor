@@ -2,21 +2,12 @@
 import api from "@/lib/api";
 import Link from "next/link";
 import CreateNewTransaction from "../../../components/wallet/CreateNewTransaction";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import CardAccount from "../../../components/wallet/card";
 import TransactionsHistory from "../../../components/wallet/transactions_hystory";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 export default function Wallet() {
   //state buat add account nanti wajib bikin component baru buat form jangan disini
@@ -32,7 +23,6 @@ export default function Wallet() {
     queryKey: ["account"],
     queryFn: async () => {
       const res = await api.get("/showAccount");
-      console.log("ini data dari account", res);
 
       return res.data.data;
     },
@@ -47,7 +37,7 @@ export default function Wallet() {
   // Fungsi POST ke server
   const postAccount = async (data) => {
     const res = await api.post("/addAccount", data);
-    console.log("ini yang mau tak post ke server", data);
+
     return res.data.data;
   };
 
@@ -60,7 +50,7 @@ export default function Wallet() {
         total_balance: newAccount.initial_balance,
       };
       // update cache
-      console.log("ini new Account yang di return dari useMutate", newAccount);
+
       queryClient.setQueryData(["account"], (old = []) => [normalized, ...old]);
 
       //refetch server
@@ -80,7 +70,7 @@ export default function Wallet() {
       }, 5000);
     },
     onError: (err) => {
-      console.log(err.response?.data || err.message);
+      // console.log(err.response?.data || err.message);
       //pop out gagal
       setPopup({
         show: true,

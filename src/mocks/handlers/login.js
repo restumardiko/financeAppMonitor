@@ -12,16 +12,15 @@ export const logIn = [
     if (email !== user.email) {
       return HttpResponse.json(
         { message: "account not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
     if (password !== user.password) {
       return HttpResponse.json({ message: "wrong password" }, { status: 401 });
     }
 
-    console.log("ini email dan password", email, password);
     tokenStore.accessToken = generateToken("access");
-    tokenStore.refreshTokenToken = generateToken("refresh");
+    tokenStore.refreshToken = generateToken("refresh");
     tokenStore.accessExpiredAt = Date.now() + ACCESS_TTL;
 
     return HttpResponse.json({

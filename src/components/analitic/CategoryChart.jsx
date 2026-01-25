@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 import {
-  PieChart,
-  Pie,
   Cell,
-  Tooltip,
   Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 const COLORS = [
@@ -81,8 +81,8 @@ export default function CategoryChart({ dataChart, account }) {
     return matchType && matchAccount && matchYear && matchMonth;
   });
 
-  console.log("ini filtered data", filteredData);
-  console.log("ini dataChart", dataChart);
+  // console.log("ini filtered data", filteredData);
+  // console.log("ini dataChart", dataChart);
 
   // END DATA MAKER
 

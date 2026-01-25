@@ -16,7 +16,7 @@ export const accountHandlers = [
     if (exists) {
       return HttpResponse.json(
         { message: "account already added" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,7 +49,7 @@ export const accountHandlers = [
 
         return acc;
       }, 0);
-      console.log("ini type of balance ", typeof balance);
+
       const totalBalance = account.initial_balance + balance;
 
       return totalBalance;
@@ -86,7 +86,7 @@ export const accountHandlers = [
     if (index === -1) {
       return HttpResponse.json(
         { message: "Account not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

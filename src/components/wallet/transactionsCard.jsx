@@ -24,10 +24,10 @@ export default function TransactionsCard({ transactions }) {
   //fungsi delete ke server
   const deleteFunction = async (id) => {
     const res = await api.delete(`/deleteTransaction/${id}`);
-    console.log(
-      "ini respon  dari useMutation buat delete transaction",
-      res.data
-    );
+    // console.log(
+    //   "ini respon  dari useMutation buat delete transaction",
+    //   res.data
+    // );
     return res.data.data;
   };
   //
@@ -35,7 +35,7 @@ export default function TransactionsCard({ transactions }) {
     mutationFn: deleteFunction,
 
     onSuccess: () => {
-      console.log("delete transaction success bro");
+      //console.log("delete transaction success bro");
       queryClient.invalidateQueries(["account"]);
       queryClient.invalidateQueries(["userInformation"]);
 
@@ -55,9 +55,9 @@ export default function TransactionsCard({ transactions }) {
     },
 
     onError: (error) => {
-      console.log("ERROR FULL:", error);
-      console.log("ERROR RESPONSE:", error.response);
-      console.log("ERROR MESSAGE:", error.response?.data?.message);
+      // console.log("ERROR FULL:", error);
+      // console.log("ERROR RESPONSE:", error.response);
+      // console.log("ERROR MESSAGE:", error.response?.data?.message);
       //popout error
       setPopup({
         show: true,
@@ -80,7 +80,7 @@ export default function TransactionsCard({ transactions }) {
   const now = new Date();
   const startOfDay = new Date(
     now.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) +
-      "T00:00:00+07:00"
+      "T00:00:00+07:00",
   );
   const nextDay = new Date(startOfDay);
   nextDay.setDate(nextDay.getDate() + 1);

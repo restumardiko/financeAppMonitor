@@ -18,7 +18,7 @@ export default function Analitic() {
     queryKey: ["userInformation"],
     queryFn: async () => {
       const res = await api.get("/userInformation");
-      console.log(res.data);
+      //console.log(res.data);
 
       return res.data;
     },

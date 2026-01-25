@@ -1,9 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import api from "@/lib/api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,18 +10,21 @@ import {
 } from "@/components/ui/card";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { signupSchema } from "../../../schema";
-import { useState } from "react";
+import api from "@/lib/api";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { signupSchema } from "../../../schema";
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
@@ -59,12 +59,13 @@ export default function SignupForm() {
 
       //  tampilkan pesan sukses dari server
       setServerSuccess(
-        response.data?.message || "Account created successfully"
+        response.data?.message || "Account created successfully",
       );
 
       setTimeout(() => {
         router.push("/mainpage");
       }, 1000);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response) {
         setServerError(error.response.data?.message || "Signup failed");

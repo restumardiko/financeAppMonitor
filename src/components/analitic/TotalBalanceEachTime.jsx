@@ -17,7 +17,7 @@ export default function TotalBalanceEachTime({
   isAccountLoading,
   initialBalance,
 }) {
-  console.log("ini inisial balance", initialBalance);
+  // console.log("ini inisial balance", initialBalance);
   const months = [
     "January",
     "February",
@@ -40,7 +40,7 @@ export default function TotalBalanceEachTime({
   }
 
   const uniqueYear = getUniqueYears(dataChart ?? []);
-  console.log("uniqueYear", typeof uniqueYear[0]);
+  // console.log("uniqueYear", typeof uniqueYear[0]);
 
   const [sort, setSort] = useState({
     account: "",
@@ -62,7 +62,7 @@ export default function TotalBalanceEachTime({
     console.log("kita disini", i);
     arrBeyondArrTarget.push(i);
   });
-  console.log("ini arrBeyondArrTarget", arrBeyondArrTarget);
+  //console.log("ini arrBeyondArrTarget", arrBeyondArrTarget);
   // distant prevYearTransaction
   const prevYearBalance = arrBeyondArrTarget.reduce((acc, trx) => {
     const amount = Number(trx.amount);
@@ -71,7 +71,7 @@ export default function TotalBalanceEachTime({
     return acc;
   }, 0);
 
-  console.log("ini prev year balance", prevYearBalance);
+  //console.log("ini prev year balance", prevYearBalance);
 
   //  FILTER TRANSAKSI SESUAI ACCOUNT & TAHUN
   const filteredData = useMemo(() => {
@@ -85,14 +85,14 @@ export default function TotalBalanceEachTime({
       return matchAccount && matchTime;
     });
   }, [dataChart, sort]);
-  console.log("ini filtered data", filteredData);
+  //console.log("ini filtered data", filteredData);
 
   //  INITIAL BALANCE (All / Single Account)
   function getInitialBalanceEachAccount() {
     if (!initialBalance?.length) return 0;
 
     const selectedAccount = initialBalance.find(
-      (item) => item.account_name === sort.account
+      (item) => item.account_name === sort.account,
     );
 
     return selectedAccount ? Number(selectedAccount.initial_balance) : 0;
@@ -102,7 +102,7 @@ export default function TotalBalanceEachTime({
   function getMonthlyRunningBalance(
     sortedTransactions,
     initialBalance,
-    months
+    months,
   ) {
     const grouped = sortedTransactions.reduce((acc, trx) => {
       const d = new Date(trx.created_at);
@@ -134,7 +134,7 @@ export default function TotalBalanceEachTime({
     return getMonthlyRunningBalance(filteredData, initial, months);
   }, [filteredData, initialBalance, sort]);
 
-  console.log("ini chart final data", chartData);
+  //console.log("ini chart final data", chartData);
 
   return (
     <div className="w-full h-full">

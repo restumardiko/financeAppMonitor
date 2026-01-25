@@ -24,7 +24,7 @@ export default function CardAccount({ cards }) {
     const res = await api.delete("/deleteAccount", {
       data: { account_id },
     });
-    console.log("ini respon  dari useMutation buat delete account", res.data);
+    // console.log("ini respon  dari useMutation buat delete account", res.data);
     return res.data.data;
   };
   //

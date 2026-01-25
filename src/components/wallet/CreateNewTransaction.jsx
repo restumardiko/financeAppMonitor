@@ -41,12 +41,12 @@ export default function CreateNewTransaction({ cards }) {
     bgClass = "bg-red-500 hover:bg-red-800";
   }
 
-  console.log("ini transactions type", transactionType);
+  //console.log("ini transactions type", transactionType);
 
   // Fungsi POST ke server
   const postTransaction = async (data) => {
     const res = await api.post("/addTransaction", data);
-    console.log("ini respon dari useMutation ya", res.data.data);
+    //console.log("ini respon dari useMutation ya", res.data.data);
     return res.data.data;
   };
   const addTransaction = useMutation({
@@ -91,7 +91,7 @@ export default function CreateNewTransaction({ cards }) {
 
   // Submit form
   const onSubmit = (data) => {
-    console.log("ini data dari useform yang tak kirim ke server", data);
+    // console.log("ini data dari useform yang tak kirim ke server", data);
     addTransaction.mutate(data);
   };
   useEffect(() => {

@@ -12,11 +12,11 @@ export const transactionHandlers = [
     const body = await request.json();
 
     const accountName = accounts.find(
-      (acc) => acc.account_id === body.account_id
+      (acc) => acc.account_id === body.account_id,
     );
 
     const categoryName = categories.find(
-      (cat) => cat.id === body.category_id
+      (cat) => cat.id === body.category_id,
     ).category_name;
 
     const trx = {
@@ -47,12 +47,26 @@ export const transactionHandlers = [
     });
   }),
 
+  // http.get("/api/latestTransactions", ({ request }) => {
+  //   const auth = requireAuth(request);
+  //   if (auth instanceof HttpResponse) return auth;
+
+  //   return HttpResponse.json({
+  //     data: db.transactions.slice(-5).reverse(),
+  //   });
+  // }),
   http.get("/api/latestTransactions", ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
 
+    const transactions = db.transactions.slice(-5).reverse();
+
     return HttpResponse.json({
-      data: db.transactions.slice(-5).reverse(),
+      data: transactions,
+      meta: {
+        count: transactions.length,
+        isEmpty: transactions.length === 0,
+      },
     });
   }),
 
@@ -63,13 +77,13 @@ export const transactionHandlers = [
       if (auth instanceof HttpResponse) return auth;
 
       const index = db.transactions.findIndex(
-        (t) => t.id === params.transaction_id
+        (t) => t.id === params.transaction_id,
       );
 
       if (index === -1) {
         return HttpResponse.json(
           { message: "Transaction not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -79,6 +93,6 @@ export const transactionHandlers = [
         message: "delete transaction succesfully",
         data: removed,
       });
-    }
+    },
   ),
 ];

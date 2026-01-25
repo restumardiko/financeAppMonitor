@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 //import useUserInformation from "../store/useUserInformation";
 //import TrendIncomeExpense from "../../components/chart/linechart";
 import { formatIDR } from "../../lib/idrCurrency";
@@ -25,7 +24,6 @@ export default function Home() {
     queryKey: ["userInformation"],
     queryFn: async () => {
       const res = await api.get("/userInformation");
-      console.log(res.data);
 
       return res.data;
     },
@@ -39,9 +37,8 @@ export default function Home() {
 
         return res.data.data;
       },
-    }
+    },
   );
-  console.log("ini transactions di mainpage", transactions);
 
   //monthly income
   const monthlyIncome = useMemo(() => {
@@ -56,7 +53,7 @@ export default function Home() {
         (t) =>
           t.type === "Income" &&
           new Date(t.created_at).getMonth() + 1 === currentMonth &&
-          new Date(t.created_at).getFullYear() === currentYear
+          new Date(t.created_at).getFullYear() === currentYear,
       )
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
@@ -76,7 +73,7 @@ export default function Home() {
         (t) =>
           t.type === "Expense" &&
           new Date(t.created_at).getMonth() + 1 === currentMonth &&
-          new Date(t.created_at).getFullYear() === currentYear
+          new Date(t.created_at).getFullYear() === currentYear,
       )
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
@@ -117,7 +114,6 @@ export default function Home() {
 
     return expenseLastMonth;
   }, [transactions]);
-  console.log("ini prev monthly income", prevMonthlyIncome);
 
   //PREVIUS MONTHLY EXPENSE
   const prevMonthlyExpense = useMemo(() => {
@@ -148,12 +144,11 @@ export default function Home() {
 
     return expenseLastMonth;
   }, [transactions]);
-  console.log("ini previous monthly expense", prevMonthlyExpense);
+
   // PREV MONTHLY BALANCE
   const prevMonthlyBalance = useMemo(() => {
     return prevMonthlyIncome - prevMonthlyExpense;
   }, [prevMonthlyIncome, prevMonthlyExpense]);
-  console.log("ini prev monthly balance ", prevMonthlyBalance);
 
   ///PERCENTAGE SESSION
   const incomeChange = useMemo(() => {
@@ -194,16 +189,6 @@ export default function Home() {
     return "Same as last month";
   };
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
-      console.log("token empthy");
-      router.push("/login");
-      return;
-    }
-  }, []);
 
   return (
     <div className="space-y-8">

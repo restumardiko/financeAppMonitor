@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 //import useUserInformation from "../../store/useUserInformation";
-import { useEffect, useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function Profile() {
   const [isShow, setIsShow] = useState(false);
@@ -26,10 +17,10 @@ export default function Profile() {
     try {
       const result = await api.delete("/logOut");
 
-      console.log(result.data);
+      // console.log(result.data);
       router.push("/login");
     } catch (err) {
-      console.log("iini dari client", err.error);
+      //console.log("iini dari client", err.error);
     }
   };
   //const { name, email, created_at, fetchInformation } = useUserInformation();

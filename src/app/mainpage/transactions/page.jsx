@@ -29,7 +29,7 @@ export default function AllTransactionsHistory() {
     queryKey: ["transactions"],
     queryFn: async () => {
       const res = await api.get("/transactions");
-      console.log(groupTransactions(res.data.data));
+      //console.log(groupTransactions(res.data.data));
 
       return groupTransactions(res.data.data);
     },
