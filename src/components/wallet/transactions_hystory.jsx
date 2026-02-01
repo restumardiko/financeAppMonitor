@@ -1,7 +1,7 @@
 "use client";
+import api from "@/lib/utils/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import TransactionsCard from "./transactionsCard";
-import api from "@/lib/api";
 
 export default function TransactionsHistory() {
   const queryClient = useQueryClient();

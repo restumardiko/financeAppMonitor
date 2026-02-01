@@ -1,5 +1,6 @@
 "use client";
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
+
 import Link from "next/link";
 import CreateNewTransaction from "../../../components/wallet/CreateNewTransaction";
 

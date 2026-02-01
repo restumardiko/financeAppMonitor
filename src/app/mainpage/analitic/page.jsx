@@ -7,7 +7,7 @@ import CategoryChart from "../../../components/analitic/CategoryChart";
 import generateDummyTransactions from "../../../components/analitic/data dummy";
 import TotalBalanceEachTime from "../../../components/analitic/TotalBalanceEachTime";
 import TrendIncomeExpense from "../../../components/analitic/TrendIncomeExpense";
-import { formatIDR } from "../../../lib/idrCurrency";
+import { formatIDR } from "../../../lib/utils/idrCurrency";
 
 const transactionsss = generateDummyTransactions();
 

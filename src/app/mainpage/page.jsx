@@ -1,5 +1,5 @@
 "use client";
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
 //import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -15,7 +15,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 //import useUserInformation from "../store/useUserInformation";
 //import TrendIncomeExpense from "../../components/chart/linechart";
-import { formatIDR } from "../../lib/idrCurrency";
+import { formatIDR } from "../../lib/utils/idrCurrency";
 
 import TransactionsHistory from "../../components/wallet/transactions_hystory";
 

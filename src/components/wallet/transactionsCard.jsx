@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
 
 export default function TransactionsCard({ transactions }) {
   const [openIndex, setOpenIndex] = useState(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
 import { useRouter } from "next/navigation";
 //import useUserInformation from "../../store/useUserInformation";
 import { useQueryClient } from "@tanstack/react-query";
