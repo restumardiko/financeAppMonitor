@@ -1,10 +1,10 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import api from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { formatIDR } from "../../lib/idrCurrency";
+import api from "../../lib/utils/api";
+import { formatIDR } from "../../lib/utils/idrCurrency";
 
 export default function CardAccount({ cards }) {
   const [popup, setPopup] = useState({

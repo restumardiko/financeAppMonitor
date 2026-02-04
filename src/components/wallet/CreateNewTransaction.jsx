@@ -1,8 +1,8 @@
 "use client";
-import api from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import api from "../../lib/utils/api";
 
 export default function CreateNewTransaction({ cards }) {
   const [showForm, setShowForm] = useState(false);

@@ -1,5 +1,5 @@
 "use client";
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
 import { CornerRightDown, CornerRightUp } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";

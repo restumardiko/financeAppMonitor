@@ -59,7 +59,7 @@ export default function TotalBalanceEachTime({
     } else if (i.account_name !== sort.account) {
       return;
     }
-    console.log("kita disini", i);
+
     arrBeyondArrTarget.push(i);
   });
   //console.log("ini arrBeyondArrTarget", arrBeyondArrTarget);

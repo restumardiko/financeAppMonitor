@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/api";
+import api from "@/lib/utils/api";
 
 import { useQuery } from "@tanstack/react-query";
 import CategoryChart from "../../../components/analitic/CategoryChart";
