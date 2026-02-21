@@ -1,65 +1,66 @@
-import pool from "@/lib/db/db";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { withAuth } from "../../../lib/server/auth/withAuth";
 
-async function handler(req) {
-  let client;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
 
+export async function GET(req) {
   try {
-    const user_id = req.user.userId;
+    const token = req.headers.get("authorization")?.replace("Bearer ", "");
 
-    client = await pool.connect();
-
-    await client.query("BEGIN");
-
-    const result = await client.query(
-      `
-      SELECT  
-        categories.category_name,
-        transactions.amount,
-        transactions.note,
-        transactions.created_at,
-        transactions.id,
-        categories.type,
-        accounts.account_name
-      FROM transactions 
-      LEFT JOIN categories 
-        ON transactions.category_id = categories.id 
-      LEFT JOIN accounts 
-        ON transactions.account_id = accounts.id 
-      WHERE transactions.user_id = $1 
-      ORDER BY transactions.created_at DESC
-      `,
-      [user_id],
-    );
-
-    await client.query("COMMIT");
-
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        {
-          message: "No transactions found",
-          data: [],
-        },
-        { status: 200 },
-      );
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from("transactions")
+      .select(
+        `
+        id,
+        amount,
+        note,
+        created_at,
+        categories (category_name, type),
+        accounts (account_name)
+      `,
+      )
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    const formatted = data.map((trx) => ({
+      category_name: trx.categories?.category_name ?? null,
+      amount: trx.amount,
+      note: trx.note,
+      created_at: trx.created_at,
+      id: trx.id,
+      account_name: trx.accounts?.account_name ?? null,
+      type: trx.categories?.type ?? null,
+    }));
 
     return NextResponse.json(
       {
         message: "data fetching successfully",
-        data: result.rows,
+        data: formatted,
       },
       { status: 200 },
     );
   } catch (err) {
-    if (client) await client.query("ROLLBACK");
-
-    console.error("DB ERROR:", err);
-
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
+    console.error(err);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
-export const GET = withAuth(handler);

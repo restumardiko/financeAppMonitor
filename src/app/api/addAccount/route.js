@@ -1,60 +1,93 @@
-import pool from "@/lib/db/db";
-import { withAuth } from "@/lib/server/auth/withAuth";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-async function handler(req) {
-  let client;
-  console.log("add account executed");
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
 
+export async function POST(req) {
   try {
-    const { name, account_type, total_balance } = await req.json();
-    const user_id = req.user.userId;
+    const authHeader = req.headers.get("authorization");
 
-    client = await pool.connect();
-    await client.query("BEGIN");
-
-    const check = await client.query(
-      "SELECT id FROM accounts WHERE user_id=$1 AND account_name=$2",
-      [user_id, name],
-    );
-
-    if (check.rowCount === 0) {
-      const result = await client.query(
-        `INSERT INTO accounts 
-          (user_id, account_name, type, initial_balance)
-         VALUES ($1,$2,$3,$4)
-         RETURNING *`,
-        [user_id, name, account_type, total_balance],
-      );
-
-      await client.query("COMMIT");
-
+    if (!authHeader) {
       return NextResponse.json(
-        {
-          message: "add account successfully",
-          data: result.rows[0],
-        },
-        { status: 200 },
+        { message: "Missing Authorization header" },
+        { status: 401 },
       );
     }
 
-    await client.query("COMMIT");
+    const token = authHeader.split(" ")[1];
+
+    // ===== Verify User =====
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
+
+    const user_id = user.id;
+
+    // ===== Get Body =====
+    const { name, account_type, total_balance } = await req.json();
+
+    if (!name || !account_type || total_balance === undefined) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    // ===== Check Duplicate =====
+    const { data: existing, error: checkError } = await supabase
+      .from("accounts")
+      .select("id")
+      .eq("user_id", user_id)
+      .eq("account_name", name)
+      .single();
+
+    if (checkError && checkError.code !== "PGRST116") {
+      // PGRST116 = no rows found
+      throw checkError;
+    }
+
+    if (existing) {
+      return NextResponse.json(
+        { message: "account already added" },
+        { status: 409 },
+      );
+    }
+
+    // ===== Insert =====
+    const { data, error: insertError } = await supabase
+      .from("accounts")
+      .insert({
+        user_id,
+        account_name: name,
+        type: account_type,
+        initial_balance: Number(total_balance),
+      })
+      .select()
+      .single();
+
+    if (insertError) throw insertError;
 
     return NextResponse.json(
       {
-        message: "account already added",
+        message: "add account successfully",
+        data,
       },
-      { status: 409 }, // conflict lebih tepat
+      { status: 200 },
     );
   } catch (err) {
-    if (client) await client.query("ROLLBACK");
+    console.error("SERVER ERROR:", err);
 
-    console.error("DB ERROR:", err);
-
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
-
-export const POST = withAuth(handler);

@@ -1,14 +1,45 @@
-import pool from "@/lib/db/db";
-import { withAuth } from "@/lib/server/auth/withAuth";
+// app/api/transactions/[transaction_id]/route.js
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-async function handler(req, { params }) {
-  let client;
-
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
+export async function DELETE(req, { params }) {
   try {
-    const user_id = req.user.userId;
     const { transaction_id } = await params;
 
+    const id = Number(transaction_id);
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "Invalid transaction id" },
+        { status: 400 },
+      );
+    }
+
+    const authHeader = req.headers.get("authorization");
+
+    if (!authHeader) {
+      return NextResponse.json(
+        { message: "Missing Authorization header" },
+        { status: 401 },
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const { data: userData, error: userError } =
+      await supabase.auth.getUser(token);
+
+    if (userError || !userData?.user) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
+
+    const user_id = userData.user.id;
+
+    // ===== RANGE HARI INI =====
     const now = new Date();
 
     const startOfDay = new Date(
@@ -19,49 +50,38 @@ async function handler(req, { params }) {
     const nextDay = new Date(startOfDay);
     nextDay.setDate(nextDay.getDate() + 1);
 
-    client = await pool.connect();
-    await client.query("BEGIN");
+    const { data, error } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user_id)
+      .gte("created_at", startOfDay.toISOString())
+      .lt("created_at", nextDay.toISOString())
+      .select()
+      .single();
 
-    const result = await client.query(
-      `
-      DELETE FROM transactions
-      WHERE id = $1
-        AND user_id = $2
-        AND created_at >= $3
-        AND created_at <  $4
-      RETURNING *
-      `,
-      [transaction_id, user_id, startOfDay, nextDay],
-    );
-
-    await client.query("COMMIT");
-
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        {
-          message: "Only transaction from today can be deleted",
-          data: [],
-        },
-        { status: 404 },
-      );
+    if (error) {
+      if (error.code === "PGRST116") {
+        return NextResponse.json(
+          {
+            message: "Only transaction from today can be deleted",
+            data: [],
+          },
+          { status: 404 },
+        );
+      }
+      throw error;
     }
 
     return NextResponse.json(
       {
         message: "delete transaction successfully",
-        data: result.rows[0],
+        data,
       },
       { status: 200 },
     );
   } catch (err) {
-    if (client) await client.query("ROLLBACK");
-
-    console.error("DB ERROR:", err);
-
+    console.error("SERVER ERROR:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
   }
 }
-
-export const DELETE = withAuth(handler);

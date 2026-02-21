@@ -18,27 +18,33 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-//  Response Interceptor — auto refresh token kalau expired
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
     if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
-        // minta access token baru ke server pakai refresh token (yang di cookie)
-        await api.post("/refresh");
-        return api(originalRequest); // retry request sebelumnya
-      } catch (err) {
-        // kalau refresh gagal, logout user
-        console.error("Refresh token expired / invalid", err);
 
-        // redirect ke login page atau clear state
+      try {
+        const res = await api.post("/refresh");
+
+        const newAccessToken = res.data.token;
+
+        localStorage.setItem("access_token", newAccessToken);
+
+        // Update header request lama
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return api(originalRequest);
+      } catch (err) {
+        console.error("Refresh token expired / invalid", err);
         window.location.href = "/login";
       }
     }
+
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

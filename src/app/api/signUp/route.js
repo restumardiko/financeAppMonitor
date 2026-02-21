@@ -1,39 +1,38 @@
-import pool from "@/lib/db/db";
-import bcrypt from "bcrypt";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
 
 export async function POST(req) {
-  let client;
+  const { name, email, password } = await req.json();
 
-  try {
-    const { name, email, password } = await req.json();
+  // 1️⃣ SIGN UP (NO JWT NEEDED)
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-    client = await pool.connect();
-
-    const password_hash = await bcrypt.hash(password, 10);
-
-    await client.query("BEGIN");
-
-    const result = await client.query(
-      "INSERT INTO users (name, password_hash, email) VALUES ($1, $2, $3) RETURNING *",
-      [name, password_hash, email],
-    );
-
-    await client.query("COMMIT");
-
-    return Response.json(
-      {
-        message: "sign up successfully",
-        data: result.rows[0].id,
-      },
-      { status: 200 },
-    );
-  } catch (err) {
-    if (client) await client.query("ROLLBACK");
-
-    console.error("DB ERROR:", err);
-
-    return Response.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
+  if (error) {
+    return Response.json({ error: error.message }, { status: 400 });
   }
+
+  const user = data.user;
+
+  // 2️⃣ INSERT PROFILE (pakai RLS)
+  const { error: profileError } = await supabase.from("profiles").insert({
+    id: user.id,
+    name,
+    email,
+  });
+
+  if (profileError) {
+    return Response.json({ error: profileError.message }, { status: 400 });
+  }
+
+  return Response.json({
+    message: "Signup success",
+    user,
+  });
 }

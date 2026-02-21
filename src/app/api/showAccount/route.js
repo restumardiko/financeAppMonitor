@@ -1,52 +1,45 @@
-import pool from "@/lib/db/db";
-import { withAuth } from "@/lib/server/auth/withAuth";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-async function handler(req) {
-  let client;
-  console.log("show all account");
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
 
+export async function GET(req) {
   try {
-    const user_id = req.user.userId;
+    const authHeader = req.headers.get("authorization");
 
-    client = await pool.connect();
+    if (!authHeader) {
+      return NextResponse.json(
+        { message: "Missing Authorization header" },
+        { status: 401 },
+      );
+    }
 
-    const result = await client.query(
-      `
-      SELECT 
-        accounts.id AS account_id,
-        accounts.account_name,
-        accounts.initial_balance 
-          + COALESCE(
-              SUM(
-                CASE 
-                  WHEN categories.type = 'Income' THEN transactions.amount 
-                  WHEN categories.type = 'Expense' THEN -transactions.amount 
-                END
-              ), 
-            0
-          ) AS total_balance,
+    const token = authHeader.split(" ")[1];
 
-        CASE 
-          WHEN COUNT(transactions.id) = 0 THEN true
-          ELSE false
-        END AS is_deletable
+    // ===== Verify User =====
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
 
-      FROM accounts
-      LEFT JOIN transactions 
-        ON transactions.account_id = accounts.id
-      LEFT JOIN categories 
-        ON categories.id = transactions.category_id
-      WHERE accounts.user_id = $1
-      GROUP BY 
-        accounts.id, 
-        accounts.account_name, 
-        accounts.initial_balance;
-      `,
-      [user_id],
-    );
+    if (authError || !user) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
 
-    if (result.rowCount === 0) {
+    const user_id = user.id;
+
+    // ===== Ambil Accounts =====
+    const { data: accounts = [], error: accErr } = await supabase
+      .from("accounts")
+      .select("id, account_name, initial_balance")
+      .eq("user_id", user_id);
+
+    if (accErr) throw accErr;
+
+    if (accounts.length === 0) {
       return NextResponse.json(
         {
           message: "please add account",
@@ -56,20 +49,68 @@ async function handler(req) {
       );
     }
 
+    // ===== Ambil Transactions + Category =====
+    const { data: transactions = [], error: trxErr } = await supabase
+      .from("transactions")
+      .select(
+        `
+        amount,
+        account_id,
+        categories(type)
+      `,
+      )
+      .eq("user_id", user_id);
+
+    if (trxErr) throw trxErr;
+
+    // ===== Hitung Balance per Account =====
+    const accountMap = {};
+
+    accounts.forEach((acc) => {
+      accountMap[acc.id] = {
+        account_id: acc.id,
+        account_name: acc.account_name,
+        total_balance: Number(acc.initial_balance),
+        transaction_count: 0,
+      };
+    });
+
+    transactions.forEach((trx) => {
+      const acc = accountMap[trx.account_id];
+      if (!acc) return;
+
+      const amount = Number(trx.amount);
+      const type = trx.categories?.type;
+
+      acc.transaction_count += 1;
+
+      if (type === "Income") {
+        acc.total_balance += amount;
+      } else if (type === "Expense") {
+        acc.total_balance -= amount;
+      }
+    });
+
+    const finalData = Object.values(accountMap).map((acc) => ({
+      account_id: acc.account_id,
+      account_name: acc.account_name,
+      total_balance: acc.total_balance,
+      is_deletable: acc.transaction_count === 0,
+    }));
+
     return NextResponse.json(
       {
         message: "account showed",
-        data: result.rows,
+        data: finalData,
       },
       { status: 200 },
     );
   } catch (err) {
-    console.error("DB ERROR:", err);
+    console.error("SERVER ERROR:", err);
 
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
-
-export const GET = withAuth(handler);

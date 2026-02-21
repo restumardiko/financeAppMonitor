@@ -34,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/lib/utils/api.js",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "src/lib/supabase/server.js"
   ],
   "exclude": [
     "node_modules"

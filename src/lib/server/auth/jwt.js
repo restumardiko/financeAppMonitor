@@ -8,7 +8,7 @@ export function verifyToken(token) {
 
 export function signToken(payload) {
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "5m",
   });
 }
 

@@ -119,8 +119,8 @@ export default function CategoryChart({ dataChart, account }) {
 
   const endData = endDataMaker(filteredData);
 
-  //console.log("filteredData:", filteredData);
-  //console.log("endData:", endData);
+  // console.log("filteredData:", filteredData);
+  // console.log("endData:", endData);
 
   return (
     <div className="w-full h-auto ">

@@ -1,10 +1,15 @@
 "use client";
 
-import api from "@/lib/utils/api";
 import { useRouter } from "next/navigation";
 //import useUserInformation from "../../store/useUserInformation";
+import { createClient } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+);
 
 export default function Profile() {
   const [isShow, setIsShow] = useState(false);
@@ -13,9 +18,11 @@ export default function Profile() {
   const { name, email, created_at } =
     queryClient.getQueryData(["userInformation"]) || {};
   const router = useRouter();
+
   const handleLogOut = async () => {
     try {
-      const result = await api.delete("/logOut");
+      // const result = await api.delete("/logOut");
+      await supabase.auth.signOut();
 
       // console.log(result.data);
       router.push("/login");
