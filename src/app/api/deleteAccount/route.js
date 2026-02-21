@@ -21,7 +21,7 @@ export async function DELETE(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ===== Verify User =====
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -33,6 +33,19 @@ export async function DELETE(req) {
 
     const user_id = user.id;
 
+    // 🔥 AUTHORIZED CLIENT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
     const { account_id } = await req.json();
 
     if (!account_id) {
@@ -42,28 +55,24 @@ export async function DELETE(req) {
       );
     }
 
-    // ===== Check if account exists & belongs to user =====
-    const { data: account, error: accError } = await supabase
+    // ===== CHECK ACCOUNT EXISTS (RLS akan filter otomatis) =====
+    const { data: account, error: accError } = await supabaseUser
       .from("accounts")
       .select("id")
       .eq("id", account_id)
-      .eq("user_id", user_id)
       .single();
 
     if (accError && accError.code === "PGRST116") {
       return NextResponse.json(
-        {
-          message: "Account does not exist",
-          data: [],
-        },
+        { message: "Account does not exist", data: [] },
         { status: 404 },
       );
     }
 
     if (accError) throw accError;
 
-    // ===== Check if has transactions =====
-    const { data: transactions, error: trxError } = await supabase
+    // ===== CHECK TRANSACTIONS =====
+    const { data: transactions, error: trxError } = await supabaseUser
       .from("transactions")
       .select("id")
       .eq("account_id", account_id)
@@ -81,12 +90,11 @@ export async function DELETE(req) {
       );
     }
 
-    // ===== Delete =====
-    const { data, error: deleteError } = await supabase
+    // ===== DELETE ACCOUNT =====
+    const { data, error: deleteError } = await supabaseUser
       .from("accounts")
       .delete()
       .eq("id", account_id)
-      .eq("user_id", user_id)
       .select()
       .single();
 

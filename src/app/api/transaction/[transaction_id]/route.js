@@ -1,55 +1,54 @@
 import { verifyToken } from "@/lib/auth";
-import pool from "@/lib/db";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-// verifyToken should return { userId }
 
 export async function PATCH(request, { params }) {
-  let client;
-
   try {
     // 1. Auth
-    const user = await verifyToken(request);
-    const user_id = user.userId;
+    const { token, userId } = await verifyToken(request);
 
-    // 2. Params
     const { transaction_id } = params;
 
-    // 3. Body
     const body = await request.json();
     const { account_id, category_id, amount, note } = body;
 
-    client = await pool.connect();
-    await client.query("BEGIN");
-
-    const result = await client.query(
-      `
-      UPDATE transactions 
-      SET 
-        account_id = $1,
-        category_id = $2,
-        amount = $3,
-        note = $4
-      WHERE id = $5 AND user_id = $6
-      RETURNING *
-      `,
-      [account_id, category_id, amount, note, transaction_id, user_id],
+    // 🔥 Client dengan JWT
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
     );
 
-    await client.query("COMMIT");
+    const { data, error } = await supabaseUser
+      .from("transactions")
+      .update({
+        account_id,
+        category_id,
+        amount,
+        note,
+      })
+      .eq("id", transaction_id)
+      .eq("user_id", userId)
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json(
       {
-        message: "Edit income successfully",
-        data: result.rows[0],
+        message: "Edit transaction successfully",
+        data,
       },
       { status: 200 },
     );
   } catch (err) {
-    if (client) await client.query("ROLLBACK");
-    console.error("DB ERROR:", err);
-
+    console.error("SERVER ERROR:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
-  } finally {
-    if (client) client.release();
   }
 }

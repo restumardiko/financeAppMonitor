@@ -6,10 +6,10 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
 );
+
 export async function DELETE(req, { params }) {
   try {
-    const { transaction_id } = await params;
-
+    const { transaction_id } = params;
     const id = Number(transaction_id);
 
     if (!id) {
@@ -30,6 +30,7 @@ export async function DELETE(req, { params }) {
 
     const token = authHeader.split(" ")[1];
 
+    // ===== VERIFY USER =====
     const { data: userData, error: userError } =
       await supabase.auth.getUser(token);
 
@@ -39,7 +40,20 @@ export async function DELETE(req, { params }) {
 
     const user_id = userData.user.id;
 
-    // ===== RANGE HARI INI =====
+    // 🔥 CLIENT DENGAN JWT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
+    // ===== RANGE HARI INI (Asia/Jakarta) =====
     const now = new Date();
 
     const startOfDay = new Date(
@@ -50,7 +64,7 @@ export async function DELETE(req, { params }) {
     const nextDay = new Date(startOfDay);
     nextDay.setDate(nextDay.getDate() + 1);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseUser
       .from("transactions")
       .delete()
       .eq("id", id)
@@ -82,6 +96,9 @@ export async function DELETE(req, { params }) {
     );
   } catch (err) {
     console.error("SERVER ERROR:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

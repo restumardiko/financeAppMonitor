@@ -21,7 +21,7 @@ export async function POST(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ===== Verify User =====
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -33,6 +33,19 @@ export async function POST(req) {
 
     const user_id = user.id;
 
+    // 🔥 AUTHORIZED CLIENT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
     const { account_id, category_id, amount, note } = await req.json();
 
     if (!account_id || !category_id || !amount) {
@@ -42,27 +55,26 @@ export async function POST(req) {
       );
     }
 
-    // ===== Optional Safety Check (Account belongs to user) =====
-    const { data: account, error: accError } = await supabase
+    // ===== OPTIONAL CHECK (RLS sebenarnya sudah cukup) =====
+    const { data: account, error: accError } = await supabaseUser
       .from("accounts")
       .select("id")
       .eq("id", account_id)
-      .eq("user_id", user_id)
       .single();
 
     if (accError || !account) {
       return NextResponse.json({ message: "Invalid account" }, { status: 400 });
     }
 
-    // ===== Insert Transaction =====
-    const { data, error: insertError } = await supabase
+    // ===== INSERT TRANSACTION =====
+    const { data, error: insertError } = await supabaseUser
       .from("transactions")
       .insert({
         account_id,
         category_id,
         amount: Number(amount),
         note: note || null,
-        user_id,
+        user_id, // harus match dengan policy
       })
       .select()
       .single();

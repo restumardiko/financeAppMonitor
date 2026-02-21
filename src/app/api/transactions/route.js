@@ -14,6 +14,7 @@ export async function GET(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -23,7 +24,21 @@ export async function GET(req) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    // 🔥 CLIENT YANG MEMBAWA JWT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
+    // ===== FETCH TRANSACTIONS =====
+    const { data, error } = await supabaseUser
       .from("transactions")
       .select(
         `
@@ -39,14 +54,15 @@ export async function GET(req) {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    const formatted = data.map((trx) => ({
+
+    const formatted = (data || []).map((trx) => ({
+      id: trx.id,
       category_name: trx.categories?.category_name ?? null,
+      type: trx.categories?.type ?? null,
+      account_name: trx.accounts?.account_name ?? null,
       amount: trx.amount,
       note: trx.note,
       created_at: trx.created_at,
-      id: trx.id,
-      account_name: trx.accounts?.account_name ?? null,
-      type: trx.categories?.type ?? null,
     }));
 
     return NextResponse.json(
@@ -57,7 +73,7 @@ export async function GET(req) {
       { status: 200 },
     );
   } catch (err) {
-    console.error(err);
+    console.error("SERVER ERROR:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

@@ -19,7 +19,7 @@ export async function GET(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ===== Verify User =====
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -29,10 +29,23 @@ export async function GET(req) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
 
+    // 🔥 BUAT CLIENT BARU YANG MEMBAWA JWT (PENTING UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
     const user_id = user.id;
 
     // ================= PROFILE =================
-    let { data: profile, error: profileErr } = await supabase
+    let { data: profile, error: profileErr } = await supabaseUser
       .from("profiles")
       .select("name, email, created_at")
       .eq("id", user_id)
@@ -40,9 +53,9 @@ export async function GET(req) {
 
     if (profileErr) throw profileErr;
 
-    // 🔥 Kalau belum ada profile → buat otomatis
+    // Jika belum ada profile → buat otomatis
     if (!profile) {
-      const { data: newProfile, error: insertErr } = await supabase
+      const { data: newProfile, error: insertErr } = await supabaseUser
         .from("profiles")
         .insert({
           id: user_id,
@@ -58,7 +71,7 @@ export async function GET(req) {
     }
 
     // ================= ACCOUNTS =================
-    const { data: accounts = [], error: accErr } = await supabase
+    const { data: accounts = [], error: accErr } = await supabaseUser
       .from("accounts")
       .select("id, account_name, initial_balance")
       .eq("user_id", user_id);
@@ -66,7 +79,7 @@ export async function GET(req) {
     if (accErr) throw accErr;
 
     // ================= TRANSACTIONS =================
-    const { data: transactions = [], error: trxErr } = await supabase
+    const { data: transactions = [], error: trxErr } = await supabaseUser
       .from("transactions")
       .select(
         `

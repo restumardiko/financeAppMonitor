@@ -19,7 +19,7 @@ export async function POST(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ===== Verify User =====
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -31,7 +31,20 @@ export async function POST(req) {
 
     const user_id = user.id;
 
-    // ===== Get Body =====
+    // 🔥 AUTHORIZED CLIENT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
+    // ===== GET BODY =====
     const { name, account_type, total_balance } = await req.json();
 
     if (!name || !account_type || total_balance === undefined) {
@@ -41,16 +54,14 @@ export async function POST(req) {
       );
     }
 
-    // ===== Check Duplicate =====
-    const { data: existing, error: checkError } = await supabase
+    // ===== CHECK DUPLICATE (RLS otomatis filter user) =====
+    const { data: existing, error: checkError } = await supabaseUser
       .from("accounts")
       .select("id")
-      .eq("user_id", user_id)
       .eq("account_name", name)
       .single();
 
     if (checkError && checkError.code !== "PGRST116") {
-      // PGRST116 = no rows found
       throw checkError;
     }
 
@@ -61,11 +72,11 @@ export async function POST(req) {
       );
     }
 
-    // ===== Insert =====
-    const { data, error: insertError } = await supabase
+    // ===== INSERT =====
+    const { data, error: insertError } = await supabaseUser
       .from("accounts")
       .insert({
-        user_id,
+        user_id, // harus match policy
         account_name: name,
         type: account_type,
         initial_balance: Number(total_balance),

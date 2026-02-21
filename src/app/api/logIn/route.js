@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SECRET_KEY,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
 );
 
 export async function POST(req) {
@@ -18,7 +18,7 @@ export async function POST(req) {
       );
     }
 
-    // Supabase sign-in
+    // 🔐 SIGN IN USER
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -28,7 +28,6 @@ export async function POST(req) {
       return NextResponse.json({ message: error.message }, { status: 401 });
     }
 
-    // data.session contains access_token and refresh_token
     const { access_token, refresh_token } = data.session;
 
     const response = NextResponse.json(
@@ -36,18 +35,21 @@ export async function POST(req) {
       { status: 200 },
     );
 
-    // Set refresh token as cookie
+    // 🔐 Set refresh token in httpOnly cookie
     response.cookies.set("refreshToken", refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
 
     return response;
   } catch (err) {
-    console.error("Supabase login error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error("LOGIN ERROR:", err);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

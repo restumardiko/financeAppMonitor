@@ -23,18 +23,10 @@ export async function DELETE(req) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
 
-    const { error: revokeError } = await supabase.auth.admin.signOut(user.id);
-
-    if (revokeError) {
-      return NextResponse.json(
-        { message: "Logout failed", error: revokeError.message },
-        { status: 400 },
-      );
-    }
-
+    // 🔥 Logout cukup hapus token di client
     return NextResponse.json({ message: "Logout successful" }, { status: 200 });
   } catch (err) {
-    console.error(err);
+    console.error("SERVER ERROR:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

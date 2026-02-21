@@ -19,7 +19,7 @@ export async function GET(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ===== Verify User =====
+    // ===== VERIFY USER =====
     const {
       data: { user },
       error: authError,
@@ -29,10 +29,23 @@ export async function GET(req) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
 
+    // 🔥 CLIENT DENGAN JWT (WAJIB UNTUK RLS)
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+
     const user_id = user.id;
 
-    // ===== Ambil Accounts =====
-    const { data: accounts = [], error: accErr } = await supabase
+    // ===== AMBIL ACCOUNTS =====
+    const { data: accounts = [], error: accErr } = await supabaseUser
       .from("accounts")
       .select("id, account_name, initial_balance")
       .eq("user_id", user_id);
@@ -49,8 +62,8 @@ export async function GET(req) {
       );
     }
 
-    // ===== Ambil Transactions + Category =====
-    const { data: transactions = [], error: trxErr } = await supabase
+    // ===== AMBIL TRANSACTIONS =====
+    const { data: transactions = [], error: trxErr } = await supabaseUser
       .from("transactions")
       .select(
         `
@@ -63,7 +76,7 @@ export async function GET(req) {
 
     if (trxErr) throw trxErr;
 
-    // ===== Hitung Balance per Account =====
+    // ===== HITUNG BALANCE =====
     const accountMap = {};
 
     accounts.forEach((acc) => {
