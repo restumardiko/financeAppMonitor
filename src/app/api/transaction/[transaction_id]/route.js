@@ -1,4 +1,3 @@
-import { verifyToken } from "@/lib/auth";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
