@@ -9,36 +9,41 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// 🔐 Request Interceptor — nambah token di setiap request
+// 🔐 Request Interceptor
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
 
+// 🔁 Response Interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/refresh")
+    ) {
       originalRequest._retry = true;
 
       try {
         const res = await api.post("/refresh");
-
         const newAccessToken = res.data.token;
 
         localStorage.setItem("access_token", newAccessToken);
 
-        // Update header request lama
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return api(originalRequest);
       } catch (err) {
-        console.error("Refresh token expired / invalid", err);
+        console.error("Refresh failed", err);
         window.location.href = "/login";
       }
     }

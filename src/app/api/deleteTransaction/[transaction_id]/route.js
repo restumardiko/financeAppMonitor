@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function DELETE(req, { params }) {
   try {
-    const { transaction_id } = params;
+    const { transaction_id } = await params;
     const id = Number(transaction_id);
 
     if (!id) {
