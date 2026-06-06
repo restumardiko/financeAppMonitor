@@ -5,7 +5,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
 );
 
-export async function POST(req) {
+export default async function signUpApi(req) {
   try {
     const { name, email, password } = await req.json();
 

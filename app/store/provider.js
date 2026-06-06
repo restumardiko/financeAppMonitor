@@ -1,11 +1,7 @@
 "use client";
-// import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-// import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useEffect, useState } from "react";
-
-//const persister = createSyncStoragePersister({ storage: window.localStorage });
+import { useState } from "react";
 
 export default function Providers({ children }) {
   const [queryClient] = useState(
@@ -20,17 +16,8 @@ export default function Providers({ children }) {
             retry: 1, //  retry sekali kalau error
           },
         },
-      })
+      }),
   );
-  useEffect(() => {
-    if (process.env.NEXT_PUBLIC_API_MODE === "mock") {
-      import("../../mocks/browser").then(({ worker }) => {
-        worker.start({
-          onUnhandledRequest: "bypass",
-        });
-      });
-    }
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

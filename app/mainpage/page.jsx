@@ -15,9 +15,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 //import useUserInformation from "../store/useUserInformation";
 //import TrendIncomeExpense from "../../components/chart/linechart";
-import { formatIDR } from "../../lib/utils/idrCurrency";
+import { formatIDR } from "@/lib/utils/idrCurrency";
 
-import TransactionsHistory from "../../components/wallet/transactions_hystory";
+import TransactionsHistory from "@/components/wallet/transactions_hystory";
 
 export default function Home() {
   const { data, isLoading, isFetching } = useQuery({

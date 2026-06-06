@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export default async function refreshApi() {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
   console.log("Refresh token:", refreshToken);

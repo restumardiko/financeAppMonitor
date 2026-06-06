@@ -6,7 +6,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
 );
 
-export async function POST(req) {
+export default async function addAccountApi(req) {
   try {
     const authHeader = req.headers.get("authorization");
 

@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-export async function PATCH(request, { params }) {
+export default async function transactionApi(request, { params }) {
   try {
     // 1. Auth
     const { token, userId } = await verifyToken(request);
