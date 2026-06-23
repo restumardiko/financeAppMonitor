@@ -35,7 +35,11 @@
     ".next/types/**/*.ts",
     "src/lib/utils/api.js",
     ".next/dev/types/**/*.ts",
-    "src/lib/supabase/server.js"
+    "src/lib/supabase/server.js",
+    "src/domain/entities/user.js",
+    "src/domain/entities/account.js",
+    "src/domain/entities/category.js",
+    "src/domain/entities/transaction.js"
   ],
   "exclude": [
     "node_modules"
