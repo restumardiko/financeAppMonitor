@@ -16,3 +16,12 @@ test("Money can subtract values", () => {
 
   assert.equal(result.toNumber(), 70);
 });
+test("Money rejects invalid amount", () => {
+  assert.throws(() => Money.create("abc"));
+});
+
+test("Money does not mutate original", () => {
+  const base = Money.create(100);
+  base.add(Money.create(50));
+  assert.equal(base.toNumber(), 100);
+});
