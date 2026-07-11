@@ -17,3 +17,8 @@ test("should withdraw money into the account", () => {
   account.withdraw(50);
   expect(account.getBalance()).toBe(50);
 });
+
+test("should return accont's balance", () => {
+  const account = new Account({ name: "Test Account", balance: 100 });
+  expect(account.getBalance()).toBe(100);
+});
