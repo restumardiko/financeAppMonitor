@@ -3,6 +3,10 @@ import Money from "../valueObjects/money.js";
 
 export default class Account {
   constructor({ id, name, balance }) {
+    if (!name || name.trim().length < 2) {
+      throw new Error("name should not be empty or less than two");
+    }
+
     this.id = id ? new Id(id) : Id.generate();
     this.name = name;
     this.balance =
