@@ -1,6 +1,6 @@
 export default class Money {
   constructor(amount) {
-    if (typeof amount !== "number" || Number.isNaN(amount)) {
+    if (typeof amount !== "number" || Number.isNaN(amount) || amount < 0) {
       throw new Error("Amount must be a valid number");
     }
 
