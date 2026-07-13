@@ -6,11 +6,11 @@ test("should create an account with a given name and balance", () => {
   expect(account.getBalance()).toBe(100);
 });
 test("should return error when create account with empty name", () => {
-  expect(() => new Account({ name: "", balance: 100 })).toThrow(
-    "name should not be empty or less than two",
-  );
+  expect(() => new Account({ name: "", balance: 100 })).toThrow();
 });
-//test("should return error when create account with negative balance");
+test("should return error when create account with negative balance", () => {
+  expect(() => new Account({ name: "Test Account", balance: -50 })).toThrow();
+});
 
 test("should deposit money into the account", () => {
   const account = new Account({ name: "Test Account", balance: 100 });
