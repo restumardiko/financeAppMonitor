@@ -1,3 +1,4 @@
+import Id from "../common/id";
 export default class Transaction {
   #id;
   #amount;
@@ -7,7 +8,6 @@ export default class Transaction {
   #description;
   #status;
   constructor({
-    id,
     amount,
     transactionType,
     date,
@@ -15,7 +15,7 @@ export default class Transaction {
     description,
     status,
   }) {
-    this.#id = id;
+    this.#id = Id.generate();
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
@@ -23,10 +23,7 @@ export default class Transaction {
     this.#description = description;
     this.#status = status;
   }
-  static create(id,amount,transactionType,date,accountId,description) {
-    if (!id) {
-      throw new Error("Id cannot be empty");
-    }
+  static create({ amount, transactionType, date, accountId, description }) {
     if (!amount) {
       throw new Error("Amount cannot be empty");
     }
@@ -43,13 +40,11 @@ export default class Transaction {
       throw new Error("Transaction cannot be in the future");
     }
     return new Transaction({
-      id,
       amount,
       transactionType,
       date,
       accountId,
       description,
-      status,
     });
   }
   isPending() {

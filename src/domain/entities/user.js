@@ -17,14 +17,6 @@ export default class User {
     this.isActive = isActive;
   }
 
-  generateId() {
-    if (typeof crypto !== "undefined" && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-
   updateProfile({ name, email, avatar }) {
     if (name !== undefined) this.name = name;
     if (email !== undefined) this.email = email;
