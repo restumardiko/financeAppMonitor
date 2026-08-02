@@ -6,7 +6,13 @@ test("Money can add another Money value", () => {
 
   expect(result).toEqual(Money.create(150));
 });
+test("should Error when change value directly", () => {
+  const base = Money.create(100);
 
+  expect(() => {
+    base.amount += 2;
+  }).toThrow(TypeError);
+});
 test("Money can subtract values", () => {
   const base = Money.create(100);
   const result = base.subtract(Money.create(30));

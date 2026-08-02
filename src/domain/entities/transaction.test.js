@@ -15,6 +15,5 @@ test("should create a transaction", () => {
     date,
     accountId,
     description,
-    status,
   });
 });

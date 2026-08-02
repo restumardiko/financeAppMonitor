@@ -1,4 +1,3 @@
-import { number } from "zod";
 import Id from "../common/id.js";
 import Money from "../valueObjects/money.js";
 
@@ -17,7 +16,7 @@ export default class Account {
     if (!name || name.trim().length < 2) {
       throw new Error("name should not be empty or less than two");
     }
-    if (typeof balance != number || balance < 0) {
+    if (typeof balance !== "number" || balance < 0) {
       throw new Error("balance should be number and should not be negative");
     }
     return new Account({ name, balance });
