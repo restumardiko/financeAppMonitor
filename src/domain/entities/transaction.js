@@ -1,4 +1,5 @@
 import Id from "../common/id";
+import TransactionType from "../valueObjects/transactionType";
 export default class Transaction {
   #id;
   #amount;
@@ -7,28 +8,21 @@ export default class Transaction {
   #accountId;
   #description;
   #status;
-  constructor({
-    amount,
-    transactionType,
-    date,
-    accountId,
-    description,
-    status,
-  }) {
+  constructor({ amount, transactionType, date, accountId, description }) {
     this.#id = Id.generate();
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
     this.#accountId = accountId;
     this.#description = description;
-    this.#status = status;
+    this.#status = "";
   }
   static create({ amount, transactionType, date, accountId, description }) {
     if (!amount) {
       throw new Error("Amount cannot be empty");
     }
-    if (!transactionType) {
-      throw new Error("transaction type cannot be empty");
+    if (!(transactionType instanceof TransactionType)) {
+      throw new Error("transaction type is not valid");
     }
     if (!accountId) {
       throw new Error("accountId cannot be empty");

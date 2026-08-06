@@ -17,7 +17,7 @@ test("reject invalid category on income type", () => {
 });
 test("return the validated transaction type and category", () => {
   const base = TransactionType.create({ type: "Income", category: "Etc." });
-  console.log(base.getTransactionType());
+
   expect(base.getTransactionType()).toEqual({
     type: "INCOME",
     category: "ETC.",

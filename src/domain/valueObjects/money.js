@@ -30,6 +30,9 @@ export default class Money {
   get amount() {
     return this.#amount;
   }
+  toNumber() {
+    return Number(this.#amount);
+  }
 
   toString() {
     return this.#amount.toFixed(2);
