@@ -9,7 +9,7 @@ export default class Transaction {
   #description;
   #status;
   constructor({ amount, transactionType, date, accountId, description }) {
-    this.#id = Id.generate();
+    this.#id = Id.generate().toString();
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
@@ -75,6 +75,18 @@ export default class Transaction {
   get description() {
     return this.#description;
   }
+  toJSON() {
+    return {
+      id: this.#id,
+      amount: this.#amount,
+      transactionType: this.#transactionType,
+      date: this.#date,
+      accountId: this.#accountId,
+      description: this.#description,
+      status: this.#status,
+    };
+  }
+
   //setter
   set amount(amount) {
     this.#amount = amount;
@@ -83,6 +95,9 @@ export default class Transaction {
     this.#date = date;
   }
   set transactionType(transactionType) {
+    if (!(transactionType instanceof TransactionType)) {
+      throw new Error("transaction type is not valid");
+    }
     this.#transactionType = transactionType;
   }
   set accountId(accountId) {

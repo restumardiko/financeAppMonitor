@@ -1,3 +1,4 @@
+import Id from "../common/id";
 import TransactionType from "../valueObjects/transactionType";
 import Money from "./../valueObjects/money";
 import Transaction from "./transaction";
@@ -10,13 +11,15 @@ test("should create a transaction", () => {
     category: "SALARY",
   });
   const date = new Date();
-  Transaction.create({
+
+  const newTransaction = Transaction.create({
     amount,
-    transactionType: transType.getTransactionType(),
+    transactionType: transType,
     date,
-    accountId,
-    description,
+    accountId: Id.generate().toString(),
+    description: "the transaction ",
   });
+  expect(newTransaction.toJSON().transactionType.type).toEqual("INCOME");
 });
 //cannot create transaction with invalid transaction type
 // cannot create transaction in the future
