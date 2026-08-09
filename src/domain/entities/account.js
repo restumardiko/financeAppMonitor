@@ -1,4 +1,3 @@
-import Id from "../common/id.js";
 import Money from "../valueObjects/money.js";
 
 export default class Account {
@@ -7,7 +6,7 @@ export default class Account {
   #balance;
 
   constructor({ name, balance }) {
-    this.#id = Id.generate();
+    this.#id = crypto.randomUUID();
     this.#name = name;
     this.#balance =
       balance instanceof Money ? balance : Money.create(balance ?? 0);

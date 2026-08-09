@@ -1,4 +1,3 @@
-import Id from "../common/id";
 import TransactionType from "../valueObjects/transactionType";
 export default class Transaction {
   #id;
@@ -9,13 +8,13 @@ export default class Transaction {
   #description;
   #status;
   constructor({ amount, transactionType, date, accountId, description }) {
-    this.#id = Id.generate().toString();
+    this.#id = crypto.randomUUID();
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
     this.#accountId = accountId;
     this.#description = description;
-    this.#status = "";
+    this.#status = "PENDING";
   }
   static create({ amount, transactionType, date, accountId, description }) {
     if (!amount) {
@@ -29,6 +28,9 @@ export default class Transaction {
     }
     if (!description) {
       throw new Error("description cannot be empty");
+    }
+    if (!(date instanceof Date) || !date) {
+      throw new Error("Transaction date is not correct Date");
     }
     if (date > new Date()) {
       throw new Error("Transaction cannot be in the future");
@@ -45,21 +47,25 @@ export default class Transaction {
     return this.#status === "PENDING";
   }
   isConfirmed() {
-    return this.#status === "CONFIRMEDD";
+    return this.#status === "CONFIRMED";
   }
   confirm() {
-    if (!this.isPending) {
+    if (!this.isPending()) {
       throw new Error("Only pending transaction can be confirmed");
     }
     return (this.#status = "CONFIRMED");
   }
   cancel() {
-    if (!this.isConfirmed) {
+    if (!this.isConfirmed()) {
       throw new Error("cannot cancel confirmed transaction ");
     }
     return (this.#status = "CANCELED");
   }
   //getter
+  get id() {
+    return this.#id;
+  }
+
   get amount() {
     return this.#amount;
   }
