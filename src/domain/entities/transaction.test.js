@@ -174,3 +174,28 @@ test("every setter is working", () => {
     newTransaction.description = "new description";
   }).not.toThrow();
 });
+//test instance method
+test("all method are working", () => {
+  const transType = TransactionType.create({
+    type: "INCOME",
+    category: "SALARY",
+  });
+
+  const newTransaction = Transaction.create({
+    amount: Money.create(100),
+    transactionType: transType,
+    date,
+    accountId: id,
+    description: "the transaction ",
+  });
+
+  expect(newTransaction.isPending()).toBeTruthy();
+  expect(newTransaction.isConfirmed()).toBeFalsy();
+  newTransaction.confirm();
+  expect(newTransaction.isPending()).toBeFalsy();
+  newTransaction.cancel();
+  expect(newTransaction.status).toBe("CANCELED");
+});
+// test("confirm is working",()=>{
+
+// })

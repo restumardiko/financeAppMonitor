@@ -83,6 +83,9 @@ export default class Transaction {
   get description() {
     return this.#description;
   }
+  get status() {
+    return this.#status;
+  }
   toJSON() {
     return {
       id: this.#id,
