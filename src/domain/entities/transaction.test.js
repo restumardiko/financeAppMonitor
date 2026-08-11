@@ -2,7 +2,7 @@ import TransactionType from "../valueObjects/transactionType";
 import Money from "./../valueObjects/money";
 import Transaction from "./transaction";
 
-//"cannot create transaction with zero amount"
+//"can create transaction"
 const id = crypto.randomUUID();
 const date = new Date();
 test("should create a transaction", () => {
@@ -23,7 +23,7 @@ test("should create a transaction", () => {
   expect(newTransaction.toJSON()).toHaveProperty("transactionType");
   expect(newTransaction.toJSON()).toHaveProperty("date");
 });
-// cannot create transaction in the future
+
 test("reject transaction when date in the future", () => {
   const amount = Money.create(100);
   const transType = TransactionType.create({
@@ -42,8 +42,41 @@ test("reject transaction when date in the future", () => {
     });
   }).toThrow(/^Transaction cannot be in the future$/);
 });
+test("reject transaction when date is not valid", () => {
+  const amount = Money.create(100);
+  const transType = TransactionType.create({
+    type: "INCOME",
+    category: "SALARY",
+  });
 
-//cannot create transactin with empty accountId
+  expect(() => {
+    Transaction.create({
+      amount,
+      transactionType: transType,
+      date: new Date("invalid date"),
+      accountId: id,
+      description: "this is description",
+    });
+  }).toThrow(/^invalid date transaction$/);
+});
+
+test("reject transaction with invalid amount", () => {
+  const amount = 100;
+  const transType = TransactionType.create({
+    type: "INCOME",
+    category: "SALARY",
+  });
+
+  expect(() => {
+    Transaction.create({
+      amount: amount,
+      transactionType: transType,
+      date: date,
+      accountId: id,
+      description: "this is description",
+    });
+  }).toThrow(/^Amount is not valid$/);
+});
 test("reject transaction with empty account id", () => {
   const amount = Money.create(100);
   const transType = TransactionType.create({
@@ -63,7 +96,7 @@ test("reject transaction with empty account id", () => {
   }).toThrow(/^accountId cannot be empty$/);
 });
 //cannot create transaction with empty description
-test("reject transaction with empty account id", () => {
+test("reject transaction with empty description", () => {
   const amount = Money.create(100);
   const transType = TransactionType.create({
     type: "INCOME",
@@ -103,4 +136,41 @@ test("every getter is working", () => {
   expect(newTransaction.description).toBe("the transaction");
 });
 
-test("every setter is working");
+test("every setter is working", () => {
+  const transType = TransactionType.create({
+    type: "EXPENSE",
+    category: "HEALTH",
+  });
+
+  const newTransaction = Transaction.create({
+    amount: Money.create(100),
+    transactionType: transType,
+    date: date,
+    accountId: id,
+    description: "the transaction",
+  });
+  //not error when set new amount
+  expect(() => {
+    newTransaction.amount = Money.create(50);
+  }).not.toThrow();
+  expect(() => {
+    newTransaction.transactionType = TransactionType.create({
+      type: "INCOME",
+      category: "SALARY",
+    });
+  }).not.toThrow();
+  //not error when set new date
+  expect(() => {
+    newTransaction.date = new Date();
+  }).not.toThrow();
+  //error when set invalid new date
+  expect(() => {
+    newTransaction.date = "jsksk";
+  }).toThrow(/^invalid date transaction$/);
+
+  //expect(newTransaction.accountId).not.toThrow();
+  //not error when set new description
+  expect(() => {
+    newTransaction.description = "new description";
+  }).not.toThrow();
+});

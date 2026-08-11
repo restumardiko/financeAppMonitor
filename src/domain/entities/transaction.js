@@ -1,3 +1,4 @@
+import Money from "../valueObjects/money";
 import TransactionType from "../valueObjects/transactionType";
 export default class Transaction {
   #id;
@@ -17,20 +18,21 @@ export default class Transaction {
     this.#status = "PENDING";
   }
   static create({ amount, transactionType, date, accountId, description }) {
-    if (!amount) {
-      throw new Error("Amount cannot be empty");
+    if (!amount || !(amount instanceof Money)) {
+      throw new Error("Amount is not valid");
     }
     if (!(transactionType instanceof TransactionType)) {
       throw new Error("transaction type is not valid");
     }
+    //should be a property of account's instance !
     if (!accountId) {
       throw new Error("accountId cannot be empty");
     }
     if (!description) {
       throw new Error("description cannot be empty");
     }
-    if (!(date instanceof Date) || !date) {
-      throw new Error("Transaction date is not correct Date");
+    if (!(date instanceof Date) || !date || isNaN(date)) {
+      throw new Error("invalid date transaction");
     }
     if (date > new Date()) {
       throw new Error("Transaction cannot be in the future");
@@ -95,9 +97,19 @@ export default class Transaction {
 
   //setter
   set amount(amount) {
+    if (!amount || !(amount instanceof Money)) {
+      throw new Error("Amount is not valid");
+    }
     this.#amount = amount;
   }
   set date(date) {
+    if (!(date instanceof Date) || !date || isNaN(date)) {
+      throw new Error("invalid date transaction");
+    }
+    if (date > new Date()) {
+      throw new Error("Transaction cannot be in the future");
+    }
+
     this.#date = date;
   }
   set transactionType(transactionType) {
@@ -110,6 +122,10 @@ export default class Transaction {
     this.#accountId = accountId;
   }
   set description(description) {
+    if (!description) {
+      throw new Error("description cannot be empty");
+    }
+
     this.#description = description;
   }
 }
