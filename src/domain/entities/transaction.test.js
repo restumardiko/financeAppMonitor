@@ -4,6 +4,7 @@ import Transaction from "./transaction";
 
 //"can create transaction"
 const id = crypto.randomUUID();
+const userId = crypto.randomUUID();
 const date = new Date();
 test("should create a transaction", () => {
   const amount = Money.create(100);
@@ -13,6 +14,7 @@ test("should create a transaction", () => {
   });
 
   const newTransaction = Transaction.create({
+    userId,
     amount,
     transactionType: transType,
     date,
@@ -22,6 +24,23 @@ test("should create a transaction", () => {
   expect(newTransaction.toJSON()).toHaveProperty("amount");
   expect(newTransaction.toJSON()).toHaveProperty("transactionType");
   expect(newTransaction.toJSON()).toHaveProperty("date");
+});
+test("reject transaction with invalid userId", () => {
+  const transType = TransactionType.create({
+    type: "INCOME",
+    category: "SALARY",
+  });
+
+  expect(() => {
+    Transaction.create({
+      userId: "",
+      amount: Money.create(100),
+      transactionType: transType,
+      date,
+      accountId: id,
+      description: "the transaction ",
+    });
+  }).toThrow(/^User id is not valid$/);
 });
 
 test("reject transaction when date in the future", () => {
@@ -34,6 +53,7 @@ test("reject transaction when date in the future", () => {
 
   expect(() => {
     Transaction.create({
+      userId,
       amount,
       transactionType: transType,
       date: futureDate,
@@ -51,13 +71,14 @@ test("reject transaction when date is not valid", () => {
 
   expect(() => {
     Transaction.create({
+      userId,
       amount,
       transactionType: transType,
       date: new Date("invalid date"),
       accountId: id,
       description: "this is description",
     });
-  }).toThrow(/^invalid date transaction$/);
+  }).toThrow(/^Invalid date transaction$/);
 });
 
 test("reject transaction with invalid amount", () => {
@@ -69,6 +90,7 @@ test("reject transaction with invalid amount", () => {
 
   expect(() => {
     Transaction.create({
+      userId,
       amount: amount,
       transactionType: transType,
       date: date,
@@ -87,13 +109,14 @@ test("reject transaction with empty account id", () => {
 
   expect(() => {
     Transaction.create({
+      userId,
       amount,
       transactionType: transType,
       date: pastDate,
       accountId: "",
       description: "this is description",
     });
-  }).toThrow(/^accountId cannot be empty$/);
+  }).toThrow(/^AccountId cannot be empty$/);
 });
 //cannot create transaction with empty description
 test("reject transaction with empty description", () => {
@@ -106,13 +129,14 @@ test("reject transaction with empty description", () => {
 
   expect(() => {
     Transaction.create({
+      userId,
       amount,
       transactionType: transType,
       date: pastDate,
       accountId: crypto.randomUUID(),
       description: "",
     });
-  }).toThrow(/^description cannot be empty$/);
+  }).toThrow(/^Description cannot be empty$/);
 });
 
 test("every getter is working", () => {
@@ -123,6 +147,7 @@ test("every getter is working", () => {
   });
 
   const newTransaction = Transaction.create({
+    userId,
     amount,
     transactionType: transType,
     date,
@@ -143,6 +168,7 @@ test("every setter is working", () => {
   });
 
   const newTransaction = Transaction.create({
+    userId,
     amount: Money.create(100),
     transactionType: transType,
     date: date,
@@ -166,7 +192,7 @@ test("every setter is working", () => {
   //error when set invalid new date
   expect(() => {
     newTransaction.date = "jsksk";
-  }).toThrow(/^invalid date transaction$/);
+  }).toThrow(/^Invalid date transaction$/);
 
   //expect(newTransaction.accountId).not.toThrow();
   //not error when set new description
@@ -182,6 +208,7 @@ test("all method are working", () => {
   });
 
   const newTransaction = Transaction.create({
+    userId,
     amount: Money.create(100),
     transactionType: transType,
     date,
@@ -193,8 +220,9 @@ test("all method are working", () => {
   expect(newTransaction.isConfirmed()).toBeFalsy();
   newTransaction.confirm();
   expect(newTransaction.isPending()).toBeFalsy();
-  newTransaction.cancel();
-  expect(newTransaction.status).toBe("CANCELED");
+  expect(() => {
+    newTransaction.cancel();
+  }).toThrow(/^Cannot cancel confirmed transaction$/);
 });
 // test("confirm is working",()=>{
 

@@ -1,4 +1,5 @@
 import Money from "../valueObjects/money.js";
+//havent privated yet
 
 export default class Account {
   #id;
@@ -8,15 +9,14 @@ export default class Account {
   constructor({ name, balance }) {
     this.#id = crypto.randomUUID();
     this.#name = name;
-    this.#balance =
-      balance instanceof Money ? balance : Money.create(balance ?? 0);
+    this.#balance = balance;
   }
   static create({ name, balance }) {
     if (!name || name.trim().length < 2) {
-      throw new Error("name should not be empty or less than two");
+      throw new Error("Name should not be empty or less than two");
     }
-    if (typeof balance !== "number" || balance < 0) {
-      throw new Error("balance should be number and should not be negative");
+    if (!(balance instanceof Money)) {
+      throw new Error("Balance is not valid");
     }
     return new Account({ name, balance });
   }

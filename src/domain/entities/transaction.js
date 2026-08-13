@@ -1,15 +1,25 @@
 import Money from "../valueObjects/money";
 import TransactionType from "../valueObjects/transactionType";
+// havent privated yet
 export default class Transaction {
   #id;
+  #userId;
   #amount;
   #transactionType;
   #date;
   #accountId;
   #description;
   #status;
-  constructor({ amount, transactionType, date, accountId, description }) {
+  constructor({
+    userId,
+    amount,
+    transactionType,
+    date,
+    accountId,
+    description,
+  }) {
     this.#id = crypto.randomUUID();
+    this.#userId = userId;
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
@@ -17,27 +27,38 @@ export default class Transaction {
     this.#description = description;
     this.#status = "PENDING";
   }
-  static create({ amount, transactionType, date, accountId, description }) {
+  static create({
+    userId,
+    amount,
+    transactionType,
+    date,
+    accountId,
+    description,
+  }) {
+    if (!userId) {
+      throw new Error("User id is not valid");
+    }
     if (!amount || !(amount instanceof Money)) {
       throw new Error("Amount is not valid");
     }
     if (!(transactionType instanceof TransactionType)) {
-      throw new Error("transaction type is not valid");
+      throw new Error("Transaction type is not valid");
     }
     //should be a property of account's instance !
     if (!accountId) {
-      throw new Error("accountId cannot be empty");
+      throw new Error("AccountId cannot be empty");
     }
     if (!description) {
-      throw new Error("description cannot be empty");
+      throw new Error("Description cannot be empty");
     }
     if (!(date instanceof Date) || !date || isNaN(date)) {
-      throw new Error("invalid date transaction");
+      throw new Error("Invalid date transaction");
     }
     if (date > new Date()) {
       throw new Error("Transaction cannot be in the future");
     }
     return new Transaction({
+      userId,
       amount,
       transactionType,
       date,
@@ -58,8 +79,8 @@ export default class Transaction {
     return (this.#status = "CONFIRMED");
   }
   cancel() {
-    if (!this.isConfirmed()) {
-      throw new Error("cannot cancel confirmed transaction ");
+    if (!this.isPending()) {
+      throw new Error("Cannot cancel confirmed transaction");
     }
     return (this.#status = "CANCELED");
   }
@@ -89,6 +110,7 @@ export default class Transaction {
   toJSON() {
     return {
       id: this.#id,
+      userId: this.#userId,
       amount: this.#amount,
       transactionType: this.#transactionType,
       date: this.#date,
@@ -107,7 +129,7 @@ export default class Transaction {
   }
   set date(date) {
     if (!(date instanceof Date) || !date || isNaN(date)) {
-      throw new Error("invalid date transaction");
+      throw new Error("Invalid date transaction");
     }
     if (date > new Date()) {
       throw new Error("Transaction cannot be in the future");
@@ -117,7 +139,7 @@ export default class Transaction {
   }
   set transactionType(transactionType) {
     if (!(transactionType instanceof TransactionType)) {
-      throw new Error("transaction type is not valid");
+      throw new Error("Transaction type is not valid");
     }
     this.#transactionType = transactionType;
   }
@@ -126,7 +148,7 @@ export default class Transaction {
   }
   set description(description) {
     if (!description) {
-      throw new Error("description cannot be empty");
+      throw new Error("Description cannot be empty");
     }
 
     this.#description = description;
