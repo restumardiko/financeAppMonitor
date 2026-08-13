@@ -15,7 +15,7 @@ export default class User {
     if (!id) {
       throw new Error("Invalid id");
     }
-    if (!name || name.length <= 10) {
+    if (!name || name.length < 3) {
       throw new Error("Name is not valid");
     }
     if (!(email instanceof Email)) {
@@ -25,7 +25,7 @@ export default class User {
   }
 
   updateProfile({ name, email }) {
-    if (!name || name.length <= 10) {
+    if (!name || name.length < 3) {
       throw new Error("Name is not valid");
     }
     if (!(email instanceof Email)) {
@@ -37,14 +37,16 @@ export default class User {
   }
 
   getDisplayName() {
-    return this.#name?.trim() || this.email?.split("@")[0] || "User";
+    return (
+      this.#name?.trim() || this.#email.validEmail?.split("@")[0] || "User"
+    );
   }
 
   toJSON() {
     return {
       id: this.#id,
       name: this.#name,
-      email: this.#email,
+      email: this.#email.validEmail,
       createdAt: this.#createdAt,
     };
   }
