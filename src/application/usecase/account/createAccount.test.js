@@ -1,33 +1,36 @@
-// const createAccountRepository = {
-//   create: jest.fn(({ name, balance }) => ({
-//     id: "acc_123",
-//     name,
-//     balance: balance.toNumber(),
-//   })),
-// };
+import Money from "../../../domain/valueObjects/money";
+import createAccount from "./createAccount";
 
-// test("should create an account via the use case", () => {
-//   const account = createAccount({
-//     name: "Savings",
-//     balance: Money.create(250),
-//     accountRepository: createAccountRepository,
-//   });
+function makeFakeRepository() {
+  const store = [];
+  return {
+    save: jest.fn(async (account) => {
+      store.push(account);
+      return account;
+    }),
+    _store: store,
+  };
+}
 
-//   expect(account.name).toBe("Savings");
-//   expect(account.balance).toBe(250);
-//   expect(createAccountRepository.create).toHaveBeenCalledWith({
-//     id: "acc_123",
-//     name: "Savings",
-//     balance: 250,
-//   });
-// });
+test("should create an account via the use case", async () => {
+  const fakeRepo = makeFakeRepository();
+  const account = await createAccount({
+    name: "Savings",
+    balance: Money.create(250),
+    accountRepository: fakeRepo,
+  });
 
-// test("should reject empty names", () => {
-//   expect(() =>
-//     createAccount({
-//       name: "",
-//       balance: Money.create(10),
-//       accountRepository: createAccountRepository,
-//     }),
-//   ).toThrow("Name should not be empty or less than two");
-// });
+  expect(fakeRepo.save).toHaveBeenCalledTimes(1);
+  expect(fakeRepo.save).toHaveBeenCalledWith(
+    expect.objectContaining({
+      name: "Savings",
+      balance: 250,
+    }),
+  );
+  expect(account).toEqual(
+    expect.objectContaining({
+      name: "Savings",
+      balance: 250,
+    }),
+  );
+});
