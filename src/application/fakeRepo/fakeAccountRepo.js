@@ -16,7 +16,12 @@ export default class FakeAccountRepo {
     const whichIndex = this.data.findIndex(
       (account) => account.id === accountId,
     );
-    // confirmation
-    return this.data.slice(whichIndex);
+
+    if (whichIndex !== -1) {
+      this.data.splice(whichIndex, 1);
+      return true;
+    }
+
+    return false;
   }
 }

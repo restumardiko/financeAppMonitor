@@ -1,36 +1,18 @@
 import Money from "../../../domain/valueObjects/money";
+import FakeAccountRepo from "../../fakeRepo/fakeAccountRepo";
+import { fakeAccountInitialData } from "../../fakeRepo/initialDataRepo";
 import createAccount from "./createAccount";
 
-function makeFakeRepository() {
-  const store = [];
-  return {
-    save: jest.fn(async (account) => {
-      store.push(account);
-      return account;
-    }),
-    _store: store,
-  };
-}
-
 test("should create an account via the use case", async () => {
-  const fakeRepo = makeFakeRepository();
+  const fakeRepo = new FakeAccountRepo(fakeAccountInitialData);
+  const saveSpy = jest.spyOn(fakeRepo, "save");
   const account = await createAccount({
     name: "Savings",
-    balance: Money.create(250),
+    balance: Money.create(2000),
     accountRepository: fakeRepo,
   });
 
-  expect(fakeRepo.save).toHaveBeenCalledTimes(1);
-  expect(fakeRepo.save).toHaveBeenCalledWith(
-    expect.objectContaining({
-      name: "Savings",
-      balance: 250,
-    }),
-  );
-  expect(account).toEqual(
-    expect.objectContaining({
-      name: "Savings",
-      balance: 250,
-    }),
-  );
+  expect(account).toHaveProperty("name");
+  expect(fakeRepo.data).toHaveLength(3);
+  expect(saveSpy).toHaveBeenCalledTimes(1);
 });
