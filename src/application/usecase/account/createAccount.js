@@ -7,7 +7,7 @@ export default async function createAccount({
 }) {
   const account = Account.create({ name, balance });
 
-  await accountRepository.save(account);
+  const savedAccount = await accountRepository.save(account);
 
-  return account.toJSON();
+  return savedAccount;
 }
