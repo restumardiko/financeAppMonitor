@@ -1,24 +1,20 @@
-import Money from "../../../domain/valueObjects/money";
+import Account from "../../../domain/entities/account";
 
 export default async function deleteAccount({
   accountId,
-  accountRepository,
+  accountRepo,
   transactionRepo,
 }) {
-  //cek di accountRepository by name and id
-  const account = await accountRepository.get(accountId);
-  const accountTransaction = await transactionRepo.get(accountId);
-  const isAccountDeletable = () => {
-    if (!account) {
-      return false;
-    }
-    if (account.balance <= Money.create(0) && !accountTransaction) {
-      return true;
-    }
-  };
-  if (isAccountDeletable) {
-    const deletedAccount = await accountRepository.delete(name, id);
-    return deletedAccount;
+  const account = await accountRepo.get(accountId);
+
+  if (!account) {
+    throw new Error("Account not found");
   }
-  throw new Error("Account cannot be deleted");
+
+  const hasTransactions = await transactionRepo.hasTransactionFor(accountId);
+  if (!account.canBeDeleted({ hasTransactions })) {
+    throw new Error("Account cannot be deleted");
+  }
+
+  await accountRepo.delete(accountId);
 }

@@ -29,9 +29,12 @@ export default class Account {
     this.#balance = this.#balance.subtract(Money.create(amount));
     return this;
   }
+  canBeDeleted({ hasTransactions }) {
+    return this.#balance.isZero() && !hasTransactions;
+  }
 
   get balance() {
-    return this.#balance.toNumber();
+    return this.#balance;
   }
   get name() {
     return this.#name;

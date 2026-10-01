@@ -1,7 +1,7 @@
 export const fakeAccountInitialData = [
-  { id: "1", name: "BRI", balance: 1000 },
-  { id: "2", name: "BCA", balance: 2000 },
+  { accountId: "1", name: "BRI", balance: 1000 },
+  { accountId: "2", name: "BCA", balance: 2000 },
 ];
 export const fakeTransactionInitialData = [
-  { userId: "1", amount: 20, transactionType: {}, date: "12-12-2025" },
+  { transactionId: "1",accountId:"1", amount: 20, transactionType: {}, date: "12-12-2025" },
 ];

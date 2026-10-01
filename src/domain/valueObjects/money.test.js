@@ -33,3 +33,7 @@ test("Money does not mutate original", () => {
 test("Money rejects negative amount", () => {
   expect(() => Money.create(-20)).toThrow();
 });
+test("money can clarify either zero or not", () => {
+  const base = Money.create(100);
+  expect(base.isZero()).toBeFalsy();
+});

@@ -9,12 +9,12 @@ export default class FakeAccountRepo {
   }
   get(accountId) {
     return this.data.find((account) => {
-      return account.id === accountId;
+      return account.accountId === accountId;
     });
   }
   delete(accountId) {
     const whichIndex = this.data.findIndex(
-      (account) => account.id === accountId,
+      (account) => account.accountId === accountId,
     );
 
     if (whichIndex !== -1) {
@@ -24,4 +24,5 @@ export default class FakeAccountRepo {
 
     return false;
   }
+  
 }

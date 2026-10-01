@@ -4,7 +4,7 @@ const fakeAccountRepo = new FakeAccountRepo(fakeAccountInitialData);
 
 test("can save account to repo", () => {
   fakeAccountRepo.save({
-    id: "4",
+    accountId: "4",
     name: "MANDIRI",
     balance: 4000,
   });
@@ -13,7 +13,7 @@ test("can save account to repo", () => {
 test("can get account from repo", () => {
   const result = fakeAccountRepo.get("2");
   expect(result).toEqual({
-    id: "2",
+    accountId: "2",
     name: "BCA",
     balance: 2000,
   });

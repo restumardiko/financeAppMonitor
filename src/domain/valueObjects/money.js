@@ -26,6 +26,9 @@ export default class Money {
 
     return new Money(this.#amount - other.#amount);
   }
+  isZero() {
+    return this.#amount === 0;
+  }
 
   get amount() {
     return this.#amount;

@@ -3,18 +3,18 @@ export default class FakeTransactionRepo {
   constructor(initialData) {
     this.data = initialData;
   }
-  save(transaction) {
+  async save(transaction) {
     this.data.push(transaction);
     return transaction;
   }
-  get(transactionId) {
+  async get(transactionId) {
     return this.data.find((transaction) => {
-      return transaction.userId === transactionId;
+      return transaction.transactionId === transactionId;
     });
   }
-  delete(transactionId) {
+  async delete(transactionId) {
     const whichIndex = this.data.findIndex(
-      (transaction) => transaction.userId === transactionId,
+      (transaction) => transaction.transactionId === transactionId,
     );
 
     if (whichIndex !== -1) {
@@ -24,4 +24,14 @@ export default class FakeTransactionRepo {
 
     return false;
   }
+  async hasTransactionFor(accountId) {
+    const isTransAcc = this.data.find(
+      (transaction) => transaction.accountId === accountId,
+    );
+    if (isTransAcc) {
+      return true;
+    }
+    return false;
+  }
+  //
 }

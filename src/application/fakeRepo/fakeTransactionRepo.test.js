@@ -6,7 +6,8 @@ const fakeTransactionRepo = new FakeTransactionRepo(fakeTransactionInitialData);
 
 test("can save transaction to repo", () => {
   fakeTransactionRepo.save({
-    userId: "2",
+    transactionId: "2",
+    accountId: "1",
     amount: 10,
     transactionType: {},
     date: "11-06-2026",
@@ -16,7 +17,8 @@ test("can save transaction to repo", () => {
 test("can get transaction from repo", () => {
   const result = fakeTransactionRepo.get("1");
   expect(result).toEqual({
-    userId: "1",
+    transactionId: "1",
+    accountId: "1",
     amount: 20,
     transactionType: {},
     date: "12-12-2025",
@@ -24,5 +26,11 @@ test("can get transaction from repo", () => {
 });
 test("can delete transaction on repo", () => {
   const result = fakeTransactionRepo.delete("1");
+  expect(result).toBeTruthy();
+  expect(fakeTransactionRepo.data).toHaveLength(1);
+});
+
+test("has transaction for account", () => {
+  const result = fakeTransactionRepo.hasTransactionFor("1");
   expect(result).toBeTruthy();
 });
