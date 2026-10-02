@@ -8,7 +8,7 @@ export default class FakeTransactionRepo {
     return transaction;
   }
   async get(transactionId) {
-    return this.data.find((transaction) => {
+    this.data.find((transaction) => {
       return transaction.transactionId === transactionId;
     });
   }

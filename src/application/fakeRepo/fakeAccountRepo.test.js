@@ -1,5 +1,7 @@
+import Money from "../../domain/valueObjects/money";
 import FakeAccountRepo from "./fakeAccountRepo";
 import { fakeAccountInitialData } from "./initialDataRepo";
+import { accountMap } from "./map";
 const fakeAccountRepo = new FakeAccountRepo(fakeAccountInitialData);
 
 test("can save account to repo", () => {
@@ -12,11 +14,13 @@ test("can save account to repo", () => {
 });
 test("can get account from repo", () => {
   const result = fakeAccountRepo.get("2");
-  expect(result).toEqual({
-    accountId: "2",
-    name: "BCA",
-    balance: 2000,
-  });
+  expect(result).toEqual(
+    accountMap({
+      accountId: "2",
+      name: "BCA",
+      balance: Money.create(2000),
+    }),
+  );
 });
 test("can delete account on repo", () => {
   const result = fakeAccountRepo.delete("1");

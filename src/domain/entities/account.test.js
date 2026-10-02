@@ -12,6 +12,21 @@ test("should create an account with a given name and balance", () => {
   expect(account.name).toBe("Test Account");
   expect(account.balance).toEqual(Money.create(100));
 });
+test("should create an account with a given name,balance and id", () => {
+  const account = Account.create({
+    name: "Test Account",
+    balance: balance,
+    id: "123",
+  });
+  expect(account.id).toBe("123");
+});
+test("shoule create an account with a given name and balance", () => {
+  const account = Account.create({
+    name: "Test Account",
+    balance: balance,
+  });
+  expect(account.id).toHaveLength(36);
+});
 test("should return error when create account with empty name", () => {
   expect(() => Account.create({ name: "", balance: balance })).toThrow(
     /^Name should not be empty or less than two$/,

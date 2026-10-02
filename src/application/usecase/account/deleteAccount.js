@@ -1,5 +1,3 @@
-import Account from "../../../domain/entities/account";
-
 export default async function deleteAccount({
   accountId,
   accountRepo,

@@ -1,3 +1,5 @@
+import { accountMap } from "./map";
+
 export default class FakeAccountRepo {
   data;
   constructor(initialData) {
@@ -8,9 +10,10 @@ export default class FakeAccountRepo {
     return account;
   }
   get(accountId) {
-    return this.data.find((account) => {
+    const raw = this.data.find((account) => {
       return account.accountId === accountId;
     });
+    return accountMap(raw);
   }
   delete(accountId) {
     const whichIndex = this.data.findIndex(
@@ -24,5 +27,4 @@ export default class FakeAccountRepo {
 
     return false;
   }
-  
 }
