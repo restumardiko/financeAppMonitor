@@ -30,7 +30,9 @@ export default class Account {
     return this;
   }
   canBeDeleted({ hasTransactions }) {
-    return this.#balance.isZero() && !hasTransactions;
+    //business rule maight change
+    // return this.#balance.isZero() && !hasTransactions;
+    return !hasTransactions;
   }
 
   get balance() {

@@ -11,8 +11,10 @@ export default async function deleteAccount({
 
   const hasTransactions = await transactionRepo.hasTransactionFor(accountId);
   if (!account.canBeDeleted({ hasTransactions })) {
-    throw new Error("Account cannot be deleted");
+    throw new Error(
+      "Account cannot be deleted neither empty nor empty transaction",
+    );
   }
-
-  await accountRepo.delete(accountId);
+  //lil bit skeptic about what kind of data returned by this function
+  return await accountRepo.delete(accountId);
 }

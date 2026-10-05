@@ -8,13 +8,13 @@ export default class FakeTransactionRepo {
     return transaction;
   }
   async get(transactionId) {
-    this.data.find((transaction) => {
-      return transaction.transactionId === transactionId;
+    return this.data.find((transaction) => {
+      return transaction.id === transactionId;
     });
   }
   async delete(transactionId) {
     const whichIndex = this.data.findIndex(
-      (transaction) => transaction.transactionId === transactionId,
+      (transaction) => transaction.id === transactionId,
     );
 
     if (whichIndex !== -1) {
