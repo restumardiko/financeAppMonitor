@@ -1,3 +1,4 @@
+import Account from "../../../domain/entities/account";
 import FakeAccountRepo from "../../fakeRepo/fakeAccountRepo";
 
 import { fakeAccountInitialData } from "../../fakeRepo/initialDataRepo";
@@ -14,5 +15,6 @@ test("can get exact account", async () => {
   });
 
   expect(getSpy).toHaveBeenCalledTimes(1);
-  expect(account).toEqual({ id: "1", name: "BRI", balance: 1000 });
+  expect(account).toBeInstanceOf(Account);
+  expect(account.toJSON()).toEqual({ id: "1", name: "BRI", balance: 1000 });
 });

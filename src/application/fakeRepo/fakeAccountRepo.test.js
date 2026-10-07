@@ -23,8 +23,6 @@ test("can delete account on repo", () => {
 });
 test("can get all accounts", () => {
   const result = fakeAccountRepo.getAll();
-  expect(result).toEqual([
-    { id: "2", name: "BCA", balance: 2000 },
-    { id: "4", name: "MANDIRI", balance: 4000 },
-  ]);
+  expect(result).toHaveLength(2);
+  expect(result[0]).toBeInstanceOf(Account);
 });

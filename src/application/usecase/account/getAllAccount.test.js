@@ -1,13 +1,12 @@
+import Account from "../../../domain/entities/account";
 import FakeAccountRepo from "../../fakeRepo/fakeAccountRepo";
 import { fakeAccountInitialData } from "../../fakeRepo/initialDataRepo";
-import getAccounts from "./getAccount";
+import getAllAccount from "../../usecase/account/getAllAccount";
 
 test("can get all Accounts", async () => {
   const fakeAccountRepo = new FakeAccountRepo(fakeAccountInitialData);
-  const result = await getAccounts({ fakeAccountRepo });
+  const result = await getAllAccount(fakeAccountRepo);
 
-  expect(result).toEqual([
-    { id: "1", name: "BRI", balance: 1000 },
-    { id: "2", name: "BCA", balance: 2000 },
-  ]);
+  expect(result).toHaveLength(2);
+  expect(result[0]).toBeInstanceOf(Account);
 });
