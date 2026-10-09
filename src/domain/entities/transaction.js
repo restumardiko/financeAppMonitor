@@ -3,23 +3,14 @@ import TransactionType from "../valueObjects/transactionType";
 // havent privated yet
 export default class Transaction {
   #id;
-  #userId;
   #amount;
   #transactionType;
   #date;
   #accountId;
   #description;
   #status;
-  constructor({
-    userId,
-    amount,
-    transactionType,
-    date,
-    accountId,
-    description,
-  }) {
-    this.#id = crypto.randomUUID();
-    this.#userId = userId;
+  constructor({ id, amount, transactionType, date, accountId, description }) {
+    this.#id = id || crypto.randomUUID();
     this.#amount = amount;
     this.#transactionType = transactionType;
     this.#date = date;
@@ -27,17 +18,7 @@ export default class Transaction {
     this.#description = description;
     this.#status = "PENDING";
   }
-  static create({
-    userId,
-    amount,
-    transactionType,
-    date,
-    accountId,
-    description,
-  }) {
-    if (!userId) {
-      throw new Error("User id is not valid");
-    }
+  static create({ id, amount, transactionType, date, accountId, description }) {
     if (!amount || !(amount instanceof Money)) {
       throw new Error("Amount is not valid");
     }
@@ -58,7 +39,8 @@ export default class Transaction {
       throw new Error("Transaction cannot be in the future");
     }
     return new Transaction({
-      userId,
+      id,
+
       amount,
       transactionType,
       date,
@@ -110,7 +92,6 @@ export default class Transaction {
   toJSON() {
     return {
       id: this.#id,
-      userId: this.#userId,
       amount: this.#amount,
       transactionType: this.#transactionType,
       date: this.#date,

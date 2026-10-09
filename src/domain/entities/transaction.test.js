@@ -4,9 +4,9 @@ import Transaction from "./transaction";
 
 //"can create transaction"
 const id = crypto.randomUUID();
-const userId = crypto.randomUUID();
+
 const date = new Date();
-test("should create a transaction", () => {
+test("should create a transaction with id", () => {
   const amount = Money.create(100);
   const transType = TransactionType.create({
     type: "INCOME",
@@ -14,33 +14,31 @@ test("should create a transaction", () => {
   });
 
   const newTransaction = Transaction.create({
-    userId,
+    id: "123",
     amount,
     transactionType: transType,
     date,
     accountId: id,
     description: "the transaction ",
   });
-  expect(newTransaction.toJSON()).toHaveProperty("amount");
-  expect(newTransaction.toJSON()).toHaveProperty("transactionType");
-  expect(newTransaction.toJSON()).toHaveProperty("date");
+  expect(newTransaction.toJSON().id).toBe("123");
 });
-test("reject transaction with invalid userId", () => {
+
+test("should create transaction without id", () => {
+  const amount = Money.create(100);
   const transType = TransactionType.create({
     type: "INCOME",
     category: "SALARY",
   });
 
-  expect(() => {
-    Transaction.create({
-      userId: "",
-      amount: Money.create(100),
-      transactionType: transType,
-      date,
-      accountId: id,
-      description: "the transaction ",
-    });
-  }).toThrow(/^User id is not valid$/);
+  const newTransaction = Transaction.create({
+    amount,
+    transactionType: transType,
+    date,
+    accountId: id,
+    description: "the transaction ",
+  });
+  expect(newTransaction.toJSON()).toHaveProperty("id");
 });
 
 test("reject transaction when date in the future", () => {
@@ -53,7 +51,6 @@ test("reject transaction when date in the future", () => {
 
   expect(() => {
     Transaction.create({
-      userId,
       amount,
       transactionType: transType,
       date: futureDate,
@@ -71,7 +68,6 @@ test("reject transaction when date is not valid", () => {
 
   expect(() => {
     Transaction.create({
-      userId,
       amount,
       transactionType: transType,
       date: new Date("invalid date"),
@@ -90,7 +86,6 @@ test("reject transaction with invalid amount", () => {
 
   expect(() => {
     Transaction.create({
-      userId,
       amount: amount,
       transactionType: transType,
       date: date,
@@ -109,7 +104,6 @@ test("reject transaction with empty account id", () => {
 
   expect(() => {
     Transaction.create({
-      userId,
       amount,
       transactionType: transType,
       date: pastDate,
@@ -129,7 +123,6 @@ test("reject transaction with empty description", () => {
 
   expect(() => {
     Transaction.create({
-      userId,
       amount,
       transactionType: transType,
       date: pastDate,
@@ -147,7 +140,6 @@ test("every getter is working", () => {
   });
 
   const newTransaction = Transaction.create({
-    userId,
     amount,
     transactionType: transType,
     date,
@@ -168,7 +160,6 @@ test("every setter is working", () => {
   });
 
   const newTransaction = Transaction.create({
-    userId,
     amount: Money.create(100),
     transactionType: transType,
     date: date,
@@ -208,7 +199,6 @@ test("all method are working", () => {
   });
 
   const newTransaction = Transaction.create({
-    userId,
     amount: Money.create(100),
     transactionType: transType,
     date,
