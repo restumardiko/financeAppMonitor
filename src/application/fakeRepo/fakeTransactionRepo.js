@@ -12,6 +12,14 @@ export default class FakeTransactionRepo {
       return transaction.id === transactionId;
     });
   }
+
+  async getAll() {
+    return this.data;
+  }
+  async getLatestTransaction() {
+    return this.data.slice(-5);
+  }
+
   async delete(transactionId) {
     const whichIndex = this.data.findIndex(
       (transaction) => transaction.id === transactionId,
@@ -24,6 +32,7 @@ export default class FakeTransactionRepo {
 
     return false;
   }
+
   async hasTransactionFor(accountId) {
     const isTransAcc = this.data.find(
       (transaction) => transaction.accountId === accountId,

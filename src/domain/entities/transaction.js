@@ -40,7 +40,6 @@ export default class Transaction {
     }
     return new Transaction({
       id,
-
       amount,
       transactionType,
       date,
