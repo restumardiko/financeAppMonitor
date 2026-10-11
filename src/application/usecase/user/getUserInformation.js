@@ -11,7 +11,7 @@ export default async function getUserInformation({ userRepository, userId }) {
     throw new Error("User not found");
   }
 
-  return new User({
+  return User.create({
     id: data.id ?? userId,
     name: data.name ?? data.full_name ?? "",
     email: data.email ?? "",
