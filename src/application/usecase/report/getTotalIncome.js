@@ -5,8 +5,9 @@ export default async function getTotalIncome({
   year,
   transactionRepo,
 }) {
-  const allTransaction = await transactionRepo.getAll(accountId);
-  const incomeTransactions = allTransaction.filter(
+  const allTransactions =
+    await transactionRepo.getAllTransactionsAccount(accountId);
+  const incomeTransactions = allTransactions.filter(
     (transaction) =>
       transaction.transactionType.type === "INCOME" &&
       transaction.date.getFullYear() === year,

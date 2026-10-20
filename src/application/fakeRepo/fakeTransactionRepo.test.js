@@ -29,6 +29,13 @@ test("can get transaction from repo", async () => {
     date: "11-06-2026",
   });
 });
+test("can get all transactions sorted by account", async () => {
+  const fakeTransactionRepo = new FakeTransactionRepo(
+    fakeTransactionInitialData,
+  );
+  const result = await fakeTransactionRepo.getAllTransactionsAccount("1");
+  expect(result).toHaveLength(4);
+});
 
 test("has transaction for account", async () => {
   const result = await fakeTransactionRepo.hasTransactionFor("1");

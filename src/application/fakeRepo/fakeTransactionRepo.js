@@ -16,6 +16,13 @@ export default class FakeTransactionRepo {
   async getAll() {
     return this.data;
   }
+  async getAllTransactionsAccount(accountId) {
+    const allTransAccount = this.data.filter((transaction) => {
+      return transaction.accountId === accountId;
+    });
+    return allTransAccount;
+  }
+
   async getLatestTransaction() {
     return this.data.slice(-5);
   }
