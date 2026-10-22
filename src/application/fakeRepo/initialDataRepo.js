@@ -10,7 +10,7 @@ export const fakeTransactionInitialData = [
     transactionType: { type: "INCOME", category: "BUSINESS" },
     date: new Date("08-12-2025"),
   },
-  //BELOW IS TEMPORARY BECAUSE I MADE UNSCALABLE INITIAL DATA AND SHOULD BE DELETED (GET TOTAL INCOME NECESSITY)
+  //BELOW IS TEMPORARY BECAUSE I MADE UNSCALABLE INITIAL DATA AND SHOULD BE DELETED (GET TOTAL INCOME EACH MONTH NECESSITY)
 
   {
     id: "2",
@@ -21,7 +21,7 @@ export const fakeTransactionInitialData = [
   },
   {
     id: "3",
-    accountId: "1",
+    accountId: "2",
     amount: 20,
     transactionType: { type: "EXPENSE", category: "FOOD" },
     date: new Date("08-12-2025"),
@@ -33,4 +33,35 @@ export const fakeTransactionInitialData = [
     transactionType: { type: "EXPENSE", category: "FOOD" },
     date: new Date("09-12-2025"),
   },
+  // this is for getMonthlyExpense and
+  {
+    id: "5",
+    accountId: "6",
+    amount: 10,
+    transactionType: { type: "EXPENSE", category: "FOOD" },
+    date: new Date("10-10-2026"),
+  },
+  {
+    id: "6",
+    accountId: "7",
+    amount: 10,
+    transactionType: { type: "EXPENSE", category: "FOOD" },
+    date: new Date("10-10-2026"),
+  },
+  //this is for getMonthlyIncome
+  {
+    id: "7",
+    accountId: "6",
+    amount: 10,
+    transactionType: { type: "INCOME", category: "SALARY" },
+    date: new Date("10-10-2026"),
+  },
+  {
+    id: "8",
+    accountId: "7",
+    amount: 10,
+    transactionType: { type: "INCOME", category: "SALARY" },
+    date: new Date("10-10-2026"),
+  },
 ];
+//format bulan -tgl- thun

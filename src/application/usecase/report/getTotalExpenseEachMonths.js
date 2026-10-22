@@ -1,6 +1,6 @@
 import months from "./months";
 
-export default async function getTotalExpense({
+export default async function getTotalExpenseEachMonths({
   accountId,
   year,
   transactionRepo,
@@ -12,7 +12,7 @@ export default async function getTotalExpense({
       transaction.transactionType.type === "EXPENSE" &&
       transaction.date.getFullYear() === year,
   );
-  const totalIncome = months.map((month, index) => {
+  const totalExpenseEachMont = months.map((month, index) => {
     const transactionInMonth = incomeTransactions.filter((transaction) => {
       return transaction.date.getMonth() === index;
     });
@@ -23,5 +23,5 @@ export default async function getTotalExpense({
 
     return { [month]: total };
   });
-  return totalIncome;
+  return totalExpenseEachMont;
 }

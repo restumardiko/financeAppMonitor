@@ -1,3 +1,1 @@
-export default async function getMonthlyBalance(params) {
-  
-}
+export default async function getMonthlyBalance() {}
