@@ -1,5 +1,5 @@
 
-export default async function getTotalBalance({
+export default async function getTotalBalanceEachMonths({
   accountId,
   year,
   transactionRepo,
