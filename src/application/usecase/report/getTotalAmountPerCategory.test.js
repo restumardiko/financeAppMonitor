@@ -1,19 +1,20 @@
 import FakeTransactionRepo from "../../fakeRepo/fakeTransactionRepo";
 import { fakeTransactionInitialData } from "../../fakeRepo/initialDataRepo";
-import getCategoriesPercentage from "./getCategoriesPercentage";
+import getTotalAmountPerCategory from "./getTotalAmountPerCategory";
 
-test("can get categories percentage", async () => {
+test("can get total amount per category", async () => {
   const transactionRepo = new FakeTransactionRepo(fakeTransactionInitialData);
   const getTransactionAccountSpy = jest.spyOn(
     transactionRepo,
     "getAllTransactionsAccount",
   );
-  const categoriesPercentage = await getCategoriesPercentage({
-    transactionType: "EXPENSE",
-    accountId: "2",
+  const totalAmountPerCategory = await getTotalAmountPerCategory({
+    transactionType: "INCOME",
+    accountId: "1",
+    year: "2025",
+    month: 8,
     transactionRepo: transactionRepo,
   });
   expect(getTransactionAccountSpy).toHaveBeenCalledTimes(1);
-  expect(categoriesPercentage).toHaveLength(3);
-  expect(categoriesPercentage).toBe(4);
+  expect(totalAmountPerCategory).toHaveLength(3);
 });

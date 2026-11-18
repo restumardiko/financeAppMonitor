@@ -1,6 +1,7 @@
 export const fakeAccountInitialData = [
   { id: "1", name: "BRI", balance: 1000 },
   { id: "2", name: "BCA", balance: 2000 },
+  { id: "3", name: "BTN", balance: 0 },
 ];
 export const fakeTransactionInitialData = [
   {
@@ -21,9 +22,9 @@ export const fakeTransactionInitialData = [
   },
   {
     id: "3",
-    accountId: "2",
+    accountId: "1",
     amount: 20,
-    transactionType: { type: "EXPENSE", category: "FOOD" },
+    transactionType: { type: "INCOME", category: "ETC." },
     date: new Date("08-12-2025"),
   },
   {
@@ -33,35 +34,35 @@ export const fakeTransactionInitialData = [
     transactionType: { type: "EXPENSE", category: "FOOD" },
     date: new Date("09-12-2025"),
   },
-  // this is for getMonthlyExpense and
+  // this is for getMonthlyExpense and expense
   {
     id: "5",
     accountId: "6",
     amount: 10,
     transactionType: { type: "EXPENSE", category: "FOOD" },
-    date: new Date("10-10-2026"),
+    date: new Date("11-10-2026"),
   },
   {
     id: "6",
     accountId: "7",
     amount: 10,
     transactionType: { type: "EXPENSE", category: "FOOD" },
-    date: new Date("10-10-2026"),
+    date: new Date("11-10-2026"),
   },
-  //this is for getMonthlyIncome
+
   {
     id: "7",
     accountId: "6",
     amount: 10,
     transactionType: { type: "INCOME", category: "SALARY" },
-    date: new Date("10-10-2026"),
+    date: new Date("11-11-2026"),
   },
   {
     id: "8",
     accountId: "7",
     amount: 10,
     transactionType: { type: "INCOME", category: "SALARY" },
-    date: new Date("10-10-2026"),
+    date: new Date("11-10-2026"),
   },
 ];
 //format bulan -tgl- thun

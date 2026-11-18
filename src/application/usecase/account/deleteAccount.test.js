@@ -1,4 +1,3 @@
-
 import FakeAccountRepo from "../../fakeRepo/fakeAccountRepo";
 import FakeTransactionRepo from "../../fakeRepo/fakeTransactionRepo";
 import {
@@ -16,14 +15,14 @@ test("account can be deleted", async () => {
   const deleteSpy = jest.spyOn(fakeAccountRepository, "delete");
   const getSpy = jest.spyOn(fakeAccountRepository, "get");
   const result = await deleteAccount({
-    accountId: "2",
+    accountId: "3",
     accountRepo: fakeAccountRepository,
     transactionRepo: fakeTransactionRepository,
   });
 
   expect(deleteSpy).toHaveBeenCalledTimes(1);
   expect(getSpy).toHaveBeenCalledTimes(1);
-  expect(fakeAccountRepository.data).toHaveLength(1);
+  expect(fakeAccountRepository.data).toHaveLength(2);
   expect(result).toBeTruthy();
 });
 
